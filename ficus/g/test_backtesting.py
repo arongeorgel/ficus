@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 
 import pandas as pd
 import yfinance as yf
-from colorama import Fore, Style, init
+from colorama import init
 from matplotlib import pyplot as plt
 
 from ficus.g.strategies import macd_crossover_strategy, calculate_macd, simple_crossover_strategy, \
@@ -105,9 +105,8 @@ def now_trading(data_row, profit_pips):
     if current_position == 0 and signal != 0:
         current_position = signal
         entry_price = data_row['Close']
-        stop_loss = entry_price - stop_loss_distance if signal == 1 else entry_price + stop_loss_distance
         stop_loss_dollars = calculate_dollars(stop_loss_distance, volume)
-        take_profits = [(entry_price + tp * 0.1 if signal == 1 else entry_price - tp * 0.1, calculate_dollars(tp * 0.1, volume)) for tp in profit_pips]
+        stop_loss, take_profits = calculate_sl_and_tp(signal, stop_loss_distance, profit_pips)
         first_take_profit = take_profits[0]
 
         # take_profits_string = "\n".join([f"TP{i + 1}: {tp[0]:.2f} (${tp[1]:.2f})" for i, tp in enumerate(take_profits)])
@@ -155,6 +154,12 @@ def now_trading(data_row, profit_pips):
                 #     f"{Fore.RED}Stop loss hit on {'long' if current_position == 1 else 'short'} position "
                 #     f"at price {stop_loss:.2f} (-${stop_loss_dollars:.2f}){Style.RESET_ALL}")
                 current_position = 0
+
+
+def calculate_sl_and_tp(signal, entry, sl_distance, profit_pips):
+    sl = entry - sl_distance if signal == 1 else entry + sl_distance
+    tp = [(entry + tp * 0.1 if signal == 1 else entry - tp * 0.1, calculate_dollars(tp * 0.1, volume)) for tp in profit_pips]
+    return sl, tp
 
 
 def backtest_strategy(data, profit_pips):

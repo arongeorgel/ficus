@@ -1,6 +1,7 @@
 #standard files
 .DS_Store
 *.session
+ficus/mt5/.metaapi/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

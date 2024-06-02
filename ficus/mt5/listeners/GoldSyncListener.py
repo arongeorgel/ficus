@@ -1,16 +1,18 @@
-# receive synchronization event notifications
-# first, implement your listener
 # type: ignore
 from typing import List
 
 from metaapi_cloud_sdk import SynchronizationListener
 from metaapi_cloud_sdk.clients.metaapi.synchronization_listener import HealthStatus
-from metaapi_cloud_sdk.metaapi.models import MarketDataSubscription, MarketDataUnsubscription, MetatraderBook, \
-    MetatraderTick, MetatraderCandle, MetatraderSymbolPrice, MetatraderSymbolSpecification, MetatraderDeal, \
+from metaapi_cloud_sdk.metaapi.models import MarketDataSubscription, MarketDataUnsubscription, \
+    MetatraderTick, MetatraderSymbolPrice, MetatraderSymbolSpecification, MetatraderDeal, \
     MetatraderOrder, MetatraderPosition, MetatraderAccountInformation
 
+from ficus.mt5.MetatraderStorage import MetatraderSymbolPriceManager
 
-class MySynchronizationListener(SynchronizationListener):
+
+class GoldSyncListener(SynchronizationListener):
+    def __init__(self, price_manager: MetatraderSymbolPriceManager):
+        self.price_manager = price_manager
 
     async def on_connected(self, instance_index: str, replicas: int):
         print("meta > Connected")
@@ -88,7 +90,6 @@ class MySynchronizationListener(SynchronizationListener):
         return await super().on_deals_synchronized(instance_index, synchronization_id)
 
     async def on_symbol_specification_updated(self, instance_index: str, specification: MetatraderSymbolSpecification):
-        print(f"meta > on_symbol_specification_updated")
         return await super().on_symbol_specification_updated(instance_index, specification)
 
     async def on_symbol_specification_removed(self, instance_index: str, symbol: str):
@@ -97,39 +98,18 @@ class MySynchronizationListener(SynchronizationListener):
     async def on_symbol_specifications_updated(self, instance_index: str,
                                                specifications: List[MetatraderSymbolSpecification],
                                                removed_symbols: List[str]):
-        print(f"meta > Symbol specs updated")
         return await super().on_symbol_specifications_updated(instance_index, specifications, removed_symbols)
-
-    async def on_symbol_price_updated(self, instance_index: str, price: MetatraderSymbolPrice):
-        print(f"meta > Symbol price updated {price}")
-        return await super().on_symbol_price_updated(instance_index, price)
 
     async def on_symbol_prices_updated(self, instance_index: str, prices: List[MetatraderSymbolPrice],
                                        equity: float = None, margin: float = None, free_margin: float = None,
                                        margin_level: float = None, account_currency_exchange_rate: float = None):
-        # print(f"meta > Symbol priceS updated")
         return await super().on_symbol_prices_updated(instance_index, prices, equity, margin, free_margin, margin_level,
                                                       account_currency_exchange_rate)
-
-    async def on_candles_updated(self, instance_index: str, candles: List[MetatraderCandle], equity: float = None,
-                                 margin: float = None, free_margin: float = None, margin_level: float = None,
-                                 account_currency_exchange_rate: float = None):
-        print(f"meta > on_candles_updated")
-        return await super().on_candles_updated(instance_index, candles, equity, margin, free_margin, margin_level,
-                                                account_currency_exchange_rate)
 
     async def on_ticks_updated(self, instance_index: str, ticks: List[MetatraderTick], equity: float = None,
                                margin: float = None, free_margin: float = None, margin_level: float = None,
                                account_currency_exchange_rate: float = None):
-        print(f"meta > on_ticks_updated")
         return await super().on_ticks_updated(instance_index, ticks, equity, margin, free_margin, margin_level,
-                                              account_currency_exchange_rate)
-
-    async def on_books_updated(self, instance_index: str, books: List[MetatraderBook], equity: float = None,
-                               margin: float = None, free_margin: float = None, margin_level: float = None,
-                               account_currency_exchange_rate: float = None):
-        print(f"meta > on_books_updated")
-        return await super().on_books_updated(instance_index, books, equity, margin, free_margin, margin_level,
                                               account_currency_exchange_rate)
 
     async def on_subscription_downgraded(self, instance_index: str, symbol: str,
@@ -138,7 +118,18 @@ class MySynchronizationListener(SynchronizationListener):
         return await super().on_subscription_downgraded(instance_index, symbol, updates, unsubscriptions)
 
     async def on_stream_closed(self, instance_index: str):
+        print("meta > Stream closed.")
         return await super().on_stream_closed(instance_index)
 
     async def on_unsubscribe_region(self, region: str):
         return await super().on_unsubscribe_region(region)
+
+    ######
+    async def on_symbol_price_updated(self, instance_index: str, price: MetatraderSymbolPrice):
+        # save data
+        self.price_manager.add_symbol_price(price)
+        # create ohclv
+
+        # forex_data = self.price_manager.generate_ohlcv(1)
+
+        return await super().on_symbol_price_updated(instance_index, price)

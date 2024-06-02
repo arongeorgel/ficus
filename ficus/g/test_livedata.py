@@ -1,93 +1,101 @@
-import threading
+import multiprocessing as mp
 import time
-import matplotlib.pyplot as plt
 import pandas as pd
-from matplotlib.animation import FuncAnimation
-
+import matplotlib.pyplot as plt
 from ficus.g.strategies import simple_crossover_strategy
 from test_backtesting import download_forex_data, now_trading
 
-# Initialize global data
-data = pd.DataFrame(columns=['Datetime', 'Open', 'High', 'Low', 'Close', 'Adj Close', 'Volume'])
+class ProcessPlotter:
+    def __init__(self):
+        self.data = pd.DataFrame(columns=['Datetime', 'Open', 'High', 'Low', 'Close', 'Adj Close', 'Volume'])
+        self.terminate_plot = False
+        self.plot_initialized = False
 
-# Function to initialize the plot
-def init():
-    ax.set_title('Price and Buy/Sell Signals')
-    ax.set_xlabel('Date')
-    ax.set_ylabel('Price')
-    return ln,
+    def terminate(self):
+        plt.close('all')
 
-# Function to update the plot
-def update(frame):
-    global data
+    def call_back(self):
+        while self.pipe.poll():
+            command = self.pipe.recv()
+            if command is None:
+                self.terminate()
+                return False
+            else:
+                if not self.plot_initialized:
+                    self.init_plot()
+                    self.plot_initialized = True
+                self.data = pd.concat([self.data, pd.DataFrame([command], columns=self.data.columns)], ignore_index=True)
+                self.update_plot()
+        self.fig.canvas.draw()
+        return True
 
-    # Ensure data exists
-    if data.empty:
-        return ln,
+    def init_plot(self):
+        self.fig, self.ax = plt.subplots(figsize=(14, 8))
+        self.ax.set_title('Price and Buy/Sell Signals')
+        self.ax.set_xlabel('Date')
+        self.ax.set_ylabel('Price')
 
-    # Calculate strategic data
-    strategic_data = simple_crossover_strategy(data, 20, 50)
-    for _, row in strategic_data.tail(1).iterrows():
-        now_trading(row, [20, 50, 90, 120])
+    def update_plot(self):
+        strategic_data = simple_crossover_strategy(self.data, 20, 50)
+        for _, row in strategic_data.tail(1).iterrows():
+            now_trading(row, [20, 50, 90, 120])
 
-    # Clear previous data
-    ax.clear()
+        self.ax.clear()
+        self.ax.plot(strategic_data['Datetime'], strategic_data['Close'], label='Close Price', alpha=0.5)
+        self.ax.plot(strategic_data['Datetime'], strategic_data['Long_Window'], label='SMA Long', alpha=0.5)
+        self.ax.plot(strategic_data['Datetime'], strategic_data['Short_Window'], label='SMA Short', alpha=0.5)
 
-    # plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%H:%M'))
-    # plt.gca().xaxis.set_major_locator(mdates.HourLocator(interval=1))
+        buy_signals = strategic_data[strategic_data['Position'] == 1]
+        sell_signals = strategic_data[strategic_data['Position'] == -1]
+        self.ax.scatter(buy_signals['Datetime'], buy_signals['Close'], marker='^', color='g', label='Buy Signal')
+        self.ax.scatter(sell_signals['Datetime'], sell_signals['Close'], marker='v', color='r', label='Sell Signal')
 
-    # Plot the close price and moving averages
-    ax.plot(strategic_data['Datetime'], strategic_data['Close'], label='Close Price', alpha=0.5)
-    ax.plot(strategic_data['Datetime'], strategic_data['Long_Window'], label='SMA Long', alpha=0.5)
-    ax.plot(strategic_data['Datetime'], strategic_data['Short_Window'], label='SMA Short', alpha=0.5)
+        self.ax.set_title('Price and Buy/Sell Signals')
+        self.ax.set_xlabel('Date')
+        self.ax.set_ylabel('Price')
+        self.ax.legend()
 
-    # Plot buy and sell signals
-    buy_signals = strategic_data[strategic_data['Position'] == 1]
-    sell_signals = strategic_data[strategic_data['Position'] == -1]
-    ax.scatter(buy_signals['Datetime'], buy_signals['Close'], marker='^', color='g', label='Buy Signal')
-    ax.scatter(sell_signals['Datetime'], sell_signals['Close'], marker='v', color='r', label='Sell Signal')
-
-    ax.set_title('Price and Buy/Sell Signals')
-    ax.set_xlabel('Date')
-    ax.set_ylabel('Price')
-    ax.legend()
-
-    return ax.lines + [ax.collections[0], ax.collections[1]]  # Return all plotted elements
-
-
-# Callback function to receive new data
-def on_message(new_data):
-    global data
-    # Concatenate the new data with the existing data
-    new_data_df = pd.DataFrame([new_data])
-    data = pd.concat([data, new_data_df], ignore_index=True)
+    def __call__(self, pipe):
+        print('Starting plotter...')
+        self.pipe = pipe
+        self.fig, self.ax = plt.subplots()
+        timer = self.fig.canvas.new_timer(interval=1000)
+        timer.add_callback(self.call_back)
+        timer.start()
+        plt.show()
 
 
-# Function to emit new data every second in a separate thread
-def emit_data(forex_data):
+class NBPlot:
+    def __init__(self):
+        self.plot_pipe, plotter_pipe = mp.Pipe()
+        self.plotter = ProcessPlotter()
+        self.plot_process = mp.Process(target=self.plotter, args=(plotter_pipe,), daemon=True)
+        self.plot_process.start()
+
+    def plot(self, data=None, finished=False):
+        send = self.plot_pipe.send
+        if finished:
+            send(None)
+        elif data is not None:
+            send(data)
+
+
+def emit_data(forex_data, plotter):
     for _, row in forex_data.iterrows():
-        on_message(row)
+        plotter.plot(row)
         time.sleep(1)
 
 
-# Main script
-if __name__ == "__main__":
-    # Download the forex data
-    forex_data = download_forex_data("GC=F", '2024-05-27', '2024-05-30', '5m')
-    # Start the data emission thread
-    emit_thread = threading.Thread(target=emit_data, args=(forex_data,))
-    emit_thread.start()
+def main():
+    s = "GC=F"
+    d = download_forex_data(s, '2024-05-27', '2024-05-30', '5m')
 
-    # from here down, handle the plot chart
-    # Create the plot
-    fig, ax = plt.subplots(figsize=(14, 8))
-    ln, = ax.plot([], [], 'b-', animated=True)
+    pl = NBPlot()
+    emit_data(d, pl)
+    pl.plot(finished=True)
 
-    # Start the animation
-    ani = FuncAnimation(fig, update, init_func=init, blit=True, interval=1100, repeat=False)
 
-    # Show the plot in a non-blocking way
-    plt.show(block=True)
-
-    # Join the thread to wait for its completion
-    emit_thread.join()
+if __name__ == '__main__':
+    if plt.get_backend() == "MacOSX":
+        mp.set_start_method("forkserver")
+    main()
