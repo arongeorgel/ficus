@@ -1,20 +1,39 @@
-import datetime
-import json
+from abc import ABC, abstractmethod
 
-class DataHandler:
-    def __init__(self, data):
-        self.data = data
+# Interface for Main
+class IMain(ABC):
+    @abstractmethod
+    def notify(self, message: str):
+        pass
 
-    def save_to_json(self, file_path):
-        with open(file_path, 'w') as file:
-            json_data = [{**item, 'time': item['time'].isoformat()} for item in self.data]
-            json.dump(json_data, file, indent=4)
+# Manager class
+class Manager:
+    def __init__(self, main: IMain):
+        self.main = main
 
-# Example usage
-data = [
-    {"event": "event1", "time": datetime.datetime(2024, 5, 31, 12, 52, 8, tzinfo=datetime.timezone.utc)},
-    {"event": "event2", "time": datetime.datetime(2024, 6, 1, 14, 30, 0, tzinfo=datetime.timezone.utc)}
-]
+    def manage(self):
+        print("Manager is managing...")
+        self.main.notify("Manager has done its job")
 
-handler = DataHandler(data)
-handler.save_to_json('data.json')
+# Listener class
+class Listener:
+    def listen(self):
+        print("Listener is listening...")
+
+# Main class
+class Main(IMain):
+    def __init__(self):
+        self.listener = Listener()
+        self.manager = Manager(self)
+
+    def notify(self, message: str):
+        print(f"Main received notification: {message}")
+
+    def start(self):
+        self.listener.listen()
+        self.manager.manage()
+
+# Example of interaction
+if __name__ == "__main__":
+    main = Main()
+    main.start()

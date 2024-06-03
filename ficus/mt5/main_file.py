@@ -1,5 +1,8 @@
 import asyncio
 
+import pandas as pd
+
+from ficus.g.strategies import exponential_crossover_strategy
 from ficus.mt5.TradingSymbols import TradingSymbols
 from ficus.mt5.Vantage import Vantage
 
@@ -14,13 +17,29 @@ async def async_start_vantage():
 
 
 async def async_start_trading():
+    current_position = 0
     while True:
         await asyncio.sleep(60)
-        forex_data = vantage.get_ohlcv_for_symbol(TradingSymbols.BTCUSD)
-        # fill in the position
+        symbol = TradingSymbols.BTCUSD
+        forex_data = vantage.get_ohlcv_for_symbol(symbol)
         # apply strategy
-        # open trades
-        print(forex_data)
+        strategy_three = exponential_crossover_strategy(forex_data, 5, 10)
+        last = strategy_three.tail(1)
+        print(last)
+        for _, row in last.iterrows():
+            signal = row['Position']
+            if pd.isna(signal):
+                print("signal is nothing")
+            else:
+                if current_position != 0 and signal != 0 and signal != current_position:
+                    print("Closing current order because we received a new signal")
+                    current_position = 0
+                    await vantage.close_position()
+
+                if current_position == 0 and signal != 0:
+                    print(f"Open a new order")
+                    current_position = signal
+                    await vantage.open_trade(current_position, symbol.name, row['Close'])
 
 
 def start_vantage():
