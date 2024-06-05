@@ -3,43 +3,37 @@ import asyncio
 import pandas as pd
 
 from ficus.g.strategies import exponential_crossover_strategy
-from ficus.mt5.TradingSymbols import TradingSymbols
 from ficus.mt5.Vantage import Vantage
+from ficus.mt5.models import TradingSymbol
 
 vantage = Vantage()
-trading_symbols = [TradingSymbols.BTCUSD]
+trading_symbols = [TradingSymbol.XAUUSD, TradingSymbol.BTCUSD]
 
 
 async def async_start_vantage():
     await vantage.connect_account()
     await vantage.prepare_listeners(trading_symbols)
-    await asyncio.sleep(60*60)
+    # run this for 12 hours
+    await asyncio.sleep(60*60*12)
 
 
 async def async_start_trading():
-    current_position = 0
     while True:
         await asyncio.sleep(60)
-        symbol = TradingSymbols.BTCUSD
-        forex_data = vantage.get_ohlcv_for_symbol(symbol)
+        gold = TradingSymbol.XAUUSD
+        forex_data = vantage.get_ohlcv_for_symbol(gold)
         # apply strategy
         strategy_three = exponential_crossover_strategy(forex_data, 5, 10)
-        last = strategy_three.tail(1)
-        print(last)
-        for _, row in last.iterrows():
-            signal = row['Position']
-            if pd.isna(signal):
-                print("signal is nothing")
-            else:
-                if current_position != 0 and signal != 0 and signal != current_position:
-                    print("Closing current order because we received a new signal")
-                    current_position = 0
-                    await vantage.close_position()
+        last_ohlcv = strategy_three.iloc[-1]
+        await vantage.on_ohlcv(last_ohlcv, gold)
 
-                if current_position == 0 and signal != 0:
-                    print(f"Open a new order")
-                    current_position = signal
-                    await vantage.open_trade(current_position, symbol.name, row['Close'])
+        await asyncio.sleep(1)
+        bitcoin = TradingSymbol.BTCUSD
+        forex_data = vantage.get_ohlcv_for_symbol(bitcoin)
+        # apply strategy
+        strategy_three = exponential_crossover_strategy(forex_data, 5, 10)
+        last_ohlcv = strategy_three.iloc[-1]
+        await vantage.on_ohlcv(last_ohlcv, bitcoin)
 
 
 def start_vantage():

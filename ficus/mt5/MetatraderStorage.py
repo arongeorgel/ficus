@@ -1,5 +1,5 @@
-import json
 import datetime
+import json
 from typing import List
 
 import pandas as pd
@@ -53,10 +53,15 @@ class MetatraderSymbolPriceManager:
             return obj
 
     def generate_ohlcv(self, interval: int):
+        """
+
+        :param interval: interval in minutes
+        :return:
+        """
         df = pd.DataFrame(self.data.copy())
-        print(f"====\n{len(self.data.copy())}\n=====")
         df['time'] = pd.to_datetime(df['time'])
-        df.set_index('time', inplace=True)
+        df['brokerTime'] = pd.to_datetime(df['brokerTime'])
+        df.set_index('brokerTime', inplace=True)
 
         resampled = df['bid'].resample(f'{interval}min').ohlc()
 
@@ -65,6 +70,6 @@ class MetatraderSymbolPriceManager:
 
         # Reset index to have 'Datetime' as a column
         resampled = resampled.reset_index()
-        resampled.rename(columns={'time': 'Datetime'}, inplace=True)
+        resampled.rename(columns={'brokerTime': 'Datetime'}, inplace=True)
 
-        return resampled
+        return resampled.dropna()

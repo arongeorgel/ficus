@@ -9,11 +9,13 @@ from metaapi_cloud_sdk.metaapi.models import MarketDataSubscription, MarketDataU
 
 from ficus.mt5.MetatraderStorage import MetatraderSymbolPriceManager
 from ficus.mt5.TradingManager import TradingManager
+from ficus.mt5.models import TradingSymbol
 
 
 class BitcoinSyncListener(SynchronizationListener):
-    def __init__(self, price_manager: MetatraderSymbolPriceManager, trading_manager: TradingManager):
-        self.price_manager = price_manager
+    def __init__(self, price_managers: dict[TradingSymbol, MetatraderSymbolPriceManager],
+                 trading_manager: TradingManager):
+        self.price_managers = price_managers
         self.trading_manager = trading_manager
 
     async def on_connected(self, instance_index: str, replicas: int):
@@ -129,7 +131,11 @@ class BitcoinSyncListener(SynchronizationListener):
     ######
     async def on_symbol_price_updated(self, instance_index: str, price: MetatraderSymbolPrice):
         # save data
-        self.price_manager.add_symbol_price(price)
+        # self.price_manager.add_symbol_price(price)
         # validate price
-        await self.trading_manager.validate_price(price['bid'])
+        # await self.trading_manager.validate_price(price['bid'])
+        symbol_updated = TradingSymbol.from_value(price['symbol'])
+        self.price_managers[symbol_updated].add_symbol_price(price)
+        await self.trading_manager.validate_price(price['bid'], symbol_updated)
+
         return await super().on_symbol_price_updated(instance_index, price)

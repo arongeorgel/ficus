@@ -1,5 +1,5 @@
 import traceback
-from abc import abstractmethod, ABC
+from datetime import datetime
 from typing import List, Dict
 
 from metaapi_cloud_sdk import MetaApi, SynchronizationListener
@@ -7,10 +7,9 @@ from metaapi_cloud_sdk.metaapi.streaming_metaapi_connection_instance import Stre
 
 from ficus.mt5.MetatraderStorage import MetatraderSymbolPriceManager
 from ficus.mt5.TradingManager import TradingManager, FicusTrade
-from ficus.mt5.TradingSymbols import TradingSymbols
 from ficus.mt5.listeners.BitcoinSyncListener import BitcoinSyncListener
-from ficus.mt5.listeners.GoldSyncListener import GoldSyncListener
 from ficus.mt5.listeners.ITradingCallback import ITradingCallback
+from ficus.mt5.models import TradingSymbol, TradeDirection
 
 
 class Vantage(ITradingCallback):
@@ -18,9 +17,9 @@ class Vantage(ITradingCallback):
     ACCOUNT_ID = 'e97d4e1f-6ee9-46da-b933-91c4c6343d80'
     CLIENT_ID = 'Ficus_iePEnzfporIaweKvm'
 
-    __sync_listeners: List[SynchronizationListener] = list()
+    __sync_listener: SynchronizationListener
     __api_connection: StreamingMetaApiConnectionInstance
-    __price_managers: Dict[TradingSymbols, MetatraderSymbolPriceManager]
+    __price_managers: Dict[TradingSymbol, MetatraderSymbolPriceManager]
 
     def __init__(self):
         self.__price_managers = {}
@@ -33,33 +32,28 @@ class Vantage(ITradingCallback):
         await self.__api_connection.connect()
         await self.__api_connection.wait_synchronized()
 
-    async def prepare_listeners(self, symbols_to_subscribe: List[TradingSymbols]):
+    async def prepare_listeners(self, symbols_to_subscribe: List[TradingSymbol]):
         try:
             for symbol in symbols_to_subscribe:
-                price_manager = MetatraderSymbolPriceManager(f"meta_symbol_{symbol.name.lower()}.json")
-
-                if symbol is TradingSymbols.BTCUSD:
-                    listener = BitcoinSyncListener(price_manager, self.__trade_manager)
-                elif symbol is TradingSymbols.XAUUSD:
-                    listener = GoldSyncListener(price_manager)
-                else:
-                    continue  # Skip symbols that are not BTCUSD or XAUUSD
-
-                self.__price_managers[symbol] = price_manager
-                self.__sync_listeners.append(listener)
-                self.__api_connection.add_synchronization_listener(listener=listener)
-
+                timestamp = datetime.now().strftime("%Y_%m_%d")
+                manager = MetatraderSymbolPriceManager(f"meta_symbol_{symbol.name.lower()}_{timestamp}.json")
+                self.__price_managers[symbol] = manager
                 await self.__api_connection.subscribe_to_market_data(symbol=symbol.name)
+
+            self.__sync_listener = BitcoinSyncListener(self.__price_managers, self.__trade_manager)
+            self.__api_connection.add_synchronization_listener(self.__sync_listener)
+
         except Exception as ex:
             print(''.join(traceback.TracebackException.from_exception(ex).format()))
 
-    async def disconnect(self, symbols_to_unsubscribe: List[TradingSymbols]):
+    async def disconnect(self, symbols_to_unsubscribe: List[TradingSymbol]):
         for symbol in symbols_to_unsubscribe:
-            if symbol is TradingSymbols.BTCUSD:
-                await self.__api_connection.unsubscribe_from_market_data(symbol="BTCUSD")
+            if symbol is TradingSymbol.BTCUSD:
+                await self.__api_connection.unsubscribe_from_market_data(symbol=symbol.name)
+            elif symbol is TradingSymbol.XAUUSD:
+                await self.__api_connection.unsubscribe_from_market_data(symbol=symbol.name)
 
-        for listener in self.__sync_listeners:
-            self.__api_connection.remove_synchronization_listener(listener)
+        self.__api_connection.remove_synchronization_listener(self.__sync_listener)
 
         await self.__api_connection.close()
 
@@ -67,36 +61,17 @@ class Vantage(ITradingCallback):
         price_manager = self.__price_managers[symbol]
         return price_manager.generate_ohlcv(1)
 
-    async def open_trade(self, position: int, symbol: str, entry_price):
-        if position == 1:
-            result = await self.__api_connection.create_market_buy_order(
-                symbol=symbol,
-                volume=0.01)
-            trade = FicusTrade(
-                entry_price=entry_price,
-                stop_loss_price=entry_price - 100,
-                position=position,
-                take_profit=entry_price + 100,
-                position_id=result['positionId'],
-                symbol=symbol)
-            self.__trade_manager.current_trade = trade
-            print(result)
-        elif position == -1:
-            result = await self.__api_connection.create_market_sell_order(
-                symbol=symbol,
-                volume=0.01)
-            trade = FicusTrade(
-                entry_price=entry_price,
-                stop_loss_price=entry_price + 100,
-                position=position,
-                take_profit=entry_price - 100,
-                position_id=result['positionId'],
-                symbol=symbol)
-            self.__trade_manager.current_trade = trade
-            print(result)
+    async def open_trade(self, symbol: TradingSymbol, direction: TradeDirection, volume: float):
+        if direction is TradeDirection.BUY:
+            return await self.__api_connection.create_market_buy_order(symbol=symbol.name, volume=volume)
+        elif direction is TradeDirection.SELL:
+            return await self.__api_connection.create_market_sell_order(symbol=symbol.name, volume=volume)
 
-    async def close_position(self):
-        await self.__api_connection.close_position(self.__trade_manager.close_current_trade())
+    async def close_trade(self, trade: FicusTrade, trading_symbol):
+        try:
+            await self.__api_connection.close_position(str(trade['position_id']))
+        except Exception as e:
+            print(f"Failed to close position for {trade}: {e}")
 
-    def close_trade(self):
-        self.close_position()
+    async def on_ohlcv(self, last_ohlcv, symbol):
+        await self.__trade_manager.on_ohclv(last_ohlcv, symbol)

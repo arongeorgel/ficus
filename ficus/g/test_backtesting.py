@@ -238,11 +238,11 @@ def plot_sma(plt, data):
     plt.legend(loc='upper left')
 
 
-def plot_ema(plt, data):
-    plt.subplot(2, 2, 4)
+def plot_ema(plt, data, windows):
+    # plt.subplot(2, 2, 4)
     plt.plot(data['Datetime'], data['Close'], label='Close Price', alpha=0.5)
-    plt.plot(data['Datetime'], data['Long_Window'], label='EMA 20', alpha=0.5)
-    plt.plot(data['Datetime'], data['Short_Window'], label='EMA 100', alpha=0.5)
+    plt.plot(data['Datetime'], data['Long_Window'], label=f'EMA {windows[0]}', alpha=0.5)
+    plt.plot(data['Datetime'], data['Short_Window'], label=f'EMA {windows[1]}', alpha=0.5)
     # Plot markers for position open (buy)
     buy_signals = data[data['Position'] == 1]
     plt.scatter(buy_signals['Datetime'], buy_signals['Close'], marker='^', color='g', label='Buy Signal')

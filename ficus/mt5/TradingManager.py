@@ -1,66 +1,79 @@
-from typing import List, TypedDict, Optional
+from typing import List
+
+import pandas as pd
+from pandas import Series
 
 from ficus.mt5.listeners.ITradingCallback import ITradingCallback
-
-
-class FicusTrade(TypedDict):
-    stop_loss_price: float
-    entry_price: float
-    position: int  # one of 1 (buy) or -1 (sell)
-    take_profit: float
-    position_id: int  # from meta_api
-    symbol: str
-
-    # {
-    # 'numericCode': 10009,
-    # 'stringCode': 'TRADE_RETCODE_DONE',
-    # 'message': 'Request completed',
-    # 'orderId': '87651455',
-    # 'positionId': '87651455',
-    # 'tradeExecutionTime': datetime.datetime(2024, 5, 31, 15, 13, 2, 253000, tzinfo=datetime.timezone.utc),
-    # 'tradeStartTime': datetime.datetime(2024, 5, 31, 15, 13, 1, 721000, tzinfo=datetime.timezone.utc)
-    # }
+from ficus.mt5.models import TradingSymbol, TradeDirection, FicusTrade
 
 
 class TradingManager:
-    current_trade: Optional[FicusTrade] = None
+    __current_trades: dict[TradingSymbol, FicusTrade]
     __closed_trades: List[FicusTrade] = []
 
     def __init__(self, callback: ITradingCallback):
+        self.__current_trades = {}
         self.callback: ITradingCallback = callback
 
     def _add_closed_trade(self, order: FicusTrade):
         self.__closed_trades.append(order)
 
-    def close_current_trade(self):
-        position_id = self.current_trade['position_id']
-        self._add_closed_trade(self.current_trade)
-        self.current_trade = None
-        return position_id
+    def _close_trade(self, trade, trading_symbol):
+        self._add_closed_trade(trade)
+        del self.__current_trades[trading_symbol]
 
-    async def validate_price(self, price: float):
-        if self.current_trade is not None:
-            if self.current_trade['position'] == 1:  # Buy position
-                if self.current_trade['stop_loss_price'] >= price:
-                    print("Stop loss hit for buy position. Closing current trade.")
-                    self.callback.close_trade()
-                    # await self.__vantage.close_position()
-                elif self.current_trade['take_profit'] <= price:
-                    print("Take profit hit for buy position. Closing current trade.")
-                    self.callback.close_trade()
+    async def validate_price(self, price: float, trading_symbol):
+        if trading_symbol not in TradingSymbol:
+            return
+        if trading_symbol not in self.__current_trades:
+            return
 
-            elif self.current_trade['position'] == -1:  # Sell position
-                if self.current_trade['stop_loss_price'] <= price:
-                    print("Stop loss hit for sell position. Closing current trade.")
-                    self.callback.close_trade()
-                elif self.current_trade['take_profit'] >= price:
-                    print("Take profit hit for sell position. Closing current trade.")
-                    self.callback.close_trade()
+        trade = self.__current_trades[trading_symbol]
+        if trade['position'] is TradeDirection.BUY:
+            if trade['stop_loss_price'] >= price:
+                print(f"Stop loss hit for {trade['symbol']} on buy at price {price}")
+                self._close_trade(trade, trading_symbol)
+                await self.callback.close_trade(trade, trading_symbol)
+            elif trade['take_profit'] <= price:
+                print(f"Take profit hit for {trade['symbol']} on buy at price {price}")
+                self._close_trade(trade, trading_symbol)
+                await self.callback.close_trade(trade, trading_symbol)
 
-    def calculate_sl_and_tp(self, current_capital: float, symbol: str, direction):
-        """
-        For given symbol and given direction, calculate stop loss and take profit list
-        stop_loss = entry_price - stop_loss_distance if signal == 1 else entry_price + stop_loss_distance
-        take_profits = [(entry_price + tp * 0.1 if signal == 1 else entry_price - tp * 0.1, calculate_dollars(tp * 0.1, volume)) for tp in profit_pips]
-        :return:
-        """
+        elif trade['position'] is TradeDirection.SELL:
+            if trade['stop_loss_price'] <= price:
+                print(f"Stop loss hit for {trade['symbol']} on sell at price {price}")
+                self._close_trade(trade, trading_symbol)
+                await self.callback.close_trade(trade, trading_symbol)
+            elif trade['take_profit'] >= price:
+                print(f"Take profit hit for {trade['symbol']} on sell at price {price}")
+                self._close_trade(trade, trading_symbol)
+                await self.callback.close_trade(trade, trading_symbol)
+
+    async def open_trade(self, direction: TradeDirection, trading_symbol: TradingSymbol, entry_price: float):
+        result = await self.callback.open_trade(symbol=trading_symbol, volume=0.02, direction=direction)
+        trade = FicusTrade(
+            entry_price=entry_price,
+            stop_loss_price=TradingSymbol.calculate_stop_loss_price(trading_symbol, entry_price, direction),
+            position=direction,
+            take_profit=TradingSymbol.calculate_take_profit(trading_symbol, entry_price, direction),
+            position_id=result['positionId'],
+            symbol=trading_symbol)
+        self.__current_trades[trading_symbol] = trade
+        print(f"Open a new trade ${trade}")
+
+    async def on_ohclv(self, series: Series, symbol: TradingSymbol):
+        signal = series['Position']
+        if pd.isna(signal):
+            print("No signal")
+            return
+
+        # if we have a running trade, but received a different direction, close it.
+        if symbol in self.__current_trades:
+            trade = self.__current_trades[symbol]
+            if signal != 0 and signal != trade['position']:
+                print(f"New signal received ({signal}). Closing {trade} at price {series['Close']}")
+                self._close_trade(trade, symbol)
+                await self.callback.close_trade(trade, symbol)
+        elif signal != 0:
+            await self.open_trade(TradeDirection.from_value(signal), symbol, series['Close'])
+

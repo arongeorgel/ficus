@@ -8,18 +8,20 @@ from metaapi_cloud_sdk.metaapi.models import MarketDataSubscription, MarketDataU
     MetatraderOrder, MetatraderPosition, MetatraderAccountInformation
 
 from ficus.mt5.MetatraderStorage import MetatraderSymbolPriceManager
+from ficus.mt5.TradingManager import TradingManager
 
 
 class GoldSyncListener(SynchronizationListener):
-    def __init__(self, price_manager: MetatraderSymbolPriceManager):
+    def __init__(self, price_manager: MetatraderSymbolPriceManager, trading_manager: TradingManager):
         self.price_manager = price_manager
+        self.trading_manager = trading_manager
 
     async def on_connected(self, instance_index: str, replicas: int):
         print("meta > Connected")
         return await super().on_connected(instance_index, replicas)
 
     async def on_health_status(self, instance_index: str, status: HealthStatus):
-        print(f"meta > health status: {status}")
+        # print(f"meta > health status: {status}")
         return await super().on_health_status(instance_index, status)
 
     async def on_disconnected(self, instance_index: str):
@@ -27,7 +29,7 @@ class GoldSyncListener(SynchronizationListener):
         return await super().on_disconnected(instance_index)
 
     async def on_broker_connection_status_changed(self, instance_index: str, connected: bool):
-        print(f"meta > broker connection changed. connected? {connected}")
+        # print(f"meta > broker connection changed. connected? {connected}")
         return await super().on_broker_connection_status_changed(instance_index, connected)
 
     async def on_synchronization_started(self, instance_index: str, specifications_hash: str = None,
@@ -127,9 +129,8 @@ class GoldSyncListener(SynchronizationListener):
     ######
     async def on_symbol_price_updated(self, instance_index: str, price: MetatraderSymbolPrice):
         # save data
-        self.price_manager.add_symbol_price(price)
-        # create ohclv
-
-        # forex_data = self.price_manager.generate_ohlcv(1)
-
+        # self.price_manager.add_symbol_price(price)
+        # validate price
+        # await self.trading_manager.validate_price(price['bid'])
+        print(f'GOOOLLDDDD - price - {price}')
         return await super().on_symbol_price_updated(instance_index, price)

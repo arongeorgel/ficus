@@ -1,39 +1,37 @@
-from abc import ABC, abstractmethod
+import json
 
-# Interface for Main
-class IMain(ABC):
-    @abstractmethod
-    def notify(self, message: str):
-        pass
+import pandas as pd
 
-# Manager class
-class Manager:
-    def __init__(self, main: IMain):
-        self.main = main
 
-    def manage(self):
-        print("Manager is managing...")
-        self.main.notify("Manager has done its job")
+def process_json(filename):
+    """
+    Reads a JSON file containing forex trade data, converts it to a pandas DataFrame,
+    and creates entries for missing hours between existing data points.
 
-# Listener class
-class Listener:
-    def listen(self):
-        print("Listener is listening...")
+    Args:
+        filename: The path to the JSON file.
 
-# Main class
-class Main(IMain):
-    def __init__(self):
-        self.listener = Listener()
-        self.manager = Manager(self)
+    Returns:
+        A pandas DataFrame containing the processed data with missing hours filled.
+    """
+    data = []
+    with open(filename, 'r') as f:
+        for line in f:
+            obj = json.loads(line.strip())
+            data.append(obj)
 
-    def notify(self, message: str):
-        print(f"Main received notification: {message}")
+    # Convert data to DataFrame and set "time" as index (assuming time is in datetime format)
+    df = pd.DataFrame(data).set_index('time')
 
-    def start(self):
-        self.listener.listen()
-        self.manager.manage()
+    # Upsample DataFrame to include all hours (assuming data is in UTC)
+    df = df.resample('H', utc=True).fillna(method='ffill')  # Forward fill missing values
 
-# Example of interaction
-if __name__ == "__main__":
-    main = Main()
-    main.start()
+    return df
+
+
+# Example usage (replace 'your_file.json' with the actual filename)
+data_df = process_json('meta_symbol_btcusd_copy.json')
+
+
+# Print the DataFrame (optional)
+print(data_df)
