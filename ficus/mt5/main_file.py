@@ -23,7 +23,7 @@ async def async_start_trading():
         gold = TradingSymbol.XAUUSD
         forex_data = vantage.get_ohlcv_for_symbol(gold)
         # apply strategy
-        strategy_three = exponential_crossover_strategy(forex_data, 5, 10)
+        strategy_three = exponential_crossover_strategy(forex_data, 20, 50)
         last_ohlcv = strategy_three.iloc[-1]
         await vantage.on_ohlcv(last_ohlcv, gold)
 
@@ -31,7 +31,7 @@ async def async_start_trading():
         bitcoin = TradingSymbol.BTCUSD
         forex_data = vantage.get_ohlcv_for_symbol(bitcoin)
         # apply strategy
-        strategy_three = exponential_crossover_strategy(forex_data, 5, 10)
+        strategy_three = exponential_crossover_strategy(forex_data, 20, 50)
         last_ohlcv = strategy_three.iloc[-1]
         await vantage.on_ohlcv(last_ohlcv, bitcoin)
 

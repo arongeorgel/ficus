@@ -9,7 +9,7 @@ from ficus.mt5.models import TradingSymbol
 from ficus.mt5.VantageSim import VantageSim
 
 vantage = VantageSim()
-trading_symbols = [TradingSymbol.XAUUSD]
+trading_symbols = [TradingSymbol.BTCUSD]
 
 
 async def async_start_vantage():
@@ -53,13 +53,13 @@ def plot_candlesticks(data):
 
 
 async def async_start_trading():
-    symbol = TradingSymbol.XAUUSD
+    symbol = TradingSymbol.BTCUSD
     forex_data = vantage.get_ohlcv_for_symbol(symbol)
     pd.options.display.max_rows = None
     # print(forex_data)
     plot_candlesticks(forex_data)
     # apply strategy
-    windows = 5, 10
+    windows = 20, 50
     strategy_three = exponential_crossover_strategy(forex_data, windows[0], windows[1])
     print(strategy_three.iloc[-1])
     pos = strategy_three.iloc[-1]['Position']

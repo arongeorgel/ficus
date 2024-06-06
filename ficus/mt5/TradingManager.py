@@ -70,7 +70,7 @@ class TradingManager:
         # if we have a running trade, but received a different direction, close it.
         if symbol in self.__current_trades:
             trade = self.__current_trades[symbol]
-            if signal != 0 and signal != trade['position']:
+            if signal != 0 and TradeDirection.from_value(signal) != trade['position']:
                 print(f"New signal received ({signal}). Closing {trade} at price {series['Close']}")
                 self._close_trade(trade, symbol)
                 await self.callback.close_trade(trade, symbol)

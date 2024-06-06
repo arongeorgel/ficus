@@ -16,20 +16,20 @@ class TradingSymbol(Enum):
     @staticmethod
     def calculate_stop_loss_price(symbol, entry_price, direction):
         if symbol is TradingSymbol.XAUUSD:
-            return entry_price + 20 if direction is TradeDirection.SELL else entry_price - 20
+            return entry_price + 5 if direction is TradeDirection.SELL else entry_price - 5
         elif symbol is TradingSymbol.BTCUSD:
             return entry_price + 100 if direction is TradeDirection.SELL else entry_price - 100
         elif symbol is TradingSymbol.EURUSD:
-            return entry_price + 5 if direction is TradeDirection.SELL else entry_price - 5
+            return entry_price + 2 if direction is TradeDirection.SELL else entry_price - 2
 
     @staticmethod
     def calculate_take_profit(symbol, entry_price, direction):
         if symbol is TradingSymbol.XAUUSD:
-            return entry_price - 20 if direction is TradeDirection.SELL else entry_price + 20
+            return entry_price - 5 if direction is TradeDirection.SELL else entry_price + 5
         elif symbol is TradingSymbol.BTCUSD:
             return entry_price - 100 if direction is TradeDirection.SELL else entry_price + 100
         elif symbol is TradingSymbol.EURUSD:
-            return entry_price - 5 if direction is TradeDirection.SELL else entry_price + 5
+            return entry_price - 2 if direction is TradeDirection.SELL else entry_price + 2
 
 
 class TradeDirection(Enum):
