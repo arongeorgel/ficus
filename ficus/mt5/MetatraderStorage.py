@@ -1,28 +1,45 @@
-import datetime
 import json
+from datetime import datetime, timedelta
 from typing import List
 
 import pandas as pd
 from metaapi_cloud_sdk.metaapi.models import MetatraderSymbolPrice
 
+from ficus.mt5.models import TradingSymbol
+
 
 class MetatraderSymbolPriceManager:
-    def __init__(self, file_path: str):
-        self.file_path = file_path
+    def __init__(self, trading_symbol: TradingSymbol):
+        self.__trading_symbol = trading_symbol
         self.data: List[MetatraderSymbolPrice] = []
-        self.load_data()
+        self.__load_data_for_today_and_yesterday()
 
-    def load_data(self):
+    def __load_data_for_today_and_yesterday(self):
+        today_file_path = self.__generate_file_path(datetime.now())
+        yesterday_file_path = self.__generate_file_path(datetime.now() - timedelta(days=1))
+        self.data = []
+        self.__load_data(yesterday_file_path)
+        self.__load_data(today_file_path)
+
+    def __generate_file_path(self, date):
+        timestamp = date.strftime("%Y_%m_%d")
+        return f"meta_symbol_{self.__trading_symbol.name.lower()}_{timestamp}.json"
+
+    def __load_data(self, file_path):
         try:
-            with open(self.file_path, 'r') as file:
+            with open(file_path, 'r') as file:
                 data = json.load(file)
-                self.data = [self._convert_str_to_datetime(item) for item in data]
+                self.data.extend([self._convert_str_to_datetime(item) for item in data])
         except FileNotFoundError:
-            self.data = []
+            pass  # If the file is not found, just pass
 
     def save_data(self):
+        # validate file to save into.
+        today = datetime.now().strftime("%Y_%m_%d")
+        file_path = f"meta_symbol_{self.__trading_symbol.name.lower()}_{today}.json"
+
         json_data = [self._convert_datetime_to_str(item) for item in self.data]
-        with open(self.file_path, 'w') as file:
+        with open(file_path, 'w') as file:
             json.dump(json_data, file, indent=4)
 
     def add_symbol_price(self, symbol_price: MetatraderSymbolPrice):
@@ -30,7 +47,7 @@ class MetatraderSymbolPriceManager:
         self.save_data()
 
     def _convert_datetime_to_str(self, obj):
-        if isinstance(obj, datetime.datetime):
+        if isinstance(obj, datetime):
             return obj.isoformat()
         elif isinstance(obj, dict):
             return {k: self._convert_datetime_to_str(v) for k, v in obj.items()}
@@ -42,7 +59,7 @@ class MetatraderSymbolPriceManager:
     def _convert_str_to_datetime(self, obj):
         if isinstance(obj, str):
             try:
-                return datetime.datetime.fromisoformat(obj)
+                return datetime.fromisoformat(obj)
             except ValueError:
                 return obj
         elif isinstance(obj, dict):
@@ -51,6 +68,11 @@ class MetatraderSymbolPriceManager:
             return [self._convert_str_to_datetime(item) for item in obj]
         else:
             return obj
+
+    def remove_old_data(self):
+        current_time = datetime.now()
+        cutoff_time = current_time - timedelta(hours=48)
+        self.data = [entry for entry in self.data if entry['time'] > cutoff_time]
 
     def generate_ohlcv(self, interval: int):
         """
@@ -72,4 +94,4 @@ class MetatraderSymbolPriceManager:
         resampled = resampled.reset_index()
         resampled.rename(columns={'brokerTime': 'Datetime'}, inplace=True)
 
-        return resampled.dropna()
+        return resampled

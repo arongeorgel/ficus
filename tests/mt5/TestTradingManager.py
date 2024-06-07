@@ -1,33 +1,24 @@
-import asyncio
 import unittest
-
-from metaapi_cloud_sdk.metaapi.models import MetatraderTradeResponse
+from abc import ABC
+from unittest.mock import AsyncMock
 
 from ficus.mt5.TradingManager import TradingManager
 from ficus.mt5.listeners.ITradingCallback import ITradingCallback
 from ficus.mt5.models import TradingSymbol, TradeDirection, FicusTrade
 
 
-class ITradingCallbackMock(ITradingCallback):
-    async def open_trade(self, symbol: TradingSymbol, direction: TradeDirection, volume: float):
-        # Simulate the behavior of opening a trade and return a mock MetatraderTradeResponse
-        return MetatraderTradeResponse(
-            numericCode=0,
-            stringCode="ERR_NO_ERROR",
-            message="Trade opened successfully",
-            orderId="123456",
-            positionId="789012"
-        )
-
+class ITradingCallbackMock(ITradingCallback, ABC):
     async def close_trade(self, trade: FicusTrade, symbol: TradingSymbol):
-        # Simulate the behavior of closing a trade and return a mock MetatraderTradeResponse
-        return MetatraderTradeResponse(
-            numericCode=0,
-            stringCode="ERR_NO_ERROR",
-            message="Trade closed successfully",
-            orderId="654321",
-            positionId="210987"
-        )
+        pass
+
+    async def partially_close_trade(self, trade: FicusTrade, symbol: TradingSymbol):
+        pass
+
+    async def modify_trade(self, trade: FicusTrade):
+        pass
+
+    async def open_trade(self, symbol: TradingSymbol, direction: TradeDirection, volume: float, stop_loss):
+        return {'positionId': '12345'}
 
 
 class MockSynchronizationListener:
@@ -37,168 +28,153 @@ class MockSynchronizationListener:
     async def simulate_price_change(self, trading_symbol, price):
         await self.manager.validate_price(price, trading_symbol)
 
-
-class TestTradingManager(unittest.TestCase):
-
-    def setUp(self):
-        self.callback = ITradingCallbackMock()
-        self.trading_manager = TradingManager(self.callback)
-        self.sync_listener = MockSynchronizationListener(self.trading_manager)
-
-    def test_add_closed_trade(self):
-        trade = FicusTrade(
-            stop_loss_price=1.2,
-            entry_price=1.3,
-            position=TradeDirection.BUY,
-            take_profit=1.4,
-            position_id="123456",
-            symbol=TradingSymbol.XAUUSD
-        )
-        self.trading_manager._add_closed_trade(trade)
-        self.assertIn(trade, self.trading_manager._TradingManager__closed_trades)
-
-    def test_close_trade(self):
-        trading_symbol = TradingSymbol.XAUUSD
-        trade = FicusTrade(
-            stop_loss_price=1.2,
-            entry_price=1.3,
-            position=TradeDirection.BUY,
-            take_profit=1.4,
-            position_id="123456",
-            symbol=trading_symbol
-        )
-        self.trading_manager._TradingManager__current_trades[trading_symbol] = trade
-        self.trading_manager._close_trade(trade, trading_symbol)
-        self.assertNotIn(trading_symbol, self.trading_manager._TradingManager__current_trades)
-
-    def test_stop_loss_hit_buy(self):
-        trading_symbol = TradingSymbol.XAUUSD
-        trade = FicusTrade(
-            stop_loss_price=1.0,
-            entry_price=1.3,
-            position=TradeDirection.BUY,
-            take_profit=1.6,
-            position_id="123456",
-            symbol=trading_symbol
-        )
-        self.trading_manager._TradingManager__current_trades[trading_symbol] = trade
-        asyncio.run(self.sync_listener.simulate_price_change(trading_symbol, 0.9))
-        self.assertNotIn(trading_symbol, self.trading_manager._TradingManager__current_trades)
-
-    def test_take_profit_hit_buy(self):
-        trading_symbol = TradingSymbol.XAUUSD
-        trade = FicusTrade(
-            stop_loss_price=1.0,
-            entry_price=1.3,
-            position=TradeDirection.BUY,
-            take_profit=1.6,
-            position_id="123456",
-            symbol=trading_symbol
-        )
-        self.trading_manager._TradingManager__current_trades[trading_symbol] = trade
-        asyncio.run(self.sync_listener.simulate_price_change(trading_symbol, 1.7))
-        self.assertNotIn(trading_symbol, self.trading_manager._TradingManager__current_trades)
-
-    def test_stop_loss_hit_sell(self):
-        trading_symbol = TradingSymbol.XAUUSD
-        trade = FicusTrade(
-            stop_loss_price=1.6,
-            entry_price=1.3,
-            position=TradeDirection.SELL,
-            take_profit=1.0,
-            position_id="123456",
-            symbol=trading_symbol
-        )
-        self.trading_manager._TradingManager__current_trades[trading_symbol] = trade
-        asyncio.run(self.sync_listener.simulate_price_change(trading_symbol, 1.7))
-        self.assertNotIn(trading_symbol, self.trading_manager._TradingManager__current_trades)
-
-    def test_take_profit_hit_sell(self):
-        trading_symbol = TradingSymbol.XAUUSD
-        trade = FicusTrade(
-            stop_loss_price=1.6,
-            entry_price=1.3,
-            position=TradeDirection.SELL,
-            take_profit=1.0,
-            position_id="123456",
-            symbol=trading_symbol
-        )
-        self.trading_manager._TradingManager__current_trades[trading_symbol] = trade
-        asyncio.run(self.sync_listener.simulate_price_change(trading_symbol, 0.9))
-        self.assertNotIn(trading_symbol, self.trading_manager._TradingManager__current_trades)
-
-    def test_price_in_between_no_action(self):
-        trading_symbol = TradingSymbol.XAUUSD
-        trade = FicusTrade(
-            stop_loss_price=1.0,
-            entry_price=1.3,
-            position=TradeDirection.BUY,
-            take_profit=1.6,
-            position_id="123456",
-            symbol=trading_symbol
-        )
-        self.trading_manager._TradingManager__current_trades[trading_symbol] = trade
-        asyncio.run(self.sync_listener.simulate_price_change(trading_symbol, 1.4))
-        self.assertIn(trading_symbol, self.trading_manager._TradingManager__current_trades)
-
-    def test_validate_price(self):
-        # You need to mock callback and define its methods to properly test this function
-        pass
-
-    def test_open_trade(self):
-        direction = TradeDirection.BUY
-        trading_symbol = TradingSymbol.XAUUSD
-        entry_price = 1.2345
-        asyncio.run(self.trading_manager.open_trade(direction, trading_symbol, entry_price))
-        self.assertIn(trading_symbol, self.trading_manager._TradingManager__current_trades)
-
-    def test_on_ohclv(self):
-        # You need to mock callback and define its methods to properly test this function
-        pass
-
-    def test_open_trade_sell(self):
-        direction = TradeDirection.SELL
-        trading_symbol = TradingSymbol.XAUUSD
-        entry_price = 1.2345
-        asyncio.run(self.trading_manager.open_trade(direction, trading_symbol, entry_price))
-        self.assertIn(trading_symbol, self.trading_manager._TradingManager__current_trades)
-
-    def test_add_multiple_closed_trades(self):
-        trade1 = FicusTrade(
-            stop_loss_price=1.2,
-            entry_price=1.3,
-            position=TradeDirection.BUY,
-            take_profit=1.4,
-            position_id="123456",
-            symbol=TradingSymbol.XAUUSD
-        )
-        trade2 = FicusTrade(
-            stop_loss_price=1.5,
-            entry_price=1.6,
-            position=TradeDirection.SELL,
-            take_profit=1.7,
-            position_id="789012",
-            symbol=TradingSymbol.EURUSD
-        )
-        self.trading_manager._add_closed_trade(trade1)
-        self.trading_manager._add_closed_trade(trade2)
-        self.assertIn(trade1, self.trading_manager._TradingManager__closed_trades)
-        self.assertIn(trade2, self.trading_manager._TradingManager__closed_trades)
-
-    def test_close_nonexistent_trade(self):
-        trading_symbol = TradingSymbol.XAUUSD
-        trade = FicusTrade(
-            stop_loss_price=1.2,
-            entry_price=1.3,
-            position=TradeDirection.BUY,
-            take_profit=1.4,
-            position_id="123456",
-            symbol=trading_symbol
-        )
-        # Trade doesn't exist in current trades, so attempting to close it should not raise an error
-        with self.assertRaises(KeyError):
-            self.trading_manager._close_trade(trade, trading_symbol)
+    async def simulate_ohlcv_change(self, series):
+        await self.manager.on_ohclv(series)
 
 
-if __name__ == '__main__':
-    unittest.main()
+class TestTradingManager(unittest.IsolatedAsyncioTestCase):
+    async def asyncSetUp(self):
+        self.callback_mock = ITradingCallbackMock()
+        self.callback_mock.close_trade = AsyncMock()
+        self.callback_mock.partially_close_trade = AsyncMock()
+        self.callback_mock.modify_trade = AsyncMock()
+        self.callback_mock.open_trade = AsyncMock(return_value={'positionId': '12345'})
+
+        self.trading_manager = TradingManager(self.callback_mock)
+        self.listener = MockSynchronizationListener(self.trading_manager)
+
+    async def test_open_trade_buy(self):
+        symbol = TradingSymbol.XAUUSD
+        entry_price = 1000
+        await self.trading_manager._open_trade(TradeDirection.BUY, symbol, entry_price)
+
+        self.assertIn(symbol, self.trading_manager._current_trades)
+        trade = self.trading_manager._current_trades[symbol]
+        self.assertEqual(trade['position'], TradeDirection.BUY)
+
+    async def test_open_trade_sell(self):
+        symbol = TradingSymbol.XAUUSD
+        entry_price = 1000
+        await self.trading_manager._open_trade(TradeDirection.SELL, symbol, entry_price)
+
+        self.assertIn(symbol, self.trading_manager._current_trades)
+        trade = self.trading_manager._current_trades[symbol]
+        self.assertEqual(trade['position'], TradeDirection.SELL)
+
+    async def test_close_trade(self):
+        symbol = TradingSymbol.XAUUSD
+        entry_price = 1000
+        await self.trading_manager._open_trade(TradeDirection.BUY, symbol, entry_price)
+        await self.listener.simulate_price_change(symbol, 900)  # Trigger SL
+
+        self.assertNotIn(symbol, self.trading_manager._current_trades)
+        self.callback_mock.close_trade.assert_called()
+
+    async def test_take_profit_levels(self):
+        symbol = TradingSymbol.XAUUSD
+        entry_price = 1000
+        await self.trading_manager._open_trade(TradeDirection.BUY, symbol, entry_price)
+        trade = self.trading_manager._current_trades[symbol]
+
+        # Hit TP1
+        await self.listener.simulate_price_change(symbol, 1004)
+        self.assertTrue(trade['take_profits_hit'][0])
+        self.callback_mock.modify_trade.assert_called()
+
+        # Hit TP2
+        await self.listener.simulate_price_change(symbol, 1005)
+        self.assertTrue(trade['take_profits_hit'][1])
+        self.callback_mock.partially_close_trade.assert_called()
+
+        # Hit TP3
+        await self.listener.simulate_price_change(symbol, 1011)
+        self.assertTrue(trade['take_profits_hit'][2])
+        self.callback_mock.close_trade.assert_called()
+
+    async def test_price_fluctuation(self):
+        symbol = TradingSymbol.XAUUSD
+        entry_price = 1000
+        await self.trading_manager._open_trade(TradeDirection.BUY, symbol, entry_price)
+        self.assertIn(symbol, self.trading_manager._current_trades)
+        self.callback_mock.open_trade.assert_called()
+
+        trade = self.trading_manager._current_trades[symbol]
+
+        # Hit TP1
+        await self.listener.simulate_price_change(symbol, 1004)
+        self.assertTrue(trade['take_profits_hit'][0])
+        self.callback_mock.modify_trade.assert_called()
+
+        # Price drops but no SL hit
+        await self.listener.simulate_price_change(symbol, 1002.5)
+        self.assertTrue(trade['take_profits_hit'][0])
+
+        # Hit TP2
+        await self.listener.simulate_price_change(symbol, 1005)
+        self.assertTrue(trade['take_profits_hit'][1])
+        self.callback_mock.partially_close_trade.assert_called()
+
+    async def test_take_profit_1_and_stop_loss(self):
+        symbol = TradingSymbol.XAUUSD
+        entry_price = 1000
+        await self.trading_manager._open_trade(TradeDirection.BUY, symbol, entry_price)
+        trade = self.trading_manager._current_trades[symbol]
+
+        # Hit TP1
+        await self.listener.simulate_price_change(symbol, 1003)
+        self.assertTrue(trade['take_profits_hit'][0])
+        self.callback_mock.modify_trade.assert_called()
+
+        # Hit SL
+        await self.listener.simulate_price_change(symbol, 950)
+        self.assertNotIn(symbol, self.trading_manager._current_trades)
+        self.callback_mock.close_trade.assert_called()
+
+    async def test_take_profit_2_and_stop_loss(self):
+        symbol = TradingSymbol.XAUUSD
+        entry_price = 1000
+        await self.trading_manager._open_trade(TradeDirection.BUY, symbol, entry_price)
+        trade = self.trading_manager._current_trades[symbol]
+
+        # Hit TP2
+        await self.listener.simulate_price_change(symbol, 1005)
+        self.assertTrue(trade['take_profits_hit'][1])
+        self.callback_mock.partially_close_trade.assert_called()
+
+        # Hit SL
+        await self.listener.simulate_price_change(symbol, 900)
+        self.assertNotIn(symbol, self.trading_manager._current_trades)
+        self.callback_mock.close_trade.assert_called()
+
+    async def test_take_profit_3(self):
+        symbol = TradingSymbol.XAUUSD
+        entry_price = 1000
+        await self.trading_manager._open_trade(TradeDirection.BUY, symbol, entry_price)
+        trade = self.trading_manager._current_trades[symbol]
+
+        # Hit TP3
+        await self.listener.simulate_price_change(symbol, 1150)
+        self.assertTrue(trade['take_profits_hit'][2])
+        self.callback_mock.close_trade.assert_called()
+
+    async def test_multiple_trades(self):
+        symbol1 = TradingSymbol.XAUUSD
+        symbol2 = TradingSymbol.BTCUSD
+        entry_price1 = 1000
+        entry_price2 = 50000
+
+        await self.trading_manager._open_trade(TradeDirection.BUY, symbol1, entry_price1)
+        await self.trading_manager._open_trade(TradeDirection.SELL, symbol2, entry_price2)
+
+        # Verify both trades are open
+        self.assertIn(symbol1, self.trading_manager._current_trades)
+        self.assertIn(symbol2, self.trading_manager._current_trades)
+
+        # Simulate price changes without hitting SL or TP
+        await self.listener.simulate_price_change(symbol1, 1001)
+        await self.listener.simulate_price_change(symbol2, 49900)
+
+        # Ensure no trades were closed or modified
+        self.callback_mock.close_trade.assert_not_called()
+        self.callback_mock.partially_close_trade.assert_not_called()
+        self.callback_mock.modify_trade.assert_not_called()

@@ -56,9 +56,16 @@ async def main():
         # Keep the main coroutine running
         while True:
             await asyncio.sleep(1)
-    except KeyboardInterrupt:
+    except Exception as e:
+        print(f"terminated by {e}")
+    finally:
+        print("finally terminated by key")
         await vantage.disconnect(trading_symbols)
-        print("terminated by key")
+        print("DONE!")
+
+
+async def main_disconnect():
+    await vantage.disconnect(trading_symbols)
 
 
 if __name__ == '__main__':

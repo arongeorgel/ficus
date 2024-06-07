@@ -8,7 +8,7 @@ from metaapi_cloud_sdk.metaapi.streaming_metaapi_connection_instance import Stre
 
 from ficus.mt5.MetatraderStorage import MetatraderSymbolPriceManager
 from ficus.mt5.TradingManager import TradingManager, FicusTrade
-from ficus.mt5.listeners.BitcoinSyncListener import BitcoinSyncListener
+from ficus.mt5.listeners.MetaSynchronizationListener import MetaSynchronizationListener
 from ficus.mt5.listeners.ITradingCallback import ITradingCallback
 from ficus.mt5.models import TradingSymbol, TradeDirection
 
@@ -40,7 +40,7 @@ class VantageSim(ITradingCallback):
 
                 os.system(f'rm {file_name_copy}')
 
-            self.__sync_listener = BitcoinSyncListener(self.__price_managers, self.__trade_manager)
+            self.__sync_listener = MetaSynchronizationListener(self.__price_managers, self.__trade_manager)
 
         except Exception as ex:
             print(''.join(traceback.TracebackException.from_exception(ex).format()))

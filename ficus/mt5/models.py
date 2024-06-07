@@ -13,23 +13,62 @@ class TradingSymbol(Enum):
             if member.name == name:
                 return member
 
-    @staticmethod
-    def calculate_stop_loss_price(symbol, entry_price, direction):
-        if symbol is TradingSymbol.XAUUSD:
-            return entry_price + 5 if direction is TradeDirection.SELL else entry_price - 5
-        elif symbol is TradingSymbol.BTCUSD:
-            return entry_price + 100 if direction is TradeDirection.SELL else entry_price - 100
-        elif symbol is TradingSymbol.EURUSD:
-            return entry_price + 2 if direction is TradeDirection.SELL else entry_price - 2
+    # 1 pip of gold = $0.01. $5 difference is 500 pips. on 500:1 account that is $500 minus broker fee
+    #                        $1 difference is 100 pips
+    #                        On volume 1, 100 pips difference is $100
+    # 1 pip of eurusd = $0.00001. $1 difference is 500 000 pips.on 500:1 account that is 500 000 minus broker fee
+    #                             $0.001 difference is 100 pips.
+    #                             On volume 1, 100 pips difference is $100
+    def calculate_levels(self, entry_price, direction):
+        # Constants
+        risk_percent = 2 / 100
+        max_risk = 4000 * risk_percent  # $80
 
-    @staticmethod
-    def calculate_take_profit(symbol, entry_price, direction):
-        if symbol is TradingSymbol.XAUUSD:
-            return entry_price - 5 if direction is TradeDirection.SELL else entry_price + 5
-        elif symbol is TradingSymbol.BTCUSD:
-            return entry_price - 100 if direction is TradeDirection.SELL else entry_price + 100
-        elif symbol is TradingSymbol.EURUSD:
-            return entry_price - 2 if direction is TradeDirection.SELL else entry_price + 2
+        # Define differences for each symbol
+        if self is TradingSymbol.XAUUSD:
+            sl_difference = 3
+            tp1_difference = 3
+            tp2_difference = 5
+            tp3_difference = 10
+            tp4_difference = 25
+            contract_size = 100
+        elif self is TradingSymbol.BTCUSD:
+            sl_difference = 300
+            tp1_difference = 300
+            tp2_difference = 500
+            tp3_difference = 1000
+            tp4_difference = 2500
+            contract_size = 1
+        elif self is TradingSymbol.EURUSD:
+            sl_difference = 0.004
+            tp1_difference = 0.004
+            tp2_difference = 0.007
+            tp3_difference = 0.012
+            tp4_difference = 0.02
+            contract_size = 100000
+        else:
+            raise ValueError("Unsupported symbol. Please use one of the values of TradingSymbol")
+
+        # Calculate volume based on max_risk, sl_difference and contract size
+        volume = max_risk / sl_difference / contract_size
+
+        # Calculate stop loss and take profit levels
+        if direction is TradeDirection.BUY:
+            stop_loss = entry_price - sl_difference
+            take_profit1 = entry_price + tp1_difference
+            take_profit2 = entry_price + tp2_difference
+            take_profit3 = entry_price + tp3_difference
+            take_profit4 = entry_price + tp4_difference  # Long term, not used for now
+        elif direction is TradeDirection.SELL:
+            stop_loss = entry_price + sl_difference
+            take_profit1 = entry_price - tp1_difference
+            take_profit2 = entry_price - tp2_difference
+            take_profit3 = entry_price - tp3_difference
+            take_profit4 = entry_price - tp4_difference  # Long term, not used for now
+        else:
+            raise ValueError("Unsupported direction. Please use 'buy' or 'sell'.")
+
+        return stop_loss, take_profit1, take_profit2, take_profit3, volume
 
 
 class TradeDirection(Enum):
@@ -48,7 +87,9 @@ class FicusTrade(TypedDict):
     stop_loss_price: float
     entry_price: float
     position: TradeDirection
-    take_profit: float
+    take_profits: tuple[float, float, float]
+    take_profits_hit: list[bool]
+    volume: float
     position_id: str  # from meta_api
     symbol: TradingSymbol
 
