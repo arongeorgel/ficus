@@ -20,6 +20,12 @@ class TradingSymbol(Enum):
     #                             $0.001 difference is 100 pips.
     #                             On volume 1, 100 pips difference is $100
     def calculate_levels(self, entry_price, direction):
+        """
+
+        :param entry_price: price at which the trade was opened
+        :param direction: buy or sell
+        :return: stop_loss, take_profit1, take_profit2, take_profit3, volume
+        """
         # Constants
         risk_percent = 2 / 100
         max_risk = 4000 * risk_percent  # $80
@@ -32,6 +38,7 @@ class TradingSymbol(Enum):
             tp3_difference = 10
             tp4_difference = 25
             contract_size = 100
+            price_precision = 2
         elif self is TradingSymbol.BTCUSD:
             sl_difference = 300
             tp1_difference = 300
@@ -39,6 +46,7 @@ class TradingSymbol(Enum):
             tp3_difference = 1000
             tp4_difference = 2500
             contract_size = 1
+            price_precision = 2
         elif self is TradingSymbol.EURUSD:
             sl_difference = 0.004
             tp1_difference = 0.004
@@ -46,25 +54,24 @@ class TradingSymbol(Enum):
             tp3_difference = 0.012
             tp4_difference = 0.02
             contract_size = 100000
+            price_precision = 5
         else:
             raise ValueError("Unsupported symbol. Please use one of the values of TradingSymbol")
 
         # Calculate volume based on max_risk, sl_difference and contract size
-        volume = max_risk / sl_difference / contract_size
+        volume = round(max_risk / sl_difference / contract_size, 2)
 
         # Calculate stop loss and take profit levels
         if direction is TradeDirection.BUY:
-            stop_loss = entry_price - sl_difference
-            take_profit1 = entry_price + tp1_difference
-            take_profit2 = entry_price + tp2_difference
-            take_profit3 = entry_price + tp3_difference
-            take_profit4 = entry_price + tp4_difference  # Long term, not used for now
+            stop_loss = round(entry_price - sl_difference, price_precision)
+            take_profit1 = round(entry_price + tp1_difference, price_precision)
+            take_profit2 = round(entry_price + tp2_difference, price_precision)
+            take_profit3 = round(entry_price + tp3_difference, price_precision)
         elif direction is TradeDirection.SELL:
-            stop_loss = entry_price + sl_difference
-            take_profit1 = entry_price - tp1_difference
-            take_profit2 = entry_price - tp2_difference
-            take_profit3 = entry_price - tp3_difference
-            take_profit4 = entry_price - tp4_difference  # Long term, not used for now
+            stop_loss = round(entry_price + sl_difference, price_precision)
+            take_profit1 = round(entry_price - tp1_difference, price_precision)
+            take_profit2 = round(entry_price - tp2_difference, price_precision)
+            take_profit3 = round(entry_price - tp3_difference, price_precision)
         else:
             raise ValueError("Unsupported direction. Please use 'buy' or 'sell'.")
 
@@ -89,6 +96,7 @@ class FicusTrade(TypedDict):
     position: TradeDirection
     take_profits: tuple[float, float, float]
     take_profits_hit: list[bool]
+    start_volume: float
     volume: float
     position_id: str  # from meta_api
     symbol: TradingSymbol

@@ -2,7 +2,7 @@ import multiprocessing as mp
 import time
 import pandas as pd
 import matplotlib.pyplot as plt
-from ficus.g.strategies import simple_crossover_strategy
+from ficus.g.strategies import strategy_simple_crossover
 from test_backtesting import download_forex_data, now_trading
 
 class ProcessPlotter:
@@ -36,7 +36,7 @@ class ProcessPlotter:
         self.ax.set_ylabel('Price')
 
     def update_plot(self):
-        strategic_data = simple_crossover_strategy(self.data, 20, 50)
+        strategic_data = strategy_simple_crossover(self.data, 20, 50)
         for _, row in strategic_data.tail(1).iterrows():
             now_trading(row, [20, 50, 90, 120])
 

@@ -1,0 +1,137 @@
+[
+    {
+        "accountCurrencyExchangeRate": 1,
+        "time": "2024-06-09T19:55:51+00:00",
+        "brokerTime": "2024-06-09 22:55:51.000",
+        "symbol": "BTCUSD",
+        "ask": 69662.26,
+        "bid": 69647.84,
+        "profitTickValue": 0.01,
+        "lossTickValue": 0.01,
+        "timestamps": {
+            "eventGenerated": "2024-06-09T19:55:51.500000+00:00",
+            "serverProcessingStarted": "2024-06-09T19:57:35.405000+00:00",
+            "serverProcessingFinished": "2024-06-09T19:57:35.421000+00:00",
+            "clientProcessingFinished": "2024-06-09T21:57:35.369376"
+        },
+        "equity": 5761.1
+    },
+    {
+        "time": "2024-06-09T19:55:51+00:00",
+        "brokerTime": "2024-06-09 22:55:51.000",
+        "symbol": "BTCUSD",
+        "ask": 69662.26,
+        "bid": 69647.84,
+        "accountCurrencyExchangeRate": 1,
+        "profitTickValue": 0.01,
+        "lossTickValue": 0.01,
+        "timestamps": {
+            "eventGenerated": "2024-06-09T19:55:51.500000+00:00",
+            "serverProcessingStarted": "2024-06-09T19:57:35.417000+00:00",
+            "serverProcessingFinished": "2024-06-09T19:57:35.444000+00:00",
+            "clientProcessingFinished": "2024-06-09T21:57:35.399993"
+        },
+        "equity": 5761.1
+    },
+    {
+        "time": "2024-06-09T19:55:51+00:00",
+        "brokerTime": "2024-06-09 22:55:51.000",
+        "symbol": "BTCUSD",
+        "ask": 69662.26,
+        "bid": 69647.84,
+        "accountCurrencyExchangeRate": 1,
+        "profitTickValue": 0.01,
+        "lossTickValue": 0.01,
+        "timestamps": {
+            "eventGenerated": "2024-06-09T19:55:51.500000+00:00",
+            "serverProcessingStarted": "2024-06-09T19:57:35.417000+00:00",
+            "serverProcessingFinished": "2024-06-09T19:57:35.445000+00:00",
+            "clientProcessingFinished": "2024-06-09T21:57:35.400389"
+        },
+        "equity": 5761.1
+    },
+    {
+        "accountCurrencyExchangeRate": 1,
+        "time": "2024-06-09T19:55:51+00:00",
+        "brokerTime": "2024-06-09 22:55:51.000",
+        "symbol": "BTCUSD",
+        "ask": 69662.26,
+        "bid": 69647.84,
+        "profitTickValue": 0.01,
+        "lossTickValue": 0.01,
+        "timestamps": {
+            "eventGenerated": "2024-06-09T19:55:51.500000+00:00",
+            "serverProcessingStarted": "2024-06-09T19:57:35.417000+00:00",
+            "serverProcessingFinished": "2024-06-09T19:57:35.447000+00:00",
+            "clientProcessingFinished": "2024-06-09T21:57:35.404561"
+        },
+        "equity": 5761.1
+    },
+    {
+        "time": "2024-06-09T19:55:51+00:00",
+        "brokerTime": "2024-06-09 22:55:51.000",
+        "symbol": "BTCUSD",
+        "ask": 69662.26,
+        "bid": 69647.84,
+        "accountCurrencyExchangeRate": 1,
+        "profitTickValue": 0.01,
+        "lossTickValue": 0.01,
+        "timestamps": {
+            "eventGenerated": "2024-06-09T19:55:51.500000+00:00",
+            "serverProcessingStarted": "2024-06-09T19:57:37.961000+00:00",
+            "serverProcessingFinished": "2024-06-09T19:57:37.966000+00:00",
+            "clientProcessingFinished": "2024-06-09T21:57:37.925287"
+        },
+        "equity": 5761.1
+    },
+    {
+        "time": "2024-06-09T19:55:51+00:00",
+        "brokerTime": "2024-06-09 22:55:51.000",
+        "symbol": "BTCUSD",
+        "ask": 69662.26,
+        "bid": 69647.84,
+        "accountCurrencyExchangeRate": 1,
+        "profitTickValue": 0.01,
+        "lossTickValue": 0.01,
+        "timestamps": {
+            "eventGenerated": "2024-06-09T19:55:51.500000+00:00",
+            "serverProcessingStarted": "2024-06-09T19:57:37.975000+00:00",
+            "serverProcessingFinished": "2024-06-09T19:57:37.977000+00:00",
+            "clientProcessingFinished": "2024-06-09T21:57:37.930673"
+        },
+        "equity": 5761.1
+    },
+    {
+        "time": "2024-06-09T19:57:58+00:00",
+        "brokerTime": "2024-06-09 22:57:58.000",
+        "symbol": "BTCUSD",
+        "ask": 69654.56,
+        "bid": 69639.04,
+        "accountCurrencyExchangeRate": 1,
+        "profitTickValue": 0.01,
+        "lossTickValue": 0.01,
+        "timestamps": {
+            "eventGenerated": "2024-06-09T19:57:58.500000+00:00",
+            "serverProcessingStarted": "2024-06-09T19:57:58.986000+00:00",
+            "serverProcessingFinished": "2024-06-09T19:57:58.991000+00:00",
+            "clientProcessingFinished": "2024-06-09T21:57:59.025762"
+        },
+        "equity": 5761.1
+    },
+    {
+        "time": "2024-06-09T19:57:58+00:00",
+        "brokerTime": "2024-06-09 22:57:58.000",
+        "symbol": "BTCUSD",
+        "ask": 69654.56,
+        "bid": 69639.04,
+        "accountCurrencyExchangeRate": 1,
+        "profitTickValue": 0.01,
+        "lossTickValue": 0.01,
+        "timestamps": {
+            "eventGenerated": "2024-06-09T19:57:58.500000+00:00",
+            "serverProcessingStarted": "2024-06-09T19:57:58.986000+00:00",
+            "serverProcessingFinished": "2024-06-09T19:57:58.991000+00:00"
+        },
+        "equity": 5761.1
+    }
+]

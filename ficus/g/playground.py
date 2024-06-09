@@ -1,73 +1,38 @@
-import multiprocessing as mp
-import time
-
 import matplotlib.pyplot as plt
-import numpy as np
+import yfinance as yf
 
-# Fixing random state for reproducibility
-np.random.seed(19680801)
-
-
-class ProcessPlotter:
-    def __init__(self):
-        self.x = []
-        self.y = []
-
-    def terminate(self):
-        plt.close('all')
-
-    def call_back(self):
-        while self.pipe.poll():
-            command = self.pipe.recv()
-            if command is None:
-                self.terminate()
-                return False
-            else:
-                self.x.append(command[0])
-                self.y.append(command[1])
-                self.ax.plot(self.x, self.y, 'ro')
-        self.fig.canvas.draw()
-        return True
-
-    def __call__(self, pipe):
-        print('starting plotter...')
-
-        self.pipe = pipe
-        self.fig, self.ax = plt.subplots()
-        timer = self.fig.canvas.new_timer(interval=1000)
-        timer.add_callback(self.call_back)
-        timer.start()
-
-        print('...done')
-        plt.show()
+from ficus.g.test_backtesting import backtest_strategy
 
 
-class NBPlot:
-    def __init__(self):
-        self.plot_pipe, plotter_pipe = mp.Pipe()
-        self.plotter = ProcessPlotter()
-        self.plot_process = mp.Process(
-            target=self.plotter, args=(plotter_pipe,), daemon=True)
-        self.plot_process.start()
 
-    def plot(self, finished=False):
-        send = self.plot_pipe.send
-        if finished:
-            send(None)
-        else:
-            data = np.random.random(2)
-            send(data)
+def plot_combined_signals(df, ema_window):
+    plt.figure(figsize=(10, 6))
 
+    # Price and EMA
+    plt.subplot(1, 1, 1)
+    plt.plot(df['Close'], label='Close Price')
+    plt.plot(df[f'ema_{ema_window}'], label=f'EMA {ema_window}')
+    plt.scatter(df[df['Position'] == 1].index, df[df['Position'] == 1]['Close'], marker='^', color='green', label='Buy Signal', alpha=1)
+    plt.scatter(df[df['Position'] == -1].index, df[df['Position'] == -1]['Close'], marker='v', color='red', label='Sell Signal', alpha=1)
+    plt.title('Price and Trading Signals')
+    plt.legend()
 
-def main():
-    pl = NBPlot()
-    for _ in range(1000):
-        pl.plot()
-        time.sleep(1)
-    pl.plot(finished=True)
+    plt.tight_layout()
+    plt.show()
 
+# Download Forex data
+ticker = 'GC=F'
+start_date = '2024-06-03'
+end_date = '2024-06-08'
+interval = '5m'
 
-if __name__ == '__main__':
-    if plt.get_backend() == "MacOSX":
-        mp.set_start_method("forkserver")
-    main()
+forex_data = yf.download(ticker, start=start_date, end=end_date, interval=interval)
+
+ema_window = 50  # Example long-term EMA window
+
+forex_data = calculate_ema(forex_data, ema_window)
+forex_data = add_combined_signals(forex_data, ema_window)
+ema_capital = backtest_strategy(forex_data, [3, 5, 10, 20])
+print(f"macd capital = {ema_capital}")
+
+plot_combined_signals(forex_data, ema_window)

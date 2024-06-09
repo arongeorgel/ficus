@@ -3,7 +3,7 @@ import asyncio
 import pandas as pd
 from matplotlib import pyplot as plt
 
-from ficus.g.strategies import exponential_crossover_strategy
+from ficus.g.strategies import strategy_exponential_crossover
 from ficus.g.test_backtesting import plot_sma, plot_ema
 from ficus.mt5.models import TradingSymbol
 from ficus.mt5.VantageSim import VantageSim
@@ -33,7 +33,7 @@ def plot_candlesticks(data):
     lows = data['Low']
 
     # Define colors based on closing price relative to opening price
-    colors = ['blue' if close > open else 'yellow' for close, open in zip(closes, opens)]
+    colors = ['green' if close > open else 'red' for close, open in zip(closes, opens)]
 
     # Create the candlestick plot
     plt.figure(figsize=(12, 6))
@@ -55,12 +55,12 @@ def plot_candlesticks(data):
 async def async_start_trading():
     symbol = TradingSymbol.BTCUSD
     forex_data = vantage.get_ohlcv_for_symbol(symbol)
-    pd.options.display.max_rows = None
+    # pd.options.display.max_rows = None
     # print(forex_data)
     plot_candlesticks(forex_data)
     # apply strategy
     windows = 20, 50
-    strategy_three = exponential_crossover_strategy(forex_data, windows[0], windows[1])
+    strategy_three = strategy_exponential_crossover(forex_data, windows)
     print(strategy_three.iloc[-1])
     pos = strategy_three.iloc[-1]['Position']
     print(f'p = {pos}')

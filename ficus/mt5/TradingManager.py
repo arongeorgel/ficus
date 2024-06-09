@@ -16,6 +16,7 @@ class TradingManager:
         self.callback: ITradingCallback = callback
 
     async def _close_trade(self, trade, trading_symbol):
+        print(f"Closing trade {trade}")
         self.__closed_trades.append(trade)
         del self._current_trades[trading_symbol]
         await self.callback.close_trade(trade, trading_symbol)
@@ -37,6 +38,7 @@ class TradingManager:
             position=direction,
             position_id=result['positionId'],
             take_profits_hit=[False, False, False],
+            start_volume=volume,
             volume=volume,
             symbol=trading_symbol)
         self._current_trades[trading_symbol] = trade
@@ -51,7 +53,7 @@ class TradingManager:
         trade = self._current_trades[trading_symbol]
         direction = trade['position']
         entry_price = trade['entry_price']
-        volume = trade['volume']
+        volume = trade['start_volume']
 
         # def adjust_stop_loss(new_sl):
         #     trade['stop_loss_price'] = new_sl
@@ -70,7 +72,7 @@ class TradingManager:
             # TP2
             elif price >= trade['take_profits'][1] and not trade['take_profits_hit'][1]:
                 print(f"Take profit 2 hit for {trade['symbol']} on buy at price {price}")
-                trade['volume'] = volume / 3
+                trade['volume'] = round(volume / 3, 2)
                 await self._partially_close_trade(trade, trading_symbol)
 
                 # modify the position
@@ -81,8 +83,8 @@ class TradingManager:
             elif price >= trade['take_profits'][0] and not trade['take_profits_hit'][0]:
                 print(f"Take profit 1 hit for {trade['symbol']} on buy at price {price}")
                 trade['take_profits_hit'][0] = True
-                trade['volume'] = volume / 2
-                await self._modify_trade(trade)
+                trade['volume'] = round(volume / 2, 2)
+                await self._partially_close_trade(trade, trading_symbol)
 
                 # modify the position, update stop loss
                 trade['stop_loss_price'] = entry_price - ((entry_price - trade['stop_loss_price']) / 2)
@@ -101,7 +103,7 @@ class TradingManager:
             # TP 2
             elif price <= trade['take_profits'][1] and not trade['take_profits_hit'][1]:
                 print(f"Take profit 2 hit for {trade['symbol']} on sell at price {price}")
-                trade['volume'] = volume / 3
+                trade['volume'] = round(volume / 3, 2)
                 await self._partially_close_trade(trade, trading_symbol)
 
                 # modify the position
@@ -111,9 +113,9 @@ class TradingManager:
             # TP 1
             elif price <= trade['take_profits'][0] and not trade['take_profits_hit'][0]:
                 print(f"Take profit 1 hit for {trade['symbol']} on buy at price {price}")
-                trade['take_profits_hit'][1] = True
-                trade['volume'] = volume / 2
-                await self._modify_trade(trade)
+                trade['take_profits_hit'][0] = True
+                trade['volume'] = round(volume / 2, 2)
+                await self._partially_close_trade(trade, trading_symbol)
 
                 # modify the position, update stop loss
                 trade['stop_loss_price'] = entry_price + ((entry_price - trade['stop_loss_price']) / 2)
@@ -131,5 +133,6 @@ class TradingManager:
             if signal != 0 and TradeDirection.from_value(signal) != trade['position']:
                 print(f"New signal received ({signal}). Closing {trade} at price {series['Close']}")
                 await self._close_trade(trade, symbol)
-        elif signal != 0:
-            await self._open_trade(TradeDirection.from_value(signal), symbol, series['Close'])
+        else:
+            if signal != 0:
+                await self._open_trade(TradeDirection.from_value(signal), symbol, series['Close'])
