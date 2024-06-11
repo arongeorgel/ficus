@@ -2,12 +2,12 @@ import asyncio
 
 import pandas as pd
 
-from ficus.g.strategies import strategy_exponential_crossover, strategy_macd
+from ficus.g.strategies import strategy_exponential_crossover, strategy_macd, calculate_ema
 from ficus.mt5.Vantage import Vantage
 from ficus.mt5.models import TradingSymbol
 
 vantage = Vantage()
-trading_symbols = [TradingSymbol.BTCUSD]
+trading_symbols = [TradingSymbol.BTCUSD, TradingSymbol.XAUUSD]
 
 
 async def async_start_vantage():
@@ -19,21 +19,27 @@ async def async_start_vantage():
 
 async def async_start_trading():
     while True:
-        await asyncio.sleep(60)
-        gold = TradingSymbol.XAUUSD
-        gold_ohlcv = vantage.get_ohlcv_for_symbol(gold)
-        # apply strategy
-        gold_macd = strategy_macd(gold_ohlcv, 50)
-        last_gold = gold_macd.iloc[-1]
-        await vantage.on_ohlcv(last_gold, gold)
+        try:
+            await asyncio.sleep(60)
+            gold = TradingSymbol.XAUUSD
+            gold_ohlcv = vantage.get_ohlcv_for_symbol(gold)
+            # apply strategy
+            gold_ema = calculate_ema(gold_ohlcv, 50)
+            gold_macd = strategy_macd(gold_ema, 50)
+            last_gold = gold_macd.iloc[-1]
+            await vantage.on_ohlcv(last_gold, gold)
 
-        await asyncio.sleep(1)
-        bitcoin = TradingSymbol.BTCUSD
-        btc_ohlcv = vantage.get_ohlcv_for_symbol(bitcoin)
-        # apply strategy
-        btc_macd = strategy_macd(btc_ohlcv, 50)
-        last_btc = btc_macd.iloc[-1]
-        await vantage.on_ohlcv(last_btc, bitcoin)
+            await asyncio.sleep(1)
+
+            bitcoin = TradingSymbol.BTCUSD
+            btc_ohlcv = vantage.get_ohlcv_for_symbol(bitcoin)
+            # apply strategy
+            btc_ema = calculate_ema(btc_ohlcv, 50)
+            btc_macd = strategy_macd(btc_ema, 50)
+            last_btc = btc_macd.iloc[-1]
+            await vantage.on_ohlcv(last_btc, bitcoin)
+        except Exception as e:
+            print(f"Failed where? {e.with_traceback()}")
 
 
 def start_vantage():
@@ -60,7 +66,7 @@ async def main():
         print(f"terminated by {e}")
     finally:
         print("finally terminated by key")
-        await vantage.disconnect(trading_symbols)
+        # await vantage.disconnect(trading_symbols)
         print("DONE!")
 
 

@@ -133,6 +133,7 @@ class TradingManager:
             if signal != 0 and TradeDirection.from_value(signal) != trade['position']:
                 print(f"New signal received ({signal}). Closing {trade} at price {series['Close']}")
                 await self._close_trade(trade, symbol)
+                await self._open_trade(TradeDirection.from_value(signal), symbol, series['Close'])
         else:
             if signal != 0:
                 await self._open_trade(TradeDirection.from_value(signal), symbol, series['Close'])

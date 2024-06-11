@@ -124,8 +124,8 @@ def plot_ema(plt, data, windows):
 def plot_macd(df, ema_window):
     # Price and EMA
     plt.subplot(2, 2, 3)
-    plt.plot(df['Datetime'], df['Close'], label='Close Price')
-    plt.plot(df['Datetime'], df[f'ema_{ema_window}'], label=f'EMA {ema_window}')
+    plt.plot(df['Datetime'], df['Close'], label='Close Price', alpha=0.5)
+    plt.plot(df['Datetime'], df[f'ema_{ema_window}'], label=f'EMA {ema_window}', alpha=0.5)
     plt.scatter(df[df['Position'] == 1]['Datetime'], df[df['Position'] == 1]['Close'], marker='^', color='green', label='Buy Signal', alpha=1)
     plt.scatter(df[df['Position'] == -1]['Datetime'], df[df['Position'] == -1]['Close'], marker='v', color='red', label='Sell Signal', alpha=1)
 
