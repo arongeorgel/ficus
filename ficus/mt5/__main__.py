@@ -6,6 +6,19 @@ from ficus.backtesting.strategies import calculate_ema, strategy_macd
 from ficus.mt5.Vantage import Vantage
 from ficus.mt5.models import TradingSymbol
 
+# Imports the Cloud Logging client library
+import google.cloud.logging
+
+# Instantiates a client
+client = google.cloud.logging.Client()
+
+# Retrieves a Cloud Logging handler based on the environment
+# you're running in and integrates the handler with the
+# Python logging module. By default this captures all logs
+# at INFO level and higher
+client.setup_logging()
+
+# Start Ficus
 vantage = Vantage()
 trading_symbols = [TradingSymbol.XAUUSD, TradingSymbol.BTCUSD]
 
@@ -14,15 +27,16 @@ async def async_start_vantage():
     await vantage.connect_account()
     await vantage.prepare_listeners(trading_symbols)
     # run this for 12 hours
-    await asyncio.sleep(60*60*24)
+    await asyncio.sleep(60 * 60 * 24)
 
 
 async def async_start_trading_gold():
     while True:
         try:
-            await asyncio.sleep(60)
+            trade_on_minutes = 1
+            await asyncio.sleep(60 * trade_on_minutes)
             gold = TradingSymbol.XAUUSD
-            gold_ohlcv = vantage.get_ohlcv_for_symbol(gold, 1)
+            gold_ohlcv = vantage.get_ohlcv_for_symbol(gold, trade_on_minutes)
             # apply strategy
             gold_ema = calculate_ema(gold_ohlcv, 50)
             gold_macd = strategy_macd(gold_ema, 50)
@@ -35,9 +49,10 @@ async def async_start_trading_gold():
 async def async_start_trading_bitcoin():
     while True:
         try:
-            await asyncio.sleep(60*5)
+            trade_on_minutes = 5
+            await asyncio.sleep(60 * trade_on_minutes)
             bitcoin = TradingSymbol.BTCUSD
-            btc_ohlcv = vantage.get_ohlcv_for_symbol(bitcoin, 5)
+            btc_ohlcv = vantage.get_ohlcv_for_symbol(bitcoin, trade_on_minutes)
             # apply strategy
             btc_ema = calculate_ema(btc_ohlcv, 50)
             btc_macd = strategy_macd(btc_ema, 50)
