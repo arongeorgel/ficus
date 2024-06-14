@@ -4,20 +4,20 @@ from unittest.mock import AsyncMock
 
 from ficus.mt5.TradingManager import TradingManager
 from ficus.mt5.listeners.ITradingCallback import ITradingCallback
-from ficus.mt5.models import TradingSymbol, TradeDirection, FicusTrade
+from ficus.mt5.models import TradeDirection, FicusTrade, TradingSymbol
 
 
 class ITradingCallbackMock(ITradingCallback, ABC):
-    async def close_trade(self, trade: FicusTrade, symbol: TradingSymbol):
+    async def close_trade(self, trade: FicusTrade, symbol: str):
         pass
 
-    async def partially_close_trade(self, trade: FicusTrade, symbol: TradingSymbol):
+    async def partially_close_trade(self, trade: FicusTrade, symbol: str):
         pass
 
     async def modify_trade(self, trade: FicusTrade):
         pass
 
-    async def open_trade(self, symbol: TradingSymbol, direction: TradeDirection, volume: float, stop_loss):
+    async def open_trade(self, symbol: str, direction: TradeDirection, volume: float, stop_loss):
         return {'positionId': '12345'}
 
 

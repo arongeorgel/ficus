@@ -1,5 +1,3 @@
-import asyncio
-import traceback
 from typing import List, Dict
 
 from metaapi_cloud_sdk import MetaApi, SynchronizationListener
@@ -10,7 +8,7 @@ from ficus.mt5.MetatraderStorage import MetatraderSymbolPriceManager
 from ficus.mt5.TradingManager import TradingManager, FicusTrade
 from ficus.mt5.listeners.ITradingCallback import ITradingCallback
 from ficus.mt5.listeners.MetaSynchronizationListener import MetaSynchronizationListener
-from ficus.mt5.models import TradingSymbol, TradeDirection
+from ficus.mt5.models import TradeDirection
 
 
 class Vantage(ITradingCallback):
@@ -21,7 +19,7 @@ class Vantage(ITradingCallback):
 
     __sync_listener: SynchronizationListener
     __api_connection: StreamingMetaApiConnectionInstance
-    __price_managers: Dict[TradingSymbol, MetatraderSymbolPriceManager]
+    __price_managers: Dict[str, MetatraderSymbolPriceManager]
 
     def __init__(self):
         self.__price_managers = {}
@@ -46,60 +44,60 @@ class Vantage(ITradingCallback):
         await self.__api_connection.connect()
         await self.__api_connection.wait_synchronized()
 
-    async def prepare_listeners(self, symbols_to_subscribe: List[TradingSymbol]):
+    async def prepare_listeners(self, symbols_to_subscribe: List[str]):
         try:
             for symbol in symbols_to_subscribe:
                 manager = MetatraderSymbolPriceManager(symbol)
                 self.__price_managers[symbol] = manager
-                await self.__api_connection.subscribe_to_market_data(symbol=symbol.name)
+                await self.__api_connection.subscribe_to_market_data(symbol=symbol)
 
             self.__sync_listener = MetaSynchronizationListener(self.__price_managers, self.__trade_manager)
             self.__api_connection.add_synchronization_listener(self.__sync_listener)
         except Exception as ex:
-            print(''.join(traceback.TracebackException.from_exception(ex).format()))
+            print(ex.__traceback__)
 
-    async def disconnect(self, symbols_to_unsubscribe: List[TradingSymbol]):
+    async def disconnect(self, symbols_to_unsubscribe: List[str]):
         print("Disconnecting...")
         for symbol in symbols_to_unsubscribe:
-            await self.__api_connection.unsubscribe_from_market_data(symbol=symbol.name)
+            await self.__api_connection.unsubscribe_from_market_data(symbol=symbol)
 
         self.__api_connection.remove_synchronization_listener(self.__sync_listener)
 
         # await self.__api_connection.account.undeploy()
         await self.__api_connection.close()
 
-    def get_ohlcv_for_symbol(self, symbol):
+    def get_ohlcv_for_symbol(self, symbol, minutes):
         price_manager = self.__price_managers[symbol]
-        return price_manager.generate_ohlcv(1)
+        return price_manager.generate_ohlcv(minutes)
 
-    async def open_trade(self, symbol: TradingSymbol, direction: TradeDirection,
+    async def open_trade(self, symbol: str, direction: TradeDirection,
                          volume: float, stop_loss: float) -> MetatraderTradeResponse:
         if direction is TradeDirection.BUY:
             return await (self.__api_connection
-                          .create_market_buy_order(symbol=symbol.name, volume=volume, stop_loss=stop_loss))
+                          .create_market_buy_order(symbol=symbol, volume=volume, stop_loss=stop_loss))
         elif direction is TradeDirection.SELL:
             return await (self.__api_connection
-                          .create_market_sell_order(symbol=symbol.name, volume=volume, stop_loss=stop_loss))
+                          .create_market_sell_order(symbol=symbol, volume=volume, stop_loss=stop_loss))
 
     async def close_trade(self, trade: FicusTrade, trading_symbol) -> MetatraderTradeResponse:
         try:
             return await self.__api_connection.close_position(trade['position_id'])
         except Exception as e:
-            print(f"Failed to close position for {trade}: {e}")
+            print(f"Failed to close position for {trade}: {e.__traceback__}")
 
-    async def partially_close_trade(self, trade: FicusTrade, symbol: TradingSymbol) -> MetatraderTradeResponse:
+    async def partially_close_trade(self, trade: FicusTrade, symbol: str) -> MetatraderTradeResponse:
         try:
             return await self.__api_connection.close_position_partially(
                 position_id=trade['position_id'], volume=trade['volume'])
         except Exception as e:
-            print(f"Failed to partially close position for {trade}: {e}")
+            print(f"Failed to partially close position for {trade}: {e.__traceback__}")
 
     async def modify_trade(self, trade: FicusTrade) -> MetatraderTradeResponse:
         try:
             return await self.__api_connection.modify_position(
                 position_id=trade['position_id'], stop_loss=trade['stop_loss_price'])
         except Exception as e:
-            print(f"Failed to modify trade {trade}: {e}")
+            print(f"Failed to modify trade {trade}: {e.__traceback__}")
 
     # called from main file [x] minutes, as configured
     async def on_ohlcv(self, last_ohlcv, symbol):

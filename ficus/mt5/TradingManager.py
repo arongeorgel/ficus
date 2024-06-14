@@ -4,11 +4,11 @@ import pandas as pd
 from pandas import Series
 
 from ficus.mt5.listeners.ITradingCallback import ITradingCallback
-from ficus.mt5.models import TradingSymbol, TradeDirection, FicusTrade
+from ficus.mt5.models import TradeDirection, FicusTrade, TradingSymbol
 
 
 class TradingManager:
-    _current_trades: dict[TradingSymbol, FicusTrade]
+    _current_trades: dict[str, FicusTrade]
     __closed_trades: List[FicusTrade] = []
 
     def __init__(self, callback: ITradingCallback):
@@ -27,10 +27,10 @@ class TradingManager:
     async def _modify_trade(self, trade):
         await self.callback.modify_trade(trade)
 
-    async def _open_trade(self, direction: TradeDirection, trading_symbol: TradingSymbol, entry_price: float):
-        sl, tp1, tp2, tp3, volume = trading_symbol.calculate_levels(entry_price, direction)
+    async def _open_trade(self, direction: TradeDirection, trading_symbol: str, entry_price: float):
+        sl, tp1, tp2, tp3, volume = TradingSymbol.calculate_levels(trading_symbol, entry_price, direction)
 
-        result = await self.callback.open_trade(symbol=trading_symbol, volume=volume,direction=direction, stop_loss=sl)
+        result = await self.callback.open_trade(symbol=trading_symbol, volume=volume, direction=direction, stop_loss=sl)
         trade = FicusTrade(
             entry_price=entry_price,
             stop_loss_price=sl,
@@ -45,8 +45,6 @@ class TradingManager:
         print(f"Open a new trade ${trade}")
 
     async def validate_price(self, price: float, trading_symbol):
-        if trading_symbol not in TradingSymbol:
-            return
         if trading_symbol not in self._current_trades:
             return
 
@@ -121,7 +119,7 @@ class TradingManager:
                 trade['stop_loss_price'] = entry_price + ((entry_price - trade['stop_loss_price']) / 2)
                 await self._modify_trade(trade)
 
-    async def on_ohclv(self, series: Series, symbol: TradingSymbol):
+    async def on_ohclv(self, series: Series, symbol: str):
         signal = series['Position']
         if pd.isna(signal):
             print("No signal")

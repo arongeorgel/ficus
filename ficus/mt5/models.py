@@ -2,16 +2,10 @@ from enum import Enum
 from typing import TypedDict
 
 
-class TradingSymbol(Enum):
+class TradingSymbol:
     XAUUSD = 'XAUUSD'
-    BTCUSD = 'BTCUSD'
-    EURUSD = 'EURUSD'
-
-    @staticmethod
-    def from_value(name: str):
-        for member in TradingSymbol:
-            if member.name == name:
-                return member
+    BTCUSD = 'BTCUSD'  # best at 5 minutes
+    EURUSD = 'EURUSD'  # best at 5 minutes
 
     # 1 pip of gold = $0.01. $5 difference is 500 pips. on 500:1 account that is $500 minus broker fee
     #                        $1 difference is 100 pips
@@ -19,7 +13,8 @@ class TradingSymbol(Enum):
     # 1 pip of eurusd = $0.00001. $1 difference is 500 000 pips.on 500:1 account that is 500 000 minus broker fee
     #                             $0.001 difference is 100 pips.
     #                             On volume 1, 100 pips difference is $100
-    def calculate_levels(self, entry_price, direction):
+    @staticmethod
+    def calculate_levels(symbol: str, entry_price, direction):
         """
 
         :param entry_price: price at which the trade was opened
@@ -31,7 +26,7 @@ class TradingSymbol(Enum):
         max_risk = 4000 * risk_percent  # $80
 
         # Define differences for each symbol
-        if self is TradingSymbol.XAUUSD:
+        if symbol is TradingSymbol.XAUUSD:
             sl_difference = 3
             tp1_difference = 3
             tp2_difference = 5
@@ -39,7 +34,7 @@ class TradingSymbol(Enum):
             tp4_difference = 25
             contract_size = 100
             price_precision = 2
-        elif self is TradingSymbol.BTCUSD:
+        elif symbol is TradingSymbol.BTCUSD:
             sl_difference = 300
             tp1_difference = 300
             tp2_difference = 500
@@ -47,7 +42,7 @@ class TradingSymbol(Enum):
             tp4_difference = 2500
             contract_size = 1
             price_precision = 2
-        elif self is TradingSymbol.EURUSD:
+        elif symbol is TradingSymbol.EURUSD:
             sl_difference = 0.004
             tp1_difference = 0.004
             tp2_difference = 0.007
@@ -99,7 +94,7 @@ class FicusTrade(TypedDict):
     start_volume: float
     volume: float
     position_id: str  # from meta_api
-    symbol: TradingSymbol
+    symbol: str
 
     # {
     # 'numericCode': 10009,

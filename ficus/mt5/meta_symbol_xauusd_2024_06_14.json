@@ -1,0 +1,1650 @@
+[
+    {
+        "accountCurrencyExchangeRate": 1,
+        "symbol": "XAUUSD",
+        "bid": 2305.9,
+        "ask": 2306.08,
+        "time": "2024-06-14T03:05:35.058000+00:00",
+        "brokerTime": "2024-06-14 06:05:35.058",
+        "profitTickValue": 1,
+        "lossTickValue": 1,
+        "timestamps": {
+            "eventGenerated": "2024-06-14T03:05:35.058000+00:00",
+            "serverProcessingStarted": "2024-06-14T03:05:36.312000+00:00",
+            "serverProcessingFinished": "2024-06-14T03:05:36.319000+00:00",
+            "clientProcessingFinished": "2024-06-14T06:05:36.253831"
+        },
+        "equity": 88574.28
+    },
+    {
+        "symbol": "XAUUSD",
+        "bid": 2305.9,
+        "ask": 2306.08,
+        "time": "2024-06-14T03:05:35.058000+00:00",
+        "brokerTime": "2024-06-14 06:05:35.058",
+        "profitTickValue": 1,
+        "lossTickValue": 1,
+        "accountCurrencyExchangeRate": 1,
+        "timestamps": {
+            "eventGenerated": "2024-06-14T03:05:35.058000+00:00",
+            "serverProcessingStarted": "2024-06-14T03:05:36.299000+00:00",
+            "serverProcessingFinished": "2024-06-14T03:05:36.303000+00:00",
+            "clientProcessingFinished": "2024-06-14T06:05:36.653220"
+        },
+        "equity": 88574.28
+    },
+    {
+        "symbol": "XAUUSD",
+        "bid": 2305.9,
+        "ask": 2306.08,
+        "time": "2024-06-14T03:05:35.058000+00:00",
+        "brokerTime": "2024-06-14 06:05:35.058",
+        "profitTickValue": 1,
+        "lossTickValue": 1,
+        "accountCurrencyExchangeRate": 1,
+        "timestamps": {
+            "eventGenerated": "2024-06-14T03:05:35.058000+00:00",
+            "serverProcessingStarted": "2024-06-14T03:05:36.312000+00:00",
+            "serverProcessingFinished": "2024-06-14T03:05:36.318000+00:00",
+            "clientProcessingFinished": "2024-06-14T06:05:36.654116"
+        },
+        "equity": 88574.28
+    },
+    {
+        "symbol": "XAUUSD",
+        "bid": 2305.9,
+        "ask": 2306.08,
+        "time": "2024-06-14T03:05:35.058000+00:00",
+        "brokerTime": "2024-06-14 06:05:35.058",
+        "profitTickValue": 1,
+        "lossTickValue": 1,
+        "accountCurrencyExchangeRate": 1,
+        "timestamps": {
+            "eventGenerated": "2024-06-14T03:05:35.058000+00:00",
+            "serverProcessingStarted": "2024-06-14T03:05:36.749000+00:00",
+            "serverProcessingFinished": "2024-06-14T03:05:36.755000+00:00",
+            "clientProcessingFinished": "2024-06-14T06:05:37.104385"
+        },
+        "equity": 88574.28
+    },
+    {
+        "symbol": "XAUUSD",
+        "bid": 2305.9,
+        "ask": 2306.08,
+        "time": "2024-06-14T03:05:35.058000+00:00",
+        "brokerTime": "2024-06-14 06:05:35.058",
+        "profitTickValue": 1,
+        "lossTickValue": 1,
+        "accountCurrencyExchangeRate": 1,
+        "timestamps": {
+            "eventGenerated": "2024-06-14T03:05:35.058000+00:00",
+            "serverProcessingStarted": "2024-06-14T03:05:38.738000+00:00",
+            "serverProcessingFinished": "2024-06-14T03:05:38.747000+00:00",
+            "clientProcessingFinished": "2024-06-14T06:05:38.744101"
+        },
+        "equity": 88574.28
+    },
+    {
+        "symbol": "XAUUSD",
+        "bid": 2305.92,
+        "ask": 2306.1,
+        "time": "2024-06-14T03:05:38.613000+00:00",
+        "brokerTime": "2024-06-14 06:05:38.613",
+        "profitTickValue": 1,
+        "lossTickValue": 1,
+        "accountCurrencyExchangeRate": 1,
+        "timestamps": {
+            "eventGenerated": "2024-06-14T03:05:38.613000+00:00",
+            "serverProcessingStarted": "2024-06-14T03:05:38.972000+00:00",
+            "serverProcessingFinished": "2024-06-14T03:05:38.975000+00:00",
+            "clientProcessingFinished": "2024-06-14T06:05:38.867274"
+        },
+        "equity": 88573.74
+    },
+    {
+        "symbol": "XAUUSD",
+        "bid": 2305.97,
+        "ask": 2306.15,
+        "time": "2024-06-14T03:05:40.026000+00:00",
+        "brokerTime": "2024-06-14 06:05:40.026",
+        "profitTickValue": 1,
+        "lossTickValue": 1,
+        "accountCurrencyExchangeRate": 1,
+        "timestamps": {
+            "eventGenerated": "2024-06-14T03:05:40.026000+00:00",
+            "serverProcessingStarted": "2024-06-14T03:05:41.165000+00:00",
+            "serverProcessingFinished": "2024-06-14T03:05:41.169000+00:00",
+            "clientProcessingFinished": "2024-06-14T06:05:41.062029"
+        },
+        "equity": 88572.39
+    },
+    {
+        "symbol": "XAUUSD",
+        "bid": 2305.98,
+        "ask": 2306.16,
+        "time": "2024-06-14T03:05:41.158000+00:00",
+        "brokerTime": "2024-06-14 06:05:41.158",
+        "profitTickValue": 1,
+        "lossTickValue": 1,
+        "accountCurrencyExchangeRate": 1,
+        "timestamps": {
+            "eventGenerated": "2024-06-14T03:05:41.158000+00:00",
+            "serverProcessingStarted": "2024-06-14T03:05:41.475000+00:00",
+            "serverProcessingFinished": "2024-06-14T03:05:41.478000+00:00",
+            "clientProcessingFinished": "2024-06-14T06:05:41.371512"
+        },
+        "equity": 88572.12
+    },
+    {
+        "symbol": "XAUUSD",
+        "bid": 2305.99,
+        "ask": 2306.17,
+        "time": "2024-06-14T03:05:43.192000+00:00",
+        "brokerTime": "2024-06-14 06:05:43.192",
+        "profitTickValue": 1,
+        "lossTickValue": 1,
+        "accountCurrencyExchangeRate": 1,
+        "timestamps": {
+            "eventGenerated": "2024-06-14T03:05:43.192000+00:00",
+            "serverProcessingStarted": "2024-06-14T03:05:43.666000+00:00",
+            "serverProcessingFinished": "2024-06-14T03:05:43.668000+00:00",
+            "clientProcessingFinished": "2024-06-14T06:05:43.560641"
+        },
+        "equity": 88571.85
+    },
+    {
+        "symbol": "XAUUSD",
+        "bid": 2306,
+        "ask": 2306.18,
+        "time": "2024-06-14T03:05:43.898000+00:00",
+        "brokerTime": "2024-06-14 06:05:43.898",
+        "profitTickValue": 1,
+        "lossTickValue": 1,
+        "accountCurrencyExchangeRate": 1,
+        "timestamps": {
+            "eventGenerated": "2024-06-14T03:05:43.898000+00:00",
+            "serverProcessingStarted": "2024-06-14T03:05:43.975000+00:00",
+            "serverProcessingFinished": "2024-06-14T03:05:43.977000+00:00",
+            "clientProcessingFinished": "2024-06-14T06:05:43.870957"
+        },
+        "equity": 88571.58
+    },
+    {
+        "symbol": "XAUUSD",
+        "bid": 2305.99,
+        "ask": 2306.17,
+        "time": "2024-06-14T03:05:43.192000+00:00",
+        "brokerTime": "2024-06-14 06:05:43.192",
+        "profitTickValue": 1,
+        "lossTickValue": 1,
+        "accountCurrencyExchangeRate": 1,
+        "timestamps": {
+            "eventGenerated": "2024-06-14T03:05:43.192000+00:00",
+            "serverProcessingStarted": "2024-06-14T03:05:46.163000+00:00",
+            "serverProcessingFinished": "2024-06-14T03:05:46.166000+00:00",
+            "clientProcessingFinished": "2024-06-14T06:05:46.060696"
+        },
+        "equity": 88571.85
+    },
+    {
+        "symbol": "XAUUSD",
+        "bid": 2305.99,
+        "ask": 2306.17,
+        "time": "2024-06-14T03:05:44.172000+00:00",
+        "brokerTime": "2024-06-14 06:05:44.172",
+        "profitTickValue": 1,
+        "lossTickValue": 1,
+        "accountCurrencyExchangeRate": 1,
+        "timestamps": {
+            "eventGenerated": "2024-06-14T03:05:44.172000+00:00",
+            "serverProcessingStarted": "2024-06-14T03:05:46.474000+00:00",
+            "serverProcessingFinished": "2024-06-14T03:05:46.477000+00:00",
+            "clientProcessingFinished": "2024-06-14T06:05:46.370009"
+        },
+        "equity": 88571.85
+    },
+    {
+        "symbol": "XAUUSD",
+        "bid": 2305.94,
+        "ask": 2306.12,
+        "time": "2024-06-14T03:05:47.299000+00:00",
+        "brokerTime": "2024-06-14 06:05:47.299",
+        "profitTickValue": 1,
+        "lossTickValue": 1,
+        "accountCurrencyExchangeRate": 1,
+        "timestamps": {
+            "eventGenerated": "2024-06-14T03:05:47.299000+00:00",
+            "serverProcessingStarted": "2024-06-14T03:05:48.662000+00:00",
+            "serverProcessingFinished": "2024-06-14T03:05:48.665000+00:00",
+            "clientProcessingFinished": "2024-06-14T06:05:48.559523"
+        },
+        "equity": 88573.2
+    },
+    {
+        "symbol": "XAUUSD",
+        "bid": 2305.94,
+        "ask": 2306.12,
+        "time": "2024-06-14T03:05:47.299000+00:00",
+        "brokerTime": "2024-06-14 06:05:47.299",
+        "profitTickValue": 1,
+        "lossTickValue": 1,
+        "accountCurrencyExchangeRate": 1,
+        "timestamps": {
+            "eventGenerated": "2024-06-14T03:05:47.299000+00:00",
+            "serverProcessingStarted": "2024-06-14T03:05:48.973000+00:00",
+            "serverProcessingFinished": "2024-06-14T03:05:48.976000+00:00",
+            "clientProcessingFinished": "2024-06-14T06:05:48.870732"
+        },
+        "equity": 88573.2
+    },
+    {
+        "symbol": "XAUUSD",
+        "bid": 2306,
+        "ask": 2306.18,
+        "time": "2024-06-14T03:05:50.533000+00:00",
+        "brokerTime": "2024-06-14 06:05:50.533",
+        "profitTickValue": 1,
+        "lossTickValue": 1,
+        "accountCurrencyExchangeRate": 1,
+        "timestamps": {
+            "eventGenerated": "2024-06-14T03:05:50.533000+00:00",
+            "serverProcessingStarted": "2024-06-14T03:05:51.166000+00:00",
+            "serverProcessingFinished": "2024-06-14T03:05:51.169000+00:00",
+            "clientProcessingFinished": "2024-06-14T06:05:51.059904"
+        },
+        "equity": 88571.58
+    },
+    {
+        "symbol": "XAUUSD",
+        "bid": 2306,
+        "ask": 2306.18,
+        "time": "2024-06-14T03:05:50.533000+00:00",
+        "brokerTime": "2024-06-14 06:05:50.533",
+        "profitTickValue": 1,
+        "lossTickValue": 1,
+        "accountCurrencyExchangeRate": 1,
+        "timestamps": {
+            "eventGenerated": "2024-06-14T03:05:50.533000+00:00",
+            "serverProcessingStarted": "2024-06-14T03:05:51.474000+00:00",
+            "serverProcessingFinished": "2024-06-14T03:05:51.477000+00:00",
+            "clientProcessingFinished": "2024-06-14T06:05:51.368289"
+        },
+        "equity": 88571.58
+    },
+    {
+        "symbol": "XAUUSD",
+        "bid": 2306.01,
+        "ask": 2306.19,
+        "time": "2024-06-14T03:05:55.338000+00:00",
+        "brokerTime": "2024-06-14 06:05:55.338",
+        "profitTickValue": 1,
+        "lossTickValue": 1,
+        "accountCurrencyExchangeRate": 1,
+        "timestamps": {
+            "eventGenerated": "2024-06-14T03:05:55.338000+00:00",
+            "serverProcessingStarted": "2024-06-14T03:05:56.162000+00:00",
+            "serverProcessingFinished": "2024-06-14T03:05:56.165000+00:00",
+            "clientProcessingFinished": "2024-06-14T06:05:56.059657"
+        },
+        "equity": 88571.31
+    },
+    {
+        "symbol": "XAUUSD",
+        "bid": 2306.01,
+        "ask": 2306.19,
+        "time": "2024-06-14T03:05:55.338000+00:00",
+        "brokerTime": "2024-06-14 06:05:55.338",
+        "profitTickValue": 1,
+        "lossTickValue": 1,
+        "accountCurrencyExchangeRate": 1,
+        "timestamps": {
+            "eventGenerated": "2024-06-14T03:05:55.338000+00:00",
+            "serverProcessingStarted": "2024-06-14T03:05:56.473000+00:00",
+            "serverProcessingFinished": "2024-06-14T03:05:56.476000+00:00",
+            "clientProcessingFinished": "2024-06-14T06:05:56.367370"
+        },
+        "equity": 88571.31
+    },
+    {
+        "symbol": "XAUUSD",
+        "bid": 2305.96,
+        "ask": 2306.14,
+        "time": "2024-06-14T03:05:58.589000+00:00",
+        "brokerTime": "2024-06-14 06:05:58.589",
+        "profitTickValue": 1,
+        "lossTickValue": 1,
+        "accountCurrencyExchangeRate": 1,
+        "timestamps": {
+            "eventGenerated": "2024-06-14T03:05:58.589000+00:00",
+            "serverProcessingStarted": "2024-06-14T03:05:58.667000+00:00",
+            "serverProcessingFinished": "2024-06-14T03:05:58.670000+00:00",
+            "clientProcessingFinished": "2024-06-14T06:05:58.563226"
+        },
+        "equity": 88572.66
+    },
+    {
+        "symbol": "XAUUSD",
+        "bid": 2305.96,
+        "ask": 2306.14,
+        "time": "2024-06-14T03:05:58.589000+00:00",
+        "brokerTime": "2024-06-14 06:05:58.589",
+        "profitTickValue": 1,
+        "lossTickValue": 1,
+        "accountCurrencyExchangeRate": 1,
+        "timestamps": {
+            "eventGenerated": "2024-06-14T03:05:58.589000+00:00",
+            "serverProcessingStarted": "2024-06-14T03:05:58.972000+00:00",
+            "serverProcessingFinished": "2024-06-14T03:05:58.975000+00:00",
+            "clientProcessingFinished": "2024-06-14T06:05:58.866757"
+        },
+        "equity": 88572.66
+    },
+    {
+        "symbol": "XAUUSD",
+        "bid": 2305.85,
+        "ask": 2306.03,
+        "time": "2024-06-14T03:06:00.798000+00:00",
+        "brokerTime": "2024-06-14 06:06:00.798",
+        "profitTickValue": 1,
+        "lossTickValue": 1,
+        "accountCurrencyExchangeRate": 1,
+        "timestamps": {
+            "eventGenerated": "2024-06-14T03:06:00.798000+00:00",
+            "serverProcessingStarted": "2024-06-14T03:06:01.473000+00:00",
+            "serverProcessingFinished": "2024-06-14T03:06:01.476000+00:00",
+            "clientProcessingFinished": "2024-06-14T06:06:01.370539"
+        },
+        "equity": 88575.63
+    },
+    {
+        "symbol": "XAUUSD",
+        "bid": 2305.85,
+        "ask": 2306.03,
+        "time": "2024-06-14T03:06:00.798000+00:00",
+        "brokerTime": "2024-06-14 06:06:00.798",
+        "profitTickValue": 1,
+        "lossTickValue": 1,
+        "accountCurrencyExchangeRate": 1,
+        "timestamps": {
+            "eventGenerated": "2024-06-14T03:06:00.798000+00:00",
+            "serverProcessingStarted": "2024-06-14T03:06:02.549000+00:00",
+            "serverProcessingFinished": "2024-06-14T03:06:02.744000+00:00",
+            "clientProcessingFinished": "2024-06-14T06:06:02.705991"
+        },
+        "equity": 88575.63
+    },
+    {
+        "symbol": "XAUUSD",
+        "bid": 2305.76,
+        "ask": 2305.94,
+        "time": "2024-06-14T03:06:03.646000+00:00",
+        "brokerTime": "2024-06-14 06:06:03.646",
+        "profitTickValue": 1,
+        "lossTickValue": 1,
+        "accountCurrencyExchangeRate": 1,
+        "timestamps": {
+            "eventGenerated": "2024-06-14T03:06:03.646000+00:00",
+            "serverProcessingStarted": "2024-06-14T03:06:03.973000+00:00",
+            "serverProcessingFinished": "2024-06-14T03:06:03.976000+00:00",
+            "clientProcessingFinished": "2024-06-14T06:06:03.866397"
+        },
+        "equity": 88578.06
+    },
+    {
+        "symbol": "XAUUSD",
+        "bid": 2305.8,
+        "ask": 2305.98,
+        "time": "2024-06-14T03:06:02.600000+00:00",
+        "brokerTime": "2024-06-14 06:06:02.600",
+        "profitTickValue": 1,
+        "lossTickValue": 1,
+        "accountCurrencyExchangeRate": 1,
+        "timestamps": {
+            "eventGenerated": "2024-06-14T03:06:02.600000+00:00",
+            "serverProcessingStarted": "2024-06-14T03:06:05.049000+00:00",
+            "serverProcessingFinished": "2024-06-14T03:06:05.058000+00:00",
+            "clientProcessingFinished": "2024-06-14T06:06:04.959149"
+        },
+        "equity": 88576.98
+    },
+    {
+        "symbol": "XAUUSD",
+        "bid": 2305.61,
+        "ask": 2305.79,
+        "time": "2024-06-14T03:06:06.096000+00:00",
+        "brokerTime": "2024-06-14 06:06:06.096",
+        "profitTickValue": 1,
+        "lossTickValue": 1,
+        "accountCurrencyExchangeRate": 1,
+        "timestamps": {
+            "eventGenerated": "2024-06-14T03:06:06.096000+00:00",
+            "serverProcessingStarted": "2024-06-14T03:06:06.166000+00:00",
+            "serverProcessingFinished": "2024-06-14T03:06:06.169000+00:00",
+            "clientProcessingFinished": "2024-06-14T06:06:06.061169"
+        },
+        "equity": 88582.11
+    },
+    {
+        "symbol": "XAUUSD",
+        "bid": 2305.58,
+        "ask": 2305.76,
+        "time": "2024-06-14T03:06:06.293000+00:00",
+        "brokerTime": "2024-06-14 06:06:06.293",
+        "profitTickValue": 1,
+        "lossTickValue": 1,
+        "accountCurrencyExchangeRate": 1,
+        "timestamps": {
+            "eventGenerated": "2024-06-14T03:06:06.293000+00:00",
+            "serverProcessingStarted": "2024-06-14T03:06:06.474000+00:00",
+            "serverProcessingFinished": "2024-06-14T03:06:06.477000+00:00",
+            "clientProcessingFinished": "2024-06-14T06:06:06.366144"
+        },
+        "equity": 88582.92
+    },
+    {
+        "symbol": "XAUUSD",
+        "bid": 2305.64,
+        "ask": 2305.82,
+        "time": "2024-06-14T03:06:08.729000+00:00",
+        "brokerTime": "2024-06-14 06:06:08.729",
+        "profitTickValue": 1,
+        "lossTickValue": 1,
+        "accountCurrencyExchangeRate": 1,
+        "timestamps": {
+            "eventGenerated": "2024-06-14T03:06:08.729000+00:00",
+            "serverProcessingStarted": "2024-06-14T03:06:08.973000+00:00",
+            "serverProcessingFinished": "2024-06-14T03:06:08.976000+00:00",
+            "clientProcessingFinished": "2024-06-14T06:06:08.869438"
+        },
+        "equity": 88581.3
+    },
+    {
+        "symbol": "XAUUSD",
+        "bid": 2305.65,
+        "ask": 2305.83,
+        "time": "2024-06-14T03:06:08.533000+00:00",
+        "brokerTime": "2024-06-14 06:06:08.533",
+        "profitTickValue": 1,
+        "lossTickValue": 1,
+        "accountCurrencyExchangeRate": 1,
+        "timestamps": {
+            "eventGenerated": "2024-06-14T03:06:08.533000+00:00",
+            "serverProcessingStarted": "2024-06-14T03:06:09.744000+00:00",
+            "serverProcessingFinished": "2024-06-14T03:06:09.993000+00:00",
+            "clientProcessingFinished": "2024-06-14T06:06:09.888649"
+        },
+        "equity": 88581.03
+    },
+    {
+        "symbol": "XAUUSD",
+        "bid": 2305.62,
+        "ask": 2305.8,
+        "time": "2024-06-14T03:06:11.376000+00:00",
+        "brokerTime": "2024-06-14 06:06:11.376",
+        "profitTickValue": 1,
+        "lossTickValue": 1,
+        "accountCurrencyExchangeRate": 1,
+        "timestamps": {
+            "eventGenerated": "2024-06-14T03:06:11.376000+00:00",
+            "serverProcessingStarted": "2024-06-14T03:06:11.473000+00:00",
+            "serverProcessingFinished": "2024-06-14T03:06:11.477000+00:00",
+            "clientProcessingFinished": "2024-06-14T06:06:11.370625"
+        },
+        "equity": 88581.84
+    },
+    {
+        "symbol": "XAUUSD",
+        "bid": 2305.59,
+        "ask": 2305.77,
+        "time": "2024-06-14T03:06:10.822000+00:00",
+        "brokerTime": "2024-06-14 06:06:10.822",
+        "profitTickValue": 1,
+        "lossTickValue": 1,
+        "accountCurrencyExchangeRate": 1,
+        "timestamps": {
+            "eventGenerated": "2024-06-14T03:06:10.822000+00:00",
+            "serverProcessingStarted": "2024-06-14T03:06:12.245000+00:00",
+            "serverProcessingFinished": "2024-06-14T03:06:12.252000+00:00",
+            "clientProcessingFinished": "2024-06-14T06:06:12.143116"
+        },
+        "equity": 88582.65
+    },
+    {
+        "symbol": "XAUUSD",
+        "bid": 2305.68,
+        "ask": 2305.86,
+        "time": "2024-06-14T03:06:13.610000+00:00",
+        "brokerTime": "2024-06-14 06:06:13.610",
+        "profitTickValue": 1,
+        "lossTickValue": 1,
+        "accountCurrencyExchangeRate": 1,
+        "timestamps": {
+            "eventGenerated": "2024-06-14T03:06:13.610000+00:00",
+            "serverProcessingStarted": "2024-06-14T03:06:13.663000+00:00",
+            "serverProcessingFinished": "2024-06-14T03:06:13.666000+00:00",
+            "clientProcessingFinished": "2024-06-14T06:06:13.559003"
+        },
+        "equity": 88580.22
+    },
+    {
+        "symbol": "XAUUSD",
+        "bid": 2305.68,
+        "ask": 2305.86,
+        "time": "2024-06-14T03:06:13.922000+00:00",
+        "brokerTime": "2024-06-14 06:06:13.922",
+        "profitTickValue": 1,
+        "lossTickValue": 1,
+        "accountCurrencyExchangeRate": 1,
+        "timestamps": {
+            "eventGenerated": "2024-06-14T03:06:13.922000+00:00",
+            "serverProcessingStarted": "2024-06-14T03:06:13.973000+00:00",
+            "serverProcessingFinished": "2024-06-14T03:06:13.976000+00:00",
+            "clientProcessingFinished": "2024-06-14T06:06:13.868408"
+        },
+        "equity": 88579.95
+    },
+    {
+        "symbol": "XAUUSD",
+        "bid": 2305.68,
+        "ask": 2305.86,
+        "time": "2024-06-14T03:06:13.922000+00:00",
+        "brokerTime": "2024-06-14 06:06:13.922",
+        "profitTickValue": 1,
+        "lossTickValue": 1,
+        "accountCurrencyExchangeRate": 1,
+        "timestamps": {
+            "eventGenerated": "2024-06-14T03:06:13.922000+00:00",
+            "serverProcessingStarted": "2024-06-14T03:06:16.473000+00:00",
+            "serverProcessingFinished": "2024-06-14T03:06:16.476000+00:00",
+            "clientProcessingFinished": "2024-06-14T06:06:16.367979"
+        },
+        "equity": 88580.22
+    },
+    {
+        "symbol": "XAUUSD",
+        "bid": 2305.68,
+        "ask": 2305.86,
+        "time": "2024-06-14T03:06:13.610000+00:00",
+        "brokerTime": "2024-06-14 06:06:13.610",
+        "profitTickValue": 1,
+        "lossTickValue": 1,
+        "accountCurrencyExchangeRate": 1,
+        "timestamps": {
+            "eventGenerated": "2024-06-14T03:06:13.610000+00:00",
+            "serverProcessingStarted": "2024-06-14T03:06:17.347000+00:00",
+            "serverProcessingFinished": "2024-06-14T03:06:17.592000+00:00",
+            "clientProcessingFinished": "2024-06-14T06:06:17.554197"
+        },
+        "equity": 88580.22
+    },
+    {
+        "symbol": "XAUUSD",
+        "bid": 2305.66,
+        "ask": 2305.84,
+        "time": "2024-06-14T03:06:18.687000+00:00",
+        "brokerTime": "2024-06-14 06:06:18.687",
+        "profitTickValue": 1,
+        "lossTickValue": 1,
+        "accountCurrencyExchangeRate": 1,
+        "timestamps": {
+            "eventGenerated": "2024-06-14T03:06:18.687000+00:00",
+            "serverProcessingStarted": "2024-06-14T03:06:18.973000+00:00",
+            "serverProcessingFinished": "2024-06-14T03:06:18.976000+00:00",
+            "clientProcessingFinished": "2024-06-14T06:06:18.867387"
+        },
+        "equity": 88580.76
+    },
+    {
+        "symbol": "XAUUSD",
+        "bid": 2305.65,
+        "ask": 2305.83,
+        "time": "2024-06-14T03:06:18.588000+00:00",
+        "brokerTime": "2024-06-14 06:06:18.588",
+        "profitTickValue": 1,
+        "lossTickValue": 1,
+        "accountCurrencyExchangeRate": 1,
+        "timestamps": {
+            "eventGenerated": "2024-06-14T03:06:18.588000+00:00",
+            "serverProcessingStarted": "2024-06-14T03:06:19.847000+00:00",
+            "serverProcessingFinished": "2024-06-14T03:06:19.851000+00:00",
+            "clientProcessingFinished": "2024-06-14T06:06:19.807267"
+        },
+        "equity": 88581.03
+    },
+    {
+        "symbol": "XAUUSD",
+        "bid": 2305.82,
+        "ask": 2306,
+        "time": "2024-06-14T03:06:21.091000+00:00",
+        "brokerTime": "2024-06-14 06:06:21.091",
+        "profitTickValue": 1,
+        "lossTickValue": 1,
+        "accountCurrencyExchangeRate": 1,
+        "timestamps": {
+            "eventGenerated": "2024-06-14T03:06:21.091000+00:00",
+            "serverProcessingStarted": "2024-06-14T03:06:21.164000+00:00",
+            "serverProcessingFinished": "2024-06-14T03:06:21.167000+00:00",
+            "clientProcessingFinished": "2024-06-14T06:06:21.060711"
+        },
+        "equity": 88576.44
+    },
+    {
+        "symbol": "XAUUSD",
+        "bid": 2305.82,
+        "ask": 2306,
+        "time": "2024-06-14T03:06:21.091000+00:00",
+        "brokerTime": "2024-06-14 06:06:21.091",
+        "profitTickValue": 1,
+        "lossTickValue": 1,
+        "accountCurrencyExchangeRate": 1,
+        "timestamps": {
+            "eventGenerated": "2024-06-14T03:06:21.091000+00:00",
+            "serverProcessingStarted": "2024-06-14T03:06:21.473000+00:00",
+            "serverProcessingFinished": "2024-06-14T03:06:21.476000+00:00",
+            "clientProcessingFinished": "2024-06-14T06:06:21.366609"
+        },
+        "equity": 88576.44
+    },
+    {
+        "symbol": "XAUUSD",
+        "bid": 2305.76,
+        "ask": 2305.94,
+        "time": "2024-06-14T03:06:23.586000+00:00",
+        "brokerTime": "2024-06-14 06:06:23.586",
+        "profitTickValue": 1,
+        "lossTickValue": 1,
+        "accountCurrencyExchangeRate": 1,
+        "timestamps": {
+            "eventGenerated": "2024-06-14T03:06:23.586000+00:00",
+            "serverProcessingStarted": "2024-06-14T03:06:23.662000+00:00",
+            "serverProcessingFinished": "2024-06-14T03:06:23.665000+00:00",
+            "clientProcessingFinished": "2024-06-14T06:06:23.558092"
+        },
+        "equity": 88578.06
+    },
+    {
+        "symbol": "XAUUSD",
+        "bid": 2305.76,
+        "ask": 2305.94,
+        "time": "2024-06-14T03:06:23.586000+00:00",
+        "brokerTime": "2024-06-14 06:06:23.586",
+        "profitTickValue": 1,
+        "lossTickValue": 1,
+        "accountCurrencyExchangeRate": 1,
+        "timestamps": {
+            "eventGenerated": "2024-06-14T03:06:23.586000+00:00",
+            "serverProcessingStarted": "2024-06-14T03:06:23.974000+00:00",
+            "serverProcessingFinished": "2024-06-14T03:06:23.976000+00:00",
+            "clientProcessingFinished": "2024-06-14T06:06:23.871861"
+        },
+        "equity": 88578.06
+    },
+    {
+        "symbol": "XAUUSD",
+        "bid": 2305.68,
+        "ask": 2305.86,
+        "time": "2024-06-14T03:06:25.701000+00:00",
+        "brokerTime": "2024-06-14 06:06:25.701",
+        "profitTickValue": 1,
+        "lossTickValue": 1,
+        "accountCurrencyExchangeRate": 1,
+        "timestamps": {
+            "eventGenerated": "2024-06-14T03:06:25.701000+00:00",
+            "serverProcessingStarted": "2024-06-14T03:06:26.190000+00:00",
+            "serverProcessingFinished": "2024-06-14T03:06:26.195000+00:00",
+            "clientProcessingFinished": "2024-06-14T06:06:26.087934"
+        },
+        "equity": 88580.22
+    },
+    {
+        "symbol": "XAUUSD",
+        "bid": 2305.68,
+        "ask": 2305.86,
+        "time": "2024-06-14T03:06:26.265000+00:00",
+        "brokerTime": "2024-06-14 06:06:26.265",
+        "profitTickValue": 1,
+        "lossTickValue": 1,
+        "accountCurrencyExchangeRate": 1,
+        "timestamps": {
+            "eventGenerated": "2024-06-14T03:06:26.265000+00:00",
+            "serverProcessingStarted": "2024-06-14T03:06:26.476000+00:00",
+            "serverProcessingFinished": "2024-06-14T03:06:26.480000+00:00",
+            "clientProcessingFinished": "2024-06-14T06:06:26.372356"
+        },
+        "equity": 88580.22
+    },
+    {
+        "symbol": "XAUUSD",
+        "bid": 2305.61,
+        "ask": 2305.79,
+        "time": "2024-06-14T03:06:28.589000+00:00",
+        "brokerTime": "2024-06-14 06:06:28.589",
+        "profitTickValue": 1,
+        "lossTickValue": 1,
+        "accountCurrencyExchangeRate": 1,
+        "timestamps": {
+            "eventGenerated": "2024-06-14T03:06:28.589000+00:00",
+            "serverProcessingStarted": "2024-06-14T03:06:28.690000+00:00",
+            "serverProcessingFinished": "2024-06-14T03:06:28.692000+00:00",
+            "clientProcessingFinished": "2024-06-14T06:06:28.615551"
+        },
+        "equity": 88582.11
+    },
+    {
+        "symbol": "XAUUSD",
+        "bid": 2305.6,
+        "ask": 2305.78,
+        "time": "2024-06-14T03:06:28.794000+00:00",
+        "brokerTime": "2024-06-14 06:06:28.794",
+        "profitTickValue": 1,
+        "lossTickValue": 1,
+        "accountCurrencyExchangeRate": 1,
+        "timestamps": {
+            "eventGenerated": "2024-06-14T03:06:28.794000+00:00",
+            "serverProcessingStarted": "2024-06-14T03:06:28.972000+00:00",
+            "serverProcessingFinished": "2024-06-14T03:06:28.975000+00:00",
+            "clientProcessingFinished": "2024-06-14T06:06:28.885171"
+        },
+        "equity": 88582.38
+    },
+    {
+        "symbol": "XAUUSD",
+        "bid": 2305.58,
+        "ask": 2305.76,
+        "time": "2024-06-14T03:06:31.099000+00:00",
+        "brokerTime": "2024-06-14 06:06:31.099",
+        "profitTickValue": 1,
+        "lossTickValue": 1,
+        "accountCurrencyExchangeRate": 1,
+        "timestamps": {
+            "eventGenerated": "2024-06-14T03:06:31.099000+00:00",
+            "serverProcessingStarted": "2024-06-14T03:06:31.472000+00:00",
+            "serverProcessingFinished": "2024-06-14T03:06:31.475000+00:00",
+            "clientProcessingFinished": "2024-06-14T06:06:31.365870"
+        },
+        "equity": 88582.92
+    },
+    {
+        "symbol": "XAUUSD",
+        "bid": 2305.58,
+        "ask": 2305.76,
+        "time": "2024-06-14T03:06:31.099000+00:00",
+        "brokerTime": "2024-06-14 06:06:31.099",
+        "profitTickValue": 1,
+        "lossTickValue": 1,
+        "accountCurrencyExchangeRate": 1,
+        "timestamps": {
+            "eventGenerated": "2024-06-14T03:06:31.099000+00:00",
+            "serverProcessingStarted": "2024-06-14T03:06:31.495000+00:00",
+            "serverProcessingFinished": "2024-06-14T03:06:31.497000+00:00",
+            "clientProcessingFinished": "2024-06-14T06:06:31.386444"
+        },
+        "equity": 88582.92
+    },
+    {
+        "symbol": "XAUUSD",
+        "bid": 2305.58,
+        "ask": 2305.76,
+        "time": "2024-06-14T03:06:31.099000+00:00",
+        "brokerTime": "2024-06-14 06:06:31.099",
+        "profitTickValue": 1,
+        "lossTickValue": 1,
+        "accountCurrencyExchangeRate": 1,
+        "timestamps": {
+            "eventGenerated": "2024-06-14T03:06:31.099000+00:00",
+            "serverProcessingStarted": "2024-06-14T03:06:31.499000+00:00",
+            "serverProcessingFinished": "2024-06-14T03:06:31.501000+00:00",
+            "clientProcessingFinished": "2024-06-14T06:06:31.390227"
+        },
+        "equity": 88582.92
+    },
+    {
+        "symbol": "XAUUSD",
+        "bid": 2305.58,
+        "ask": 2305.76,
+        "time": "2024-06-14T03:06:31.099000+00:00",
+        "brokerTime": "2024-06-14 06:06:31.099",
+        "profitTickValue": 1,
+        "lossTickValue": 1,
+        "accountCurrencyExchangeRate": 1,
+        "timestamps": {
+            "eventGenerated": "2024-06-14T03:06:31.099000+00:00",
+            "serverProcessingStarted": "2024-06-14T03:06:31.457000+00:00",
+            "serverProcessingFinished": "2024-06-14T03:06:31.578000+00:00",
+            "clientProcessingFinished": "2024-06-14T06:06:31.474411"
+        },
+        "equity": 88582.92
+    },
+    {
+        "symbol": "XAUUSD",
+        "bid": 2305.58,
+        "ask": 2305.76,
+        "time": "2024-06-14T03:06:31.099000+00:00",
+        "brokerTime": "2024-06-14 06:06:31.099",
+        "profitTickValue": 1,
+        "lossTickValue": 1,
+        "accountCurrencyExchangeRate": 1,
+        "timestamps": {
+            "eventGenerated": "2024-06-14T03:06:31.099000+00:00",
+            "serverProcessingStarted": "2024-06-14T03:06:31.656000+00:00",
+            "serverProcessingFinished": "2024-06-14T03:06:31.665000+00:00",
+            "clientProcessingFinished": "2024-06-14T06:06:31.561727"
+        },
+        "equity": 88582.92
+    },
+    {
+        "symbol": "XAUUSD",
+        "bid": 2305.66,
+        "ask": 2305.84,
+        "time": "2024-06-14T03:06:32.592000+00:00",
+        "brokerTime": "2024-06-14 06:06:32.592",
+        "profitTickValue": 1,
+        "lossTickValue": 1,
+        "accountCurrencyExchangeRate": 1,
+        "timestamps": {
+            "eventGenerated": "2024-06-14T03:06:32.592000+00:00",
+            "serverProcessingStarted": "2024-06-14T03:06:34.002000+00:00",
+            "serverProcessingFinished": "2024-06-14T03:06:34.005000+00:00",
+            "clientProcessingFinished": "2024-06-14T06:06:33.899845"
+        },
+        "equity": 88574.55
+    },
+    {
+        "symbol": "XAUUSD",
+        "bid": 2305.66,
+        "ask": 2305.84,
+        "time": "2024-06-14T03:06:32.592000+00:00",
+        "brokerTime": "2024-06-14 06:06:32.592",
+        "profitTickValue": 1,
+        "lossTickValue": 1,
+        "accountCurrencyExchangeRate": 1,
+        "timestamps": {
+            "eventGenerated": "2024-06-14T03:06:32.592000+00:00",
+            "serverProcessingStarted": "2024-06-14T03:06:34.166000+00:00",
+            "serverProcessingFinished": "2024-06-14T03:06:34.169000+00:00",
+            "clientProcessingFinished": "2024-06-14T06:06:34.063382"
+        },
+        "equity": 88574.55
+    },
+    {
+        "symbol": "XAUUSD",
+        "bid": 2305.72,
+        "ask": 2305.9,
+        "time": "2024-06-14T03:06:38.193000+00:00",
+        "brokerTime": "2024-06-14 06:06:38.193",
+        "profitTickValue": 1,
+        "lossTickValue": 1,
+        "accountCurrencyExchangeRate": 1,
+        "timestamps": {
+            "eventGenerated": "2024-06-14T03:06:38.193000+00:00",
+            "serverProcessingStarted": "2024-06-14T03:06:38.662000+00:00",
+            "serverProcessingFinished": "2024-06-14T03:06:38.754000+00:00",
+            "clientProcessingFinished": "2024-06-14T06:06:38.648101"
+        },
+        "equity": 88571.31
+    },
+    {
+        "symbol": "XAUUSD",
+        "bid": 2305.72,
+        "ask": 2305.9,
+        "time": "2024-06-14T03:06:38.880000+00:00",
+        "brokerTime": "2024-06-14 06:06:38.880",
+        "profitTickValue": 1,
+        "lossTickValue": 1,
+        "accountCurrencyExchangeRate": 1,
+        "timestamps": {
+            "eventGenerated": "2024-06-14T03:06:38.880000+00:00",
+            "serverProcessingStarted": "2024-06-14T03:06:38.975000+00:00",
+            "serverProcessingFinished": "2024-06-14T03:06:38.978000+00:00",
+            "clientProcessingFinished": "2024-06-14T06:06:38.872781"
+        },
+        "equity": 88571.31
+    },
+    {
+        "symbol": "XAUUSD",
+        "bid": 2305.68,
+        "ask": 2305.86,
+        "time": "2024-06-14T03:06:40.594000+00:00",
+        "brokerTime": "2024-06-14 06:06:40.594",
+        "profitTickValue": 1,
+        "lossTickValue": 1,
+        "accountCurrencyExchangeRate": 1,
+        "timestamps": {
+            "eventGenerated": "2024-06-14T03:06:40.594000+00:00",
+            "serverProcessingStarted": "2024-06-14T03:06:41.167000+00:00",
+            "serverProcessingFinished": "2024-06-14T03:06:41.170000+00:00",
+            "clientProcessingFinished": "2024-06-14T06:06:41.063949"
+        },
+        "equity": 88573.47
+    },
+    {
+        "symbol": "XAUUSD",
+        "bid": 2305.68,
+        "ask": 2305.86,
+        "time": "2024-06-14T03:06:40.594000+00:00",
+        "brokerTime": "2024-06-14 06:06:40.594",
+        "profitTickValue": 1,
+        "lossTickValue": 1,
+        "accountCurrencyExchangeRate": 1,
+        "timestamps": {
+            "eventGenerated": "2024-06-14T03:06:40.594000+00:00",
+            "serverProcessingStarted": "2024-06-14T03:06:41.474000+00:00",
+            "serverProcessingFinished": "2024-06-14T03:06:41.477000+00:00",
+            "clientProcessingFinished": "2024-06-14T06:06:41.370454"
+        },
+        "equity": 88573.47
+    },
+    {
+        "symbol": "XAUUSD",
+        "bid": 2305.66,
+        "ask": 2305.84,
+        "time": "2024-06-14T03:06:43.598000+00:00",
+        "brokerTime": "2024-06-14 06:06:43.598",
+        "profitTickValue": 1,
+        "lossTickValue": 1,
+        "accountCurrencyExchangeRate": 1,
+        "timestamps": {
+            "eventGenerated": "2024-06-14T03:06:43.598000+00:00",
+            "serverProcessingStarted": "2024-06-14T03:06:43.669000+00:00",
+            "serverProcessingFinished": "2024-06-14T03:06:43.687000+00:00",
+            "clientProcessingFinished": "2024-06-14T06:06:43.667360"
+        },
+        "equity": 88574.55
+    },
+    {
+        "symbol": "XAUUSD",
+        "bid": 2305.66,
+        "ask": 2305.84,
+        "time": "2024-06-14T03:06:43.598000+00:00",
+        "brokerTime": "2024-06-14 06:06:43.598",
+        "profitTickValue": 1,
+        "lossTickValue": 1,
+        "accountCurrencyExchangeRate": 1,
+        "timestamps": {
+            "eventGenerated": "2024-06-14T03:06:43.598000+00:00",
+            "serverProcessingStarted": "2024-06-14T03:06:43.982000+00:00",
+            "serverProcessingFinished": "2024-06-14T03:06:44.049000+00:00",
+            "clientProcessingFinished": "2024-06-14T06:06:43.947254"
+        },
+        "equity": 88574.55
+    },
+    {
+        "symbol": "XAUUSD",
+        "bid": 2305.6,
+        "ask": 2305.78,
+        "time": "2024-06-14T03:06:45.935000+00:00",
+        "brokerTime": "2024-06-14 06:06:45.935",
+        "profitTickValue": 1,
+        "lossTickValue": 1,
+        "accountCurrencyExchangeRate": 1,
+        "timestamps": {
+            "eventGenerated": "2024-06-14T03:06:45.935000+00:00",
+            "serverProcessingStarted": "2024-06-14T03:06:46.164000+00:00",
+            "serverProcessingFinished": "2024-06-14T03:06:46.167000+00:00",
+            "clientProcessingFinished": "2024-06-14T06:06:46.063403"
+        },
+        "equity": 88577.79
+    },
+    {
+        "symbol": "XAUUSD",
+        "bid": 2305.59,
+        "ask": 2305.77,
+        "time": "2024-06-14T03:06:46.135000+00:00",
+        "brokerTime": "2024-06-14 06:06:46.135",
+        "profitTickValue": 1,
+        "lossTickValue": 1,
+        "accountCurrencyExchangeRate": 1,
+        "timestamps": {
+            "eventGenerated": "2024-06-14T03:06:46.135000+00:00",
+            "serverProcessingStarted": "2024-06-14T03:06:46.473000+00:00",
+            "serverProcessingFinished": "2024-06-14T03:06:46.476000+00:00",
+            "clientProcessingFinished": "2024-06-14T06:06:46.370838"
+        },
+        "equity": 88578.33
+    },
+    {
+        "symbol": "XAUUSD",
+        "bid": 2305.48,
+        "ask": 2305.66,
+        "time": "2024-06-14T03:06:48.805000+00:00",
+        "brokerTime": "2024-06-14 06:06:48.805",
+        "profitTickValue": 1,
+        "lossTickValue": 1,
+        "accountCurrencyExchangeRate": 1,
+        "timestamps": {
+            "eventGenerated": "2024-06-14T03:06:48.805000+00:00",
+            "serverProcessingStarted": "2024-06-14T03:06:48.973000+00:00",
+            "serverProcessingFinished": "2024-06-14T03:06:48.977000+00:00",
+            "clientProcessingFinished": "2024-06-14T06:06:48.867664"
+        },
+        "equity": 88584.27
+    },
+    {
+        "symbol": "XAUUSD",
+        "bid": 2305.48,
+        "ask": 2305.66,
+        "time": "2024-06-14T03:06:48.589000+00:00",
+        "brokerTime": "2024-06-14 06:06:48.589",
+        "profitTickValue": 1,
+        "lossTickValue": 1,
+        "accountCurrencyExchangeRate": 1,
+        "timestamps": {
+            "eventGenerated": "2024-06-14T03:06:48.589000+00:00",
+            "serverProcessingStarted": "2024-06-14T03:06:49.395000+00:00",
+            "serverProcessingFinished": "2024-06-14T03:06:49.472000+00:00",
+            "clientProcessingFinished": "2024-06-14T06:06:49.401643"
+        },
+        "equity": 88584.27
+    },
+    {
+        "symbol": "XAUUSD",
+        "bid": 2305.47,
+        "ask": 2305.65,
+        "time": "2024-06-14T03:06:50.178000+00:00",
+        "brokerTime": "2024-06-14 06:06:50.178",
+        "profitTickValue": 1,
+        "lossTickValue": 1,
+        "accountCurrencyExchangeRate": 1,
+        "timestamps": {
+            "eventGenerated": "2024-06-14T03:06:50.178000+00:00",
+            "serverProcessingStarted": "2024-06-14T03:06:51.472000+00:00",
+            "serverProcessingFinished": "2024-06-14T03:06:51.475000+00:00",
+            "clientProcessingFinished": "2024-06-14T06:06:51.366423"
+        },
+        "equity": 88584.81
+    },
+    {
+        "symbol": "XAUUSD",
+        "bid": 2305.47,
+        "ask": 2305.65,
+        "time": "2024-06-14T03:06:50.178000+00:00",
+        "brokerTime": "2024-06-14 06:06:50.178",
+        "profitTickValue": 1,
+        "lossTickValue": 1,
+        "accountCurrencyExchangeRate": 1,
+        "timestamps": {
+            "eventGenerated": "2024-06-14T03:06:50.178000+00:00",
+            "serverProcessingStarted": "2024-06-14T03:06:51.894000+00:00",
+            "serverProcessingFinished": "2024-06-14T03:06:51.896000+00:00",
+            "clientProcessingFinished": "2024-06-14T06:06:51.789623"
+        },
+        "equity": 88584.81
+    },
+    {
+        "symbol": "XAUUSD",
+        "bid": 2305.44,
+        "ask": 2305.62,
+        "time": "2024-06-14T03:06:53.086000+00:00",
+        "brokerTime": "2024-06-14 06:06:53.086",
+        "profitTickValue": 1,
+        "lossTickValue": 1,
+        "accountCurrencyExchangeRate": 1,
+        "timestamps": {
+            "eventGenerated": "2024-06-14T03:06:53.086000+00:00",
+            "serverProcessingStarted": "2024-06-14T03:06:53.664000+00:00",
+            "serverProcessingFinished": "2024-06-14T03:06:53.722000+00:00",
+            "clientProcessingFinished": "2024-06-14T06:06:53.617083"
+        },
+        "equity": 88586.43
+    },
+    {
+        "symbol": "XAUUSD",
+        "bid": 2305.42,
+        "ask": 2305.6,
+        "time": "2024-06-14T03:06:53.643000+00:00",
+        "brokerTime": "2024-06-14 06:06:53.643",
+        "profitTickValue": 1,
+        "lossTickValue": 1,
+        "accountCurrencyExchangeRate": 1,
+        "timestamps": {
+            "eventGenerated": "2024-06-14T03:06:53.643000+00:00",
+            "serverProcessingStarted": "2024-06-14T03:06:53.973000+00:00",
+            "serverProcessingFinished": "2024-06-14T03:06:53.976000+00:00",
+            "clientProcessingFinished": "2024-06-14T06:06:53.867433"
+        },
+        "equity": 88587.51
+    },
+    {
+        "symbol": "XAUUSD",
+        "bid": 2305.44,
+        "ask": 2305.62,
+        "time": "2024-06-14T03:06:56.148000+00:00",
+        "brokerTime": "2024-06-14 06:06:56.148",
+        "profitTickValue": 1,
+        "lossTickValue": 1,
+        "accountCurrencyExchangeRate": 1,
+        "timestamps": {
+            "eventGenerated": "2024-06-14T03:06:56.148000+00:00",
+            "serverProcessingStarted": "2024-06-14T03:06:56.474000+00:00",
+            "serverProcessingFinished": "2024-06-14T03:06:56.476000+00:00",
+            "clientProcessingFinished": "2024-06-14T06:06:56.370745"
+        },
+        "equity": 88586.43
+    },
+    {
+        "symbol": "XAUUSD",
+        "bid": 2305.43,
+        "ask": 2305.61,
+        "time": "2024-06-14T03:06:55.669000+00:00",
+        "brokerTime": "2024-06-14 06:06:55.669",
+        "profitTickValue": 1,
+        "lossTickValue": 1,
+        "accountCurrencyExchangeRate": 1,
+        "timestamps": {
+            "eventGenerated": "2024-06-14T03:06:55.669000+00:00",
+            "serverProcessingStarted": "2024-06-14T03:06:56.546000+00:00",
+            "serverProcessingFinished": "2024-06-14T03:06:57.717000+00:00",
+            "clientProcessingFinished": "2024-06-14T06:06:57.698480"
+        },
+        "equity": 88586.97
+    },
+    {
+        "symbol": "XAUUSD",
+        "bid": 2305.55,
+        "ask": 2305.73,
+        "time": "2024-06-14T03:06:58.699000+00:00",
+        "brokerTime": "2024-06-14 06:06:58.699",
+        "profitTickValue": 1,
+        "lossTickValue": 1,
+        "accountCurrencyExchangeRate": 1,
+        "timestamps": {
+            "eventGenerated": "2024-06-14T03:06:58.699000+00:00",
+            "serverProcessingStarted": "2024-06-14T03:06:58.972000+00:00",
+            "serverProcessingFinished": "2024-06-14T03:06:58.974000+00:00",
+            "clientProcessingFinished": "2024-06-14T06:06:58.869409"
+        },
+        "equity": 88580.49
+    },
+    {
+        "symbol": "XAUUSD",
+        "bid": 2305.54,
+        "ask": 2305.72,
+        "time": "2024-06-14T03:06:58.587000+00:00",
+        "brokerTime": "2024-06-14 06:06:58.587",
+        "profitTickValue": 1,
+        "lossTickValue": 1,
+        "accountCurrencyExchangeRate": 1,
+        "timestamps": {
+            "eventGenerated": "2024-06-14T03:06:58.587000+00:00",
+            "serverProcessingStarted": "2024-06-14T03:06:59.050000+00:00",
+            "serverProcessingFinished": "2024-06-14T03:06:59.054000+00:00",
+            "clientProcessingFinished": "2024-06-14T06:06:58.947597"
+        },
+        "equity": 88581.03
+    },
+    {
+        "symbol": "XAUUSD",
+        "bid": 2305.56,
+        "ask": 2305.74,
+        "time": "2024-06-14T03:07:00.787000+00:00",
+        "brokerTime": "2024-06-14 06:07:00.787",
+        "profitTickValue": 1,
+        "lossTickValue": 1,
+        "accountCurrencyExchangeRate": 1,
+        "timestamps": {
+            "eventGenerated": "2024-06-14T03:07:00.787000+00:00",
+            "serverProcessingStarted": "2024-06-14T03:07:01.177000+00:00",
+            "serverProcessingFinished": "2024-06-14T03:07:01.181000+00:00",
+            "clientProcessingFinished": "2024-06-14T06:07:01.077366"
+        },
+        "equity": 88579.95
+    },
+    {
+        "symbol": "XAUUSD",
+        "bid": 2305.56,
+        "ask": 2305.74,
+        "time": "2024-06-14T03:07:00.787000+00:00",
+        "brokerTime": "2024-06-14 06:07:00.787",
+        "profitTickValue": 1,
+        "lossTickValue": 1,
+        "accountCurrencyExchangeRate": 1,
+        "timestamps": {
+            "eventGenerated": "2024-06-14T03:07:00.787000+00:00",
+            "serverProcessingStarted": "2024-06-14T03:07:01.472000+00:00",
+            "serverProcessingFinished": "2024-06-14T03:07:01.474000+00:00",
+            "clientProcessingFinished": "2024-06-14T06:07:01.378509"
+        },
+        "equity": 88579.95
+    },
+    {
+        "symbol": "XAUUSD",
+        "bid": 2305.5,
+        "ask": 2305.68,
+        "time": "2024-06-14T03:07:03.899000+00:00",
+        "brokerTime": "2024-06-14 06:07:03.899",
+        "profitTickValue": 1,
+        "lossTickValue": 1,
+        "accountCurrencyExchangeRate": 1,
+        "timestamps": {
+            "eventGenerated": "2024-06-14T03:07:03.899000+00:00",
+            "serverProcessingStarted": "2024-06-14T03:07:03.974000+00:00",
+            "serverProcessingFinished": "2024-06-14T03:07:03.978000+00:00",
+            "clientProcessingFinished": "2024-06-14T06:07:03.877197"
+        },
+        "equity": 88583.19
+    },
+    {
+        "symbol": "XAUUSD",
+        "bid": 2305.56,
+        "ask": 2305.74,
+        "time": "2024-06-14T03:07:00.787000+00:00",
+        "brokerTime": "2024-06-14 06:07:00.787",
+        "profitTickValue": 1,
+        "lossTickValue": 1,
+        "accountCurrencyExchangeRate": 1,
+        "timestamps": {
+            "eventGenerated": "2024-06-14T03:07:00.787000+00:00",
+            "serverProcessingStarted": "2024-06-14T03:07:04.757000+00:00",
+            "serverProcessingFinished": "2024-06-14T03:07:04.794000+00:00",
+            "clientProcessingFinished": "2024-06-14T06:07:04.771328"
+        },
+        "equity": 88579.95
+    },
+    {
+        "symbol": "XAUUSD",
+        "bid": 2305.64,
+        "ask": 2305.82,
+        "time": "2024-06-14T03:07:06.198000+00:00",
+        "brokerTime": "2024-06-14 06:07:06.198",
+        "profitTickValue": 1,
+        "lossTickValue": 1,
+        "accountCurrencyExchangeRate": 1,
+        "timestamps": {
+            "eventGenerated": "2024-06-14T03:07:06.198000+00:00",
+            "serverProcessingStarted": "2024-06-14T03:07:06.474000+00:00",
+            "serverProcessingFinished": "2024-06-14T03:07:06.477000+00:00",
+            "clientProcessingFinished": "2024-06-14T06:07:06.379347"
+        },
+        "equity": 88575.63
+    },
+    {
+        "symbol": "XAUUSD",
+        "bid": 2305.55,
+        "ask": 2305.73,
+        "time": "2024-06-14T03:07:06.093000+00:00",
+        "brokerTime": "2024-06-14 06:07:06.093",
+        "profitTickValue": 1,
+        "lossTickValue": 1,
+        "accountCurrencyExchangeRate": 1,
+        "timestamps": {
+            "eventGenerated": "2024-06-14T03:07:06.093000+00:00",
+            "serverProcessingStarted": "2024-06-14T03:07:07.258000+00:00",
+            "serverProcessingFinished": "2024-06-14T03:07:07.268000+00:00",
+            "clientProcessingFinished": "2024-06-14T06:07:07.166094"
+        },
+        "equity": 88580.49
+    },
+    {
+        "symbol": "XAUUSD",
+        "bid": 2305.65,
+        "ask": 2305.83,
+        "time": "2024-06-14T03:07:08.036000+00:00",
+        "brokerTime": "2024-06-14 06:07:08.036",
+        "profitTickValue": 1,
+        "lossTickValue": 1,
+        "accountCurrencyExchangeRate": 1,
+        "timestamps": {
+            "eventGenerated": "2024-06-14T03:07:08.036000+00:00",
+            "serverProcessingStarted": "2024-06-14T03:07:08.666000+00:00",
+            "serverProcessingFinished": "2024-06-14T03:07:08.671000+00:00",
+            "clientProcessingFinished": "2024-06-14T06:07:08.571014"
+        },
+        "equity": 88575.09
+    },
+    {
+        "symbol": "XAUUSD",
+        "bid": 2305.65,
+        "ask": 2305.83,
+        "time": "2024-06-14T03:07:08.036000+00:00",
+        "brokerTime": "2024-06-14 06:07:08.036",
+        "profitTickValue": 1,
+        "lossTickValue": 1,
+        "accountCurrencyExchangeRate": 1,
+        "timestamps": {
+            "eventGenerated": "2024-06-14T03:07:08.036000+00:00",
+            "serverProcessingStarted": "2024-06-14T03:07:08.975000+00:00",
+            "serverProcessingFinished": "2024-06-14T03:07:08.979000+00:00",
+            "clientProcessingFinished": "2024-06-14T06:07:08.877678"
+        },
+        "equity": 88575.09
+    },
+    {
+        "symbol": "XAUUSD",
+        "bid": 2305.66,
+        "ask": 2305.84,
+        "time": "2024-06-14T03:07:10.700000+00:00",
+        "brokerTime": "2024-06-14 06:07:10.700",
+        "profitTickValue": 1,
+        "lossTickValue": 1,
+        "accountCurrencyExchangeRate": 1,
+        "timestamps": {
+            "eventGenerated": "2024-06-14T03:07:10.700000+00:00",
+            "serverProcessingStarted": "2024-06-14T03:07:11.165000+00:00",
+            "serverProcessingFinished": "2024-06-14T03:07:11.171000+00:00",
+            "clientProcessingFinished": "2024-06-14T06:07:11.066171"
+        },
+        "equity": 88574.55
+    },
+    {
+        "symbol": "XAUUSD",
+        "bid": 2305.66,
+        "ask": 2305.84,
+        "time": "2024-06-14T03:07:10.700000+00:00",
+        "brokerTime": "2024-06-14 06:07:10.700",
+        "profitTickValue": 1,
+        "lossTickValue": 1,
+        "accountCurrencyExchangeRate": 1,
+        "timestamps": {
+            "eventGenerated": "2024-06-14T03:07:10.700000+00:00",
+            "serverProcessingStarted": "2024-06-14T03:07:11.474000+00:00",
+            "serverProcessingFinished": "2024-06-14T03:07:11.477000+00:00",
+            "clientProcessingFinished": "2024-06-14T06:07:11.377957"
+        },
+        "equity": 88574.55
+    },
+    {
+        "symbol": "XAUUSD",
+        "bid": 2305.7,
+        "ask": 2305.88,
+        "time": "2024-06-14T03:07:13.490000+00:00",
+        "brokerTime": "2024-06-14 06:07:13.490",
+        "profitTickValue": 1,
+        "lossTickValue": 1,
+        "accountCurrencyExchangeRate": 1,
+        "timestamps": {
+            "eventGenerated": "2024-06-14T03:07:13.490000+00:00",
+            "serverProcessingStarted": "2024-06-14T03:07:14.118000+00:00",
+            "serverProcessingFinished": "2024-06-14T03:07:14.223000+00:00",
+            "clientProcessingFinished": "2024-06-14T06:07:14.131886"
+        },
+        "equity": 88572.39
+    },
+    {
+        "symbol": "XAUUSD",
+        "bid": 2305.7,
+        "ask": 2305.88,
+        "time": "2024-06-14T03:07:13.490000+00:00",
+        "brokerTime": "2024-06-14 06:07:13.490",
+        "profitTickValue": 1,
+        "lossTickValue": 1,
+        "accountCurrencyExchangeRate": 1,
+        "timestamps": {
+            "eventGenerated": "2024-06-14T03:07:13.490000+00:00",
+            "serverProcessingStarted": "2024-06-14T03:07:14.279000+00:00",
+            "serverProcessingFinished": "2024-06-14T03:07:14.324000+00:00",
+            "clientProcessingFinished": "2024-06-14T06:07:14.231673"
+        },
+        "equity": 88572.39
+    },
+    {
+        "symbol": "XAUUSD",
+        "bid": 2305.71,
+        "ask": 2305.89,
+        "time": "2024-06-14T03:07:15.776000+00:00",
+        "brokerTime": "2024-06-14 06:07:15.776",
+        "profitTickValue": 1,
+        "lossTickValue": 1,
+        "accountCurrencyExchangeRate": 1,
+        "timestamps": {
+            "eventGenerated": "2024-06-14T03:07:15.776000+00:00",
+            "serverProcessingStarted": "2024-06-14T03:07:16.619000+00:00",
+            "serverProcessingFinished": "2024-06-14T03:07:16.624000+00:00",
+            "clientProcessingFinished": "2024-06-14T06:07:16.514191"
+        },
+        "equity": 88571.85
+    },
+    {
+        "symbol": "XAUUSD",
+        "bid": 2305.71,
+        "ask": 2305.89,
+        "time": "2024-06-14T03:07:15.776000+00:00",
+        "brokerTime": "2024-06-14 06:07:15.776",
+        "profitTickValue": 1,
+        "lossTickValue": 1,
+        "accountCurrencyExchangeRate": 1,
+        "timestamps": {
+            "eventGenerated": "2024-06-14T03:07:15.776000+00:00",
+            "serverProcessingStarted": "2024-06-14T03:07:16.789000+00:00",
+            "serverProcessingFinished": "2024-06-14T03:07:16.795000+00:00",
+            "clientProcessingFinished": "2024-06-14T06:07:16.685377"
+        },
+        "equity": 88571.85
+    },
+    {
+        "symbol": "XAUUSD",
+        "bid": 2305.66,
+        "ask": 2305.84,
+        "time": "2024-06-14T03:07:18.270000+00:00",
+        "brokerTime": "2024-06-14 06:07:18.270",
+        "profitTickValue": 1,
+        "lossTickValue": 1,
+        "accountCurrencyExchangeRate": 1,
+        "timestamps": {
+            "eventGenerated": "2024-06-14T03:07:18.270000+00:00",
+            "serverProcessingStarted": "2024-06-14T03:07:18.665000+00:00",
+            "serverProcessingFinished": "2024-06-14T03:07:18.669000+00:00",
+            "clientProcessingFinished": "2024-06-14T06:07:18.568960"
+        },
+        "equity": 88574.55
+    },
+    {
+        "symbol": "XAUUSD",
+        "bid": 2305.66,
+        "ask": 2305.84,
+        "time": "2024-06-14T03:07:18.270000+00:00",
+        "brokerTime": "2024-06-14 06:07:18.270",
+        "profitTickValue": 1,
+        "lossTickValue": 1,
+        "accountCurrencyExchangeRate": 1,
+        "timestamps": {
+            "eventGenerated": "2024-06-14T03:07:18.270000+00:00",
+            "serverProcessingStarted": "2024-06-14T03:07:18.975000+00:00",
+            "serverProcessingFinished": "2024-06-14T03:07:18.978000+00:00",
+            "clientProcessingFinished": "2024-06-14T06:07:18.881018"
+        },
+        "equity": 88574.55
+    },
+    {
+        "symbol": "XAUUSD",
+        "bid": 2305.61,
+        "ask": 2305.79,
+        "time": "2024-06-14T03:07:20.531000+00:00",
+        "brokerTime": "2024-06-14 06:07:20.531",
+        "profitTickValue": 1,
+        "lossTickValue": 1,
+        "accountCurrencyExchangeRate": 1,
+        "timestamps": {
+            "eventGenerated": "2024-06-14T03:07:20.531000+00:00",
+            "serverProcessingStarted": "2024-06-14T03:07:21.473000+00:00",
+            "serverProcessingFinished": "2024-06-14T03:07:21.475000+00:00",
+            "clientProcessingFinished": "2024-06-14T06:07:21.371562"
+        },
+        "equity": 88577.25
+    },
+    {
+        "symbol": "XAUUSD",
+        "bid": 2305.61,
+        "ask": 2305.79,
+        "time": "2024-06-14T03:07:20.531000+00:00",
+        "brokerTime": "2024-06-14 06:07:20.531",
+        "profitTickValue": 1,
+        "lossTickValue": 1,
+        "accountCurrencyExchangeRate": 1,
+        "timestamps": {
+            "eventGenerated": "2024-06-14T03:07:20.531000+00:00",
+            "serverProcessingStarted": "2024-06-14T03:07:22.150000+00:00",
+            "serverProcessingFinished": "2024-06-14T03:07:22.966000+00:00",
+            "clientProcessingFinished": "2024-06-14T06:07:22.858576"
+        },
+        "equity": 88577.25
+    },
+    {
+        "symbol": "XAUUSD",
+        "bid": 2305.78,
+        "ask": 2305.96,
+        "time": "2024-06-14T03:07:23.655000+00:00",
+        "brokerTime": "2024-06-14 06:07:23.655",
+        "profitTickValue": 1,
+        "lossTickValue": 1,
+        "accountCurrencyExchangeRate": 1,
+        "timestamps": {
+            "eventGenerated": "2024-06-14T03:07:23.655000+00:00",
+            "serverProcessingStarted": "2024-06-14T03:07:23.974000+00:00",
+            "serverProcessingFinished": "2024-06-14T03:07:23.977000+00:00",
+            "clientProcessingFinished": "2024-06-14T06:07:23.870103"
+        },
+        "equity": 88568.07
+    },
+    {
+        "symbol": "XAUUSD",
+        "bid": 2305.75,
+        "ask": 2305.93,
+        "time": "2024-06-14T03:07:23.312000+00:00",
+        "brokerTime": "2024-06-14 06:07:23.312",
+        "profitTickValue": 1,
+        "lossTickValue": 1,
+        "accountCurrencyExchangeRate": 1,
+        "timestamps": {
+            "eventGenerated": "2024-06-14T03:07:23.312000+00:00",
+            "serverProcessingStarted": "2024-06-14T03:07:24.649000+00:00",
+            "serverProcessingFinished": "2024-06-14T03:07:24.655000+00:00",
+            "clientProcessingFinished": "2024-06-14T06:07:24.548021"
+        },
+        "equity": 88569.69
+    },
+    {
+        "symbol": "XAUUSD",
+        "bid": 2305.68,
+        "ask": 2305.86,
+        "time": "2024-06-14T03:07:25.860000+00:00",
+        "brokerTime": "2024-06-14 06:07:25.860",
+        "profitTickValue": 1,
+        "lossTickValue": 1,
+        "accountCurrencyExchangeRate": 1,
+        "timestamps": {
+            "eventGenerated": "2024-06-14T03:07:25.860000+00:00",
+            "serverProcessingStarted": "2024-06-14T03:07:26.166000+00:00",
+            "serverProcessingFinished": "2024-06-14T03:07:26.173000+00:00",
+            "clientProcessingFinished": "2024-06-14T06:07:26.065558"
+        },
+        "equity": 88573.47
+    },
+    {
+        "symbol": "XAUUSD",
+        "bid": 2305.71,
+        "ask": 2305.89,
+        "time": "2024-06-14T03:07:26.326000+00:00",
+        "brokerTime": "2024-06-14 06:07:26.326",
+        "profitTickValue": 1,
+        "lossTickValue": 1,
+        "accountCurrencyExchangeRate": 1,
+        "timestamps": {
+            "eventGenerated": "2024-06-14T03:07:26.326000+00:00",
+            "serverProcessingStarted": "2024-06-14T03:07:26.632000+00:00",
+            "serverProcessingFinished": "2024-06-14T03:07:26.835000+00:00",
+            "clientProcessingFinished": "2024-06-14T06:07:26.731338"
+        },
+        "equity": 88571.85
+    },
+    {
+        "symbol": "XAUUSD",
+        "bid": 2305.71,
+        "ask": 2305.89,
+        "time": "2024-06-14T03:07:26.326000+00:00",
+        "brokerTime": "2024-06-14 06:07:26.326",
+        "profitTickValue": 1,
+        "lossTickValue": 1,
+        "accountCurrencyExchangeRate": 1,
+        "timestamps": {
+            "eventGenerated": "2024-06-14T03:07:26.326000+00:00",
+            "serverProcessingStarted": "2024-06-14T03:07:29.130000+00:00",
+            "serverProcessingFinished": "2024-06-14T03:07:29.133000+00:00",
+            "clientProcessingFinished": "2024-06-14T06:07:29.029613"
+        },
+        "equity": 88571.85
+    },
+    {
+        "symbol": "XAUUSD",
+        "bid": 2305.71,
+        "ask": 2305.89,
+        "time": "2024-06-14T03:07:28.588000+00:00",
+        "brokerTime": "2024-06-14 06:07:28.588",
+        "profitTickValue": 1,
+        "lossTickValue": 1,
+        "accountCurrencyExchangeRate": 1,
+        "timestamps": {
+            "eventGenerated": "2024-06-14T03:07:28.588000+00:00",
+            "serverProcessingStarted": "2024-06-14T03:07:29.860000+00:00",
+            "serverProcessingFinished": "2024-06-14T03:07:30.419000+00:00",
+            "clientProcessingFinished": "2024-06-14T06:07:30.337805"
+        },
+        "equity": 88571.85
+    },
+    {
+        "symbol": "XAUUSD",
+        "bid": 2305.73,
+        "ask": 2305.91,
+        "time": "2024-06-14T03:07:31.323000+00:00",
+        "brokerTime": "2024-06-14 06:07:31.323",
+        "profitTickValue": 1,
+        "lossTickValue": 1,
+        "accountCurrencyExchangeRate": 1,
+        "timestamps": {
+            "eventGenerated": "2024-06-14T03:07:31.323000+00:00",
+            "serverProcessingStarted": "2024-06-14T03:07:31.475000+00:00",
+            "serverProcessingFinished": "2024-06-14T03:07:31.478000+00:00",
+            "clientProcessingFinished": "2024-06-14T06:07:31.372521"
+        },
+        "equity": 88570.77
+    },
+    {
+        "symbol": "XAUUSD",
+        "bid": 2305.73,
+        "ask": 2305.91,
+        "time": "2024-06-14T03:07:30.924000+00:00",
+        "brokerTime": "2024-06-14 06:07:30.924",
+        "profitTickValue": 1,
+        "lossTickValue": 1,
+        "accountCurrencyExchangeRate": 1,
+        "timestamps": {
+            "eventGenerated": "2024-06-14T03:07:30.924000+00:00",
+            "serverProcessingStarted": "2024-06-14T03:07:32.368000+00:00",
+            "serverProcessingFinished": "2024-06-14T03:07:32.371000+00:00",
+            "clientProcessingFinished": "2024-06-14T06:07:32.310120"
+        },
+        "equity": 88570.77
+    },
+    {
+        "symbol": "XAUUSD",
+        "bid": 2305.91,
+        "ask": 2306.09,
+        "time": "2024-06-14T03:07:33.202000+00:00",
+        "brokerTime": "2024-06-14 06:07:33.202",
+        "profitTickValue": 1,
+        "lossTickValue": 1,
+        "accountCurrencyExchangeRate": 1,
+        "timestamps": {
+            "eventGenerated": "2024-06-14T03:07:33.202000+00:00",
+            "serverProcessingStarted": "2024-06-14T03:07:33.666000+00:00",
+            "serverProcessingFinished": "2024-06-14T03:07:33.669000+00:00",
+            "clientProcessingFinished": "2024-06-14T06:07:33.562279"
+        },
+        "equity": 88561.05
+    },
+    {
+        "symbol": "XAUUSD",
+        "bid": 2305.92,
+        "ask": 2306.1,
+        "time": "2024-06-14T03:07:33.853000+00:00",
+        "brokerTime": "2024-06-14 06:07:33.853",
+        "profitTickValue": 1,
+        "lossTickValue": 1,
+        "accountCurrencyExchangeRate": 1,
+        "timestamps": {
+            "eventGenerated": "2024-06-14T03:07:33.853000+00:00",
+            "serverProcessingStarted": "2024-06-14T03:07:33.977000+00:00",
+            "serverProcessingFinished": "2024-06-14T03:07:33.981000+00:00"
+        },
+        "equity": 88560.51
+    }
+]

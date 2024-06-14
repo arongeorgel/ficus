@@ -2,8 +2,7 @@ import unittest
 from unittest.mock import patch, mock_open, call
 from datetime import datetime, timedelta
 import json
-import os
-import pandas as pd
+from freezegun import freeze_time
 from metaapi_cloud_sdk.metaapi.models import MetatraderSymbolPrice
 
 from ficus.mt5.MetatraderStorage import MetatraderSymbolPriceManager
@@ -111,11 +110,30 @@ class TestMetatraderSymbolPriceManager(unittest.TestCase):
             equity=87000,
             accountCurrencyExchangeRate=1
         )
-        with patch('builtins.open', mock_open()) as mock_file:
-            self.manager.add_symbol_price(symbol_price)
-            file_path = f"meta_symbol_xauusd_{datetime.now().strftime('%Y_%m_%d')}.json"
-            mock_file.assert_called_with(file_path, 'w')
-            self.assertIn(symbol_price, self.manager.data)
+
+        initial_time = datetime(2024, 1, 1, 12, 0, 0)
+        write_time = initial_time + timedelta(minutes=31)
+
+        with freeze_time(initial_time):
+            self.manager._MetatraderSymbolPriceManager__last_write = initial_time - timedelta(minutes=31)
+            with patch.object(self.manager, 'save_data') as mock_save_data:
+                self.manager.add_symbol_price(symbol_price)
+                mock_save_data.assert_called_once()
+                self.assertIn(symbol_price, self.manager.data)
+
+        with freeze_time(write_time):
+            with patch.object(self.manager, 'save_data') as mock_save_data:
+                self.manager.add_symbol_price(symbol_price)
+                mock_save_data.assert_called_once()
+                self.assertIn(symbol_price, self.manager.data)
+
+        # Test case where less than 30 minutes have passed
+        less_than_30_minutes_later = initial_time + timedelta(minutes=10)
+        with freeze_time(less_than_30_minutes_later):
+            with patch.object(self.manager, 'save_data') as mock_save_data:
+                self.manager.add_symbol_price(symbol_price)
+                mock_save_data.assert_not_called()
+                self.assertIn(symbol_price, self.manager.data)
 
     def test_convert_datetime_to_str(self):
         symbol_price = {

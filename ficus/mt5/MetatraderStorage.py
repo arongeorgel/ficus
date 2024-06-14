@@ -5,14 +5,15 @@ from typing import List
 import pandas as pd
 from metaapi_cloud_sdk.metaapi.models import MetatraderSymbolPrice
 
-from ficus.mt5.models import TradingSymbol
-
 
 class MetatraderSymbolPriceManager:
-    def __init__(self, trading_symbol: TradingSymbol):
+    __MINUTES_FILE_SAVE = 30
+
+    def __init__(self, trading_symbol: str):
         self.__trading_symbol = trading_symbol
         self.data: List[MetatraderSymbolPrice] = []
         self.__load_data_for_today_and_yesterday()
+        self.__last_write = datetime.now()
 
     def __load_data_for_today_and_yesterday(self):
         today_file_path = self.__generate_file_path(datetime.now())
@@ -23,7 +24,7 @@ class MetatraderSymbolPriceManager:
 
     def __generate_file_path(self, date):
         timestamp = date.strftime("%Y_%m_%d")
-        return f"meta_symbol_{self.__trading_symbol.name.lower()}_{timestamp}.json"
+        return f"meta_symbol_{self.__trading_symbol.lower()}_{timestamp}.json"
 
     def __load_data(self, file_path):
         try:
@@ -36,7 +37,7 @@ class MetatraderSymbolPriceManager:
     def save_data(self):
         # validate file to save into.
         today = datetime.now().strftime("%Y_%m_%d")
-        file_path = f"meta_symbol_{self.__trading_symbol.name.lower()}_{today}.json"
+        file_path = f"meta_symbol_{self.__trading_symbol.lower()}_{today}.json"
 
         json_data = [self._convert_datetime_to_str(item) for item in self.data]
         with open(file_path, 'w') as file:
@@ -44,7 +45,10 @@ class MetatraderSymbolPriceManager:
 
     def add_symbol_price(self, symbol_price: MetatraderSymbolPrice):
         self.data.append(symbol_price)
-        self.save_data()
+        current_time = datetime.now()
+        if (current_time - self.__last_write) > timedelta(minutes=self.__MINUTES_FILE_SAVE):
+            self.save_data()
+            self.__last_write = current_time
 
     def _convert_datetime_to_str(self, obj):
         if isinstance(obj, datetime):
