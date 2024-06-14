@@ -9,7 +9,6 @@ client = TelegramClient('anon', api_id, api_hash)
 
 @client.on(events.NewMessage(chats=int("1239815745")))
 async def my_event_handler(event):
-    print(event.raw_text)
     telegram.parse_trading_message(event.raw_text)
 
 

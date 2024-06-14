@@ -182,10 +182,10 @@ class TestMetatraderSymbolPriceManager(unittest.TestCase):
         current_time = datetime.now()
         self.manager.data = [
             {"symbol": "XAUUSD", "price": 1800.5, "brokerTime": current_time - timedelta(minutes=10),
-             "time": current_time - timedelta(minutes=10), "bid": 1800.5},
+             "time": current_time - timedelta(minutes=10), "bid": 1800.5, "ask": 1802},
             {"symbol": "XAUUSD", "price": 1801.5, "brokerTime": current_time - timedelta(minutes=5),
-             "time": current_time - timedelta(minutes=5), "bid": 1801.5},
-            {"symbol": "XAUUSD", "price": 1802.5, "brokerTime": current_time, "time": current_time, "bid": 1802.5}
+             "time": current_time - timedelta(minutes=5), "bid": 1801.5, "ask": 1802},
+            {"symbol": "XAUUSD", "price": 1802.5, "brokerTime": current_time, "time": current_time, "bid": 1802.5, "ask": 1802}
         ]
         result = self.manager.generate_ohlcv(5)
         self.assertEqual(len(result), 3)  # Assuming we have 3 intervals in the data
@@ -198,10 +198,10 @@ class TestMetatraderSymbolPriceManager(unittest.TestCase):
         current_time = datetime.now()
         self.manager.data = [
             {"symbol": "XAUUSD", "price": 1800.5, "brokerTime": current_time - timedelta(minutes=10),
-             "time": current_time - timedelta(minutes=10), "bid": 1800.5},
+             "time": current_time - timedelta(minutes=10), "bid": 1800.5, "ask": 1802},
             {"symbol": "XAUUSD", "price": 1801.5, "brokerTime": current_time - timedelta(minutes=5),
-             "time": current_time - timedelta(minutes=5), "bid": 1801.5},
-            {"symbol": "XAUUSD", "price": 1802.5, "brokerTime": current_time, "time": current_time, "bid": 1802.5}
+             "time": current_time - timedelta(minutes=5), "bid": 1801.5, "ask": 1802},
+            {"symbol": "XAUUSD", "price": 1802.5, "brokerTime": current_time, "time": current_time, "bid": 1802.5, "ask": 1802}
         ]
         result_5min = self.manager.generate_ohlcv(5)
         self.assertEqual(len(result_5min), 3)  # Assuming we have 3 intervals in the data

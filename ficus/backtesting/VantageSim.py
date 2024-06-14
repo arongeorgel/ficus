@@ -1,3 +1,4 @@
+import logging
 import os
 import traceback
 from datetime import datetime
@@ -49,7 +50,7 @@ class VantageSim(ITradingCallback):
             self.__sync_listener = MetaSynchronizationListener(self.__price_managers, self.__trade_manager)
 
         except Exception as ex:
-            print(''.join(traceback.TracebackException.from_exception(ex).format()))
+            logging.error(f"{ex.__traceback__}")
 
     async def disconnect(self, symbols_to_unsubscribe: List[str]):
         pass

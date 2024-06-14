@@ -1,3 +1,5 @@
+import logging
+
 from typing import List, Dict
 
 from metaapi_cloud_sdk import MetaApi, SynchronizationListener
@@ -34,10 +36,10 @@ class Vantage(ITradingCallback):
 
         if initial_state not in deployed_states:
             #  wait until account is deployed and connected to broker
-            print('Deploying account')
+            logging.info('Deploying account')
             await account.deploy()
 
-        print('Waiting for API server to connect to broker (may take couple of minutes)')
+        logging.info('Waiting for API server to connect to broker (may take couple of minutes)')
         await account.wait_connected()
 
         self.__api_connection = account.get_streaming_connection()
@@ -54,10 +56,10 @@ class Vantage(ITradingCallback):
             self.__sync_listener = MetaSynchronizationListener(self.__price_managers, self.__trade_manager)
             self.__api_connection.add_synchronization_listener(self.__sync_listener)
         except Exception as ex:
-            print(ex.__traceback__)
+            logging.error(f'Failed on preparing the metaapi listeners {ex.__traceback__}')
 
     async def disconnect(self, symbols_to_unsubscribe: List[str]):
-        print("Disconnecting...")
+        logging.info("Disconnecting...")
         for symbol in symbols_to_unsubscribe:
             await self.__api_connection.unsubscribe_from_market_data(symbol=symbol)
 
@@ -83,21 +85,21 @@ class Vantage(ITradingCallback):
         try:
             return await self.__api_connection.close_position(trade['position_id'])
         except Exception as e:
-            print(f"Failed to close position for {trade}: {e.__traceback__}")
+            logging.info(f"Failed to close position for {trade}: {e.__traceback__}")
 
     async def partially_close_trade(self, trade: FicusTrade, symbol: str) -> MetatraderTradeResponse:
         try:
             return await self.__api_connection.close_position_partially(
                 position_id=trade['position_id'], volume=trade['volume'])
         except Exception as e:
-            print(f"Failed to partially close position for {trade}: {e.__traceback__}")
+            logging.info(f"Failed to partially close position for {trade}: {e.__traceback__}")
 
     async def modify_trade(self, trade: FicusTrade) -> MetatraderTradeResponse:
         try:
             return await self.__api_connection.modify_position(
                 position_id=trade['position_id'], stop_loss=trade['stop_loss_price'])
         except Exception as e:
-            print(f"Failed to modify trade {trade}: {e.__traceback__}")
+            logging.info(f"Failed to modify trade {trade}: {e.__traceback__}")
 
     # called from main file [x] minutes, as configured
     async def on_ohlcv(self, last_ohlcv, symbol):

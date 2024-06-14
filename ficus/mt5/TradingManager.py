@@ -1,3 +1,4 @@
+import logging
 from typing import List
 
 import pandas as pd
@@ -16,7 +17,7 @@ class TradingManager:
         self.callback: ITradingCallback = callback
 
     async def _close_trade(self, trade, trading_symbol):
-        print(f"Closing trade {trade}")
+        logging.info(f"Closing trade {trade}")
         self.__closed_trades.append(trade)
         del self._current_trades[trading_symbol]
         await self.callback.close_trade(trade, trading_symbol)
@@ -42,7 +43,7 @@ class TradingManager:
             volume=volume,
             symbol=trading_symbol)
         self._current_trades[trading_symbol] = trade
-        print(f"Open a new trade ${trade}")
+        logging.info(f"Open a new trade ${trade}")
 
     async def validate_price(self, price: float, trading_symbol):
         if trading_symbol not in self._current_trades:
@@ -53,23 +54,19 @@ class TradingManager:
         entry_price = trade['entry_price']
         volume = trade['start_volume']
 
-        # def adjust_stop_loss(new_sl):
-        #     trade['stop_loss_price'] = new_sl
-        #     print(f"Stop loss adjusted to {new_sl} for {trade['symbol']}")
-
         if direction is TradeDirection.BUY:
             # SL
             if price <= trade['stop_loss_price']:
-                print(f"Stop loss hit for {trade['symbol']} on buy at price {price}")
+                logging.info(f"Stop loss hit for {trade['symbol']} on buy at price {price}")
                 await self._close_trade(trade, trading_symbol)
             # TP3
             elif price >= trade['take_profits'][2] and not trade['take_profits_hit'][2]:
-                print(f"Take profit 3 hit for {trade['symbol']} on buy at price {price}")
+                logging.info(f"Take profit 3 hit for {trade['symbol']} on buy at price {price}")
                 trade['take_profits_hit'][2] = True
                 await self._close_trade(trade, trading_symbol)
             # TP2
             elif price >= trade['take_profits'][1] and not trade['take_profits_hit'][1]:
-                print(f"Take profit 2 hit for {trade['symbol']} on buy at price {price}")
+                logging.info(f"Take profit 2 hit for {trade['symbol']} on buy at price {price}")
                 trade['volume'] = round(volume / 3, 2)
                 await self._partially_close_trade(trade, trading_symbol)
 
@@ -79,7 +76,7 @@ class TradingManager:
                 await self._modify_trade(trade)
             # TP 1
             elif price >= trade['take_profits'][0] and not trade['take_profits_hit'][0]:
-                print(f"Take profit 1 hit for {trade['symbol']} on buy at price {price}")
+                logging.info(f"Take profit 1 hit for {trade['symbol']} on buy at price {price}")
                 trade['take_profits_hit'][0] = True
                 trade['volume'] = round(volume / 2, 2)
                 await self._partially_close_trade(trade, trading_symbol)
@@ -91,16 +88,16 @@ class TradingManager:
         elif direction is TradeDirection.SELL:
             # SL
             if price >= trade['stop_loss_price']:
-                print(f"Stop loss hit for {trade['symbol']} on sell at price {price}")
+                logging.info(f"Stop loss hit for {trade['symbol']} on sell at price {price}")
                 await self._close_trade(trade, trading_symbol)
             # TP 3
             elif price <= trade['take_profits'][2] and not trade['take_profits_hit'][2]:
-                print(f"Take profit 3 hit for {trade['symbol']} on sell at price {price}")
+                logging.info(f"Take profit 3 hit for {trade['symbol']} on sell at price {price}")
                 trade['take_profits_hit'][2] = True
                 await self._close_trade(trade, trading_symbol)
             # TP 2
             elif price <= trade['take_profits'][1] and not trade['take_profits_hit'][1]:
-                print(f"Take profit 2 hit for {trade['symbol']} on sell at price {price}")
+                logging.info(f"Take profit 2 hit for {trade['symbol']} on sell at price {price}")
                 trade['volume'] = round(volume / 3, 2)
                 await self._partially_close_trade(trade, trading_symbol)
 
@@ -110,7 +107,7 @@ class TradingManager:
                 await self._modify_trade(trade)
             # TP 1
             elif price <= trade['take_profits'][0] and not trade['take_profits_hit'][0]:
-                print(f"Take profit 1 hit for {trade['symbol']} on buy at price {price}")
+                logging.info(f"Take profit 1 hit for {trade['symbol']} on buy at price {price}")
                 trade['take_profits_hit'][0] = True
                 trade['volume'] = round(volume / 2, 2)
                 await self._partially_close_trade(trade, trading_symbol)
@@ -122,14 +119,13 @@ class TradingManager:
     async def on_ohclv(self, series: Series, symbol: str):
         signal = series['Position']
         if pd.isna(signal):
-            print("No signal")
             return
 
         # if we have a running trade, but received a different direction, close it.
         if symbol in self._current_trades:
             trade = self._current_trades[symbol]
             if signal != 0 and TradeDirection.from_value(signal) != trade['position']:
-                print(f"New signal received ({signal}). Closing {trade} at price {series['Close']}")
+                logging.info(f"New signal received ({signal}). Closing {trade} at price {series['Close']}")
                 await self._close_trade(trade, symbol)
                 await self._open_trade(TradeDirection.from_value(signal), symbol, series['Close'])
         else:

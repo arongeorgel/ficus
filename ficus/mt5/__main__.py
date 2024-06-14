@@ -1,4 +1,5 @@
 import asyncio
+import logging
 import os
 
 from ficus.backtesting.strategies import calculate_ema, strategy_macd
@@ -19,7 +20,7 @@ async def async_start_vantage():
 async def async_start_trading_gold():
     while True:
         try:
-            await asyncio.sleep(60 * 5)
+            await asyncio.sleep(60)
             gold = TradingSymbol.XAUUSD
             gold_ohlcv = vantage.get_ohlcv_for_symbol(gold, 1)
             # apply strategy
@@ -28,9 +29,7 @@ async def async_start_trading_gold():
             last_gold = gold_macd.iloc[-1]
             await vantage.on_ohlcv(last_gold, gold)
         except Exception as e:
-            print(f"Failed for gold: {e.__traceback__}")
-
-            await asyncio.sleep(1)
+            logging.error(f"Failed for gold. Traceback: {e.__traceback__}")
 
 
 async def async_start_trading_bitcoin():
@@ -45,7 +44,7 @@ async def async_start_trading_bitcoin():
             last_btc = btc_macd.iloc[-1]
             await vantage.on_ohlcv(last_btc, bitcoin)
         except Exception as e:
-            print(f"Failed for bitcoin {e.__traceback__}")
+            logging.error(f"Failed for bitcoin. Traceback: {e.__traceback__}")
 
 
 def start_vantage():
@@ -66,11 +65,11 @@ async def main():
         while True:
             await asyncio.sleep(1)
     except Exception as e:
-        print(f"terminated by {e.__traceback__}")
+        logging.error(f"Exception in main(). Traceback: {e.__traceback__}")
     finally:
-        print("finally terminated by key")
-        os.system("ls -l")
-        print("Program completed!")
+        logging.info("Program completed. Starting again now")
+        logging.info("=====================================")
+        os.system("run_ficus")
 
 
 async def main_disconnect():

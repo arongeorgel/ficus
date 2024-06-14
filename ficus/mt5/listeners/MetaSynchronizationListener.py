@@ -1,4 +1,5 @@
 # type: ignore
+import logging
 from typing import List
 
 from metaapi_cloud_sdk import SynchronizationListener
@@ -18,14 +19,14 @@ class MetaSynchronizationListener(SynchronizationListener):
         self.trading_manager = trading_manager
 
     async def on_connected(self, instance_index: str, replicas: int):
-        print("meta > Connected")
+        logging.info("meta > Connected")
         return await super().on_connected(instance_index, replicas)
 
     async def on_health_status(self, instance_index: str, status: HealthStatus):
         return await super().on_health_status(instance_index, status)
 
     async def on_disconnected(self, instance_index: str):
-        print("meta > Disconnected")
+        logging.info("meta > Disconnected")
         return await super().on_disconnected(instance_index)
 
     async def on_broker_connection_status_changed(self, instance_index: str, connected: bool):
@@ -34,20 +35,20 @@ class MetaSynchronizationListener(SynchronizationListener):
     async def on_synchronization_started(self, instance_index: str, specifications_hash: str = None,
                                          positions_hash: str = None, orders_hash: str = None,
                                          synchronization_id: str = None):
-        print("meta > Sync started")
+        logging.info("meta > Sync started")
         return await super().on_synchronization_started(instance_index, specifications_hash, positions_hash,
                                                         orders_hash, synchronization_id)
 
     async def on_account_information_updated(self, instance_index: str,
                                              account_information: MetatraderAccountInformation):
-        print("meta > Account info updated")
+        logging.info("meta > Account info updated")
         return await super().on_account_information_updated(instance_index, account_information)
 
     async def on_positions_replaced(self, instance_index: str, positions: List[MetatraderPosition]):
         return await super().on_positions_replaced(instance_index, positions)
 
     async def on_positions_synchronized(self, instance_index: str, synchronization_id: str):
-        print("meta > positions synced")
+        logging.info("meta > positions synced")
         return await super().on_positions_synchronized(instance_index, synchronization_id)
 
     async def on_positions_updated(self, instance_index: str, positions: MetatraderPosition,
@@ -117,7 +118,7 @@ class MetaSynchronizationListener(SynchronizationListener):
         return await super().on_subscription_downgraded(instance_index, symbol, updates, unsubscriptions)
 
     async def on_stream_closed(self, instance_index: str):
-        print("meta > Stream closed.")
+        logging.info("meta > Stream closed.")
         return await super().on_stream_closed(instance_index)
 
     async def on_unsubscribe_region(self, region: str):

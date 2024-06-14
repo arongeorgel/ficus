@@ -35,7 +35,7 @@ class BacktestCallback(ITradingCallback):
 
         contract_size = 100
         self.capital = round(self.capital + (volume_to_close * contract_size * price_difference), 2)
-        print(f"Updated capital = {self.capital}, current price = {self.current_running_price}")
+        logging("Updated capital = {self.capital}, current price = {self.current_running_price}")
 
     async def close_trade(self, trade: FicusTrade, trading_symbol: str):
         self.update_capital(trade)
