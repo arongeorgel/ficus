@@ -7,7 +7,7 @@ from metaapi_cloud_sdk.metaapi.models import MetatraderSymbolPrice
 
 
 class MetatraderSymbolPriceManager:
-    __MINUTES_FILE_SAVE = 30
+    __MINUTES_FILE_SAVE = 2
 
     def __init__(self, trading_symbol: str):
         self.__trading_symbol = trading_symbol
@@ -89,7 +89,11 @@ class MetatraderSymbolPriceManager:
         df['brokerTime'] = pd.to_datetime(df['brokerTime'])
         df.set_index('brokerTime', inplace=True)
 
-        resampled = df['bid'].resample(f'{interval}min').ohlc()
+        # Calculate the average of ask and bid prices
+        df['average_price'] = (df['ask'] + df['bid']) / 2
+
+        # Resample based on the average price
+        resampled = df['average_price'].resample(f'{interval}min').ohlc()
 
         # Rename columns to capitalize them
         resampled.columns = ['Open', 'High', 'Low', 'Close']

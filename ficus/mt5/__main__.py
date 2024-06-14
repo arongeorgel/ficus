@@ -1,4 +1,5 @@
 import asyncio
+import os
 
 from ficus.backtesting.strategies import calculate_ema, strategy_macd
 from ficus.mt5.Vantage import Vantage
@@ -31,6 +32,7 @@ async def async_start_trading_gold():
 
             await asyncio.sleep(1)
 
+
 async def async_start_trading_bitcoin():
     while True:
         try:
@@ -50,10 +52,6 @@ def start_vantage():
     asyncio.run(async_start_vantage())
 
 
-def start_trading():
-    asyncio.run(async_start_trading())
-
-
 async def main():
     try:
         # Create tasks for both coroutines
@@ -71,7 +69,7 @@ async def main():
         print(f"terminated by {e.__traceback__}")
     finally:
         print("finally terminated by key")
-        # await vantage.disconnect(trading_symbols)
+        os.system("ls -l")
         print("Program completed!")
 
 

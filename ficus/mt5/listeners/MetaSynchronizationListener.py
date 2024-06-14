@@ -127,8 +127,9 @@ class MetaSynchronizationListener(SynchronizationListener):
     async def on_symbol_price_updated(self, instance_index: str, price: MetatraderSymbolPrice):
         # save data
         symbol_updated = price['symbol']
-        self.price_managers[symbol_updated].add_symbol_price(price)
-        # validate price
-        await self.trading_manager.validate_price(price['bid'], symbol_updated)
+        if symbol_updated in self.price_managers:
+            self.price_managers[symbol_updated].add_symbol_price(price)
+            # validate price
+            await self.trading_manager.validate_price(price['bid'], symbol_updated)
 
         return await super().on_symbol_price_updated(instance_index, price)

@@ -7,6 +7,7 @@ from colorama import init
 from matplotlib import pyplot as plt
 
 from ficus.backtesting.strategies import *
+from ficus.mt5.MetatraderStorage import MetatraderSymbolPriceManager
 from ficus.ui.ploters import plot_sma, plot_ema, plot_macd
 from ficus.mt5.TradingManager import TradingManager
 from ficus.mt5.listeners.ITradingCallback import ITradingCallback
@@ -104,10 +105,10 @@ async def main():
     plt.figure(figsize=(14, 7))
 
     # Download data
-    forex_data = download_forex_data(ticker, '2024-06-03', '2024-06-07', interval)
+    # forex_data = download_forex_data(ticker, '2024-06-03', '2024-06-07', interval)
     # use local json file
-    # storage = MetatraderSymbolPriceManager(TradingSymbol.XAUUSD)
-    # forex_data = storage.generate_ohlcv(1)
+    storage = MetatraderSymbolPriceManager(TradingSymbol.XAUUSD)
+    forex_data = storage.generate_ohlcv(1)
     windows = (20, 50)
 
     # Apply SMA strategy
