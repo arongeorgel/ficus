@@ -7,7 +7,7 @@ from metaapi_cloud_sdk.metaapi.models import MetatraderSymbolPrice
 
 
 class MetatraderSymbolPriceManager:
-    __MINUTES_FILE_SAVE = 2
+    __MINUTES_FILE_SAVE = 10
 
     def __init__(self, trading_symbol: str):
         self.__trading_symbol = trading_symbol

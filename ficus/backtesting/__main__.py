@@ -87,19 +87,19 @@ async def backtest_strategy(trade_manager, data, symbol):
 
 
 async def main():
-    # ticker = 'EURUSD=X'
-    # symbol = TradingSymbol.EURUSD
-    # contract_size = 100000
+    ticker = 'EURUSD=X'
+    symbol = TradingSymbol.EURUSD
+    contract_size = 100000
 
-    ticker = 'GC=F'
-    symbol = TradingSymbol.XAUUSD
-    contract_size = 100
+    # ticker = 'GC=F'
+    # symbol = TradingSymbol.XAUUSD
+    # contract_size = 100
 
     # ticker = 'BTC=F'
     # symbol = TradingSymbol.BTCUSD
     # contract_size = 1
 
-    interval = '5m'
+    interval = '1m'
 
     plt.figure(figsize=(14, 7))
 

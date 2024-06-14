@@ -10,17 +10,17 @@ from ficus.mt5.models import TradingSymbol
 import google.cloud.logging
 
 # Instantiates a client
-client = google.cloud.logging.Client()
+# client = google.cloud.logging.Client()
 
 # Retrieves a Cloud Logging handler based on the environment
 # you're running in and integrates the handler with the
 # Python logging module. By default this captures all logs
 # at INFO level and higher
-client.setup_logging()
+# client.setup_logging()
 
 # Start Ficus
 vantage = Vantage()
-trading_symbols = [TradingSymbol.XAUUSD, TradingSymbol.BTCUSD]
+trading_symbols = [TradingSymbol.XAUUSD, TradingSymbol.BTCUSD, TradingSymbol.EURUSD]
 
 
 async def async_start_vantage():
@@ -42,6 +42,22 @@ async def async_start_trading_gold():
             gold_macd = strategy_macd(gold_ema, 50)
             last_gold = gold_macd.iloc[-1]
             await vantage.on_ohlcv(last_gold, gold)
+        except Exception as e:
+            logging.error(f"Failed for gold. Traceback: {e.__traceback__}")
+
+
+async def async_start_trading_eur():
+    while True:
+        try:
+            trade_on_minutes = 5
+            await asyncio.sleep(60 * trade_on_minutes)
+            eurusd = TradingSymbol.EURUSD
+            gold_ohlcv = vantage.get_ohlcv_for_symbol(eurusd, trade_on_minutes)
+            # apply strategy
+            gold_ema = calculate_ema(gold_ohlcv, 50)
+            gold_macd = strategy_macd(gold_ema, 50)
+            last_gold = gold_macd.iloc[-1]
+            await vantage.on_ohlcv(last_gold, eurusd)
         except Exception as e:
             logging.error(f"Failed for gold. Traceback: {e.__traceback__}")
 
@@ -72,9 +88,10 @@ async def main():
         vantage_task = asyncio.create_task(async_start_vantage())
         gold_task = asyncio.create_task(async_start_trading_gold())
         btc_task = asyncio.create_task(async_start_trading_bitcoin())
+        eurusd_task = asyncio.create_task(async_start_trading_eur())
 
         # Wait for both tasks to complete
-        await asyncio.gather(vantage_task, gold_task, btc_task)
+        await asyncio.gather(vantage_task, gold_task, btc_task, eurusd_task)
 
         # Keep the main coroutine running
         while True:
