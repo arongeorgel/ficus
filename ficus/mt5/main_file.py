@@ -20,7 +20,7 @@ async def async_start_vantage():
 async def async_start_trading():
     while True:
         try:
-            await asyncio.sleep(60)
+            await asyncio.sleep(60 * 5)
             gold = TradingSymbol.XAUUSD
             gold_ohlcv = vantage.get_ohlcv_for_symbol(gold)
             # apply strategy

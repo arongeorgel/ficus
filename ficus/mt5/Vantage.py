@@ -70,7 +70,7 @@ class Vantage(ITradingCallback):
 
     def get_ohlcv_for_symbol(self, symbol):
         price_manager = self.__price_managers[symbol]
-        return price_manager.generate_ohlcv(1)
+        return price_manager.generate_ohlcv(5)
 
     async def open_trade(self, symbol: TradingSymbol, direction: TradeDirection,
                          volume: float, stop_loss: float) -> MetatraderTradeResponse:
