@@ -18,7 +18,7 @@ async def async_start_vantage():
 async def async_start_trading_gold():
     while True:
         try:
-            await asyncio.sleep(60)
+            await asyncio.sleep(60 * 5)
             gold = TradingSymbol.XAUUSD
             gold_ohlcv = vantage.get_ohlcv_for_symbol(gold, 1)
             # apply strategy
@@ -29,6 +29,7 @@ async def async_start_trading_gold():
         except Exception as e:
             print(f"Failed for gold: {e.__traceback__}")
 
+            await asyncio.sleep(1)
 
 async def async_start_trading_bitcoin():
     while True:
@@ -47,6 +48,10 @@ async def async_start_trading_bitcoin():
 
 def start_vantage():
     asyncio.run(async_start_vantage())
+
+
+def start_trading():
+    asyncio.run(async_start_trading())
 
 
 async def main():
