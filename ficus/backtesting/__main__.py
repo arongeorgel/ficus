@@ -8,13 +8,22 @@ from colorama import init
 from matplotlib import pyplot as plt
 
 from ficus.backtesting.strategies import *
+from ficus.mt5.MetatraderStorage import MetatraderSymbolPriceManager
 from ficus.mt5.TradingManager import TradingManager
 from ficus.mt5.listeners.ITradingCallback import ITradingCallback
 from ficus.mt5.models import FicusTrade, TradingSymbol, TradeDirection
-from ficus.ui.ploters import plot_sma, plot_ema, plot_macd
+from ficus.ui.ploters import plot_sma, plot_ema, plot_macd, plot_candlesticks
 
 # Initialize colorama
 init()
+
+
+logging.basicConfig(
+    level=logging.INFO,  # Set the logging level
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',  # Define the log message format
+    filename='app.log',  # Set the log file name
+    filemode='w'  # Set the file mode (w for overwrite, a for append)
+)
 
 
 class BacktestCallback(ITradingCallback):
@@ -25,22 +34,31 @@ class BacktestCallback(ITradingCallback):
 
     current_running_price = 0.0
 
+    def __init__(self):
+        self.losses = 0
+        self.gains = 0
+
     def update_capital(self, trade: FicusTrade):
         volume_to_close = trade['volume']
-        if trade['position'] is TradeDirection.SELL:
+        if trade['trade_direction'] == TradeDirection.SELL:
             # 2332 - 2330
             price_difference = trade['entry_price'] - self.current_running_price
         else:
             # 2332 + 2334
             price_difference = self.current_running_price - trade['entry_price']
 
-        self.capital = round(self.capital + (volume_to_close * self.contract_size * price_difference), 2)
-        logging.info("Updated capital = {self.capital}, current price = {self.current_running_price}")
+        money = volume_to_close * self.contract_size * price_difference
+        self.capital = round(self.capital + money, 2)
+        if money > 0:
+            self.gains = self.gains + 1
+        else:
+            self.losses = self.losses + 1
+        logging.info(f"Updated capital = {self.capital}, current price = {self.current_running_price}")
 
     async def close_trade(self, trade: FicusTrade, trading_symbol: str):
         self.update_capital(trade)
 
-    async def open_trade(self, symbol: str, direction: TradeDirection, volume: float, stop_loss: float):
+    async def open_trade(self, symbol: str, direction: int, volume: float, stop_loss: float):
         return {'positionId': '12345'}
 
     async def partially_close_trade(self, trade: FicusTrade, symbol: str):
@@ -80,43 +98,43 @@ async def backtest_strategy(trade_manager, data, symbol):
 
         if symbol in trade_manager._current_trades:
             trade = trade_manager._current_trades[symbol]
-            if trade['position'] is TradeDirection.BUY:
+            if trade['trade_direction'] == TradeDirection.BUY:
                 await trade_manager.validate_price(row['High'], symbol)
-            elif trade["position"] is TradeDirection.SELL:
+            elif trade['trade_direction'] == TradeDirection.SELL:
                 await trade_manager.validate_price(row['Low'], symbol)
 
 
 async def main():
-    ticker = 'EURUSD=X'
-    symbol = TradingSymbol.EURUSD
-    contract_size = 100000
+    # ticker = 'EURUSD=X'
+    # symbol = TradingSymbol.EURUSD
+    # contract_size = 100000
 
     # ticker = 'GC=F'
     # symbol = TradingSymbol.XAUUSD
     # contract_size = 100
 
-    # ticker = 'BTC=F'
-    # symbol = TradingSymbol.BTCUSD
-    # contract_size = 1
+    ticker = 'BTC=F'
+    symbol = TradingSymbol.BTCUSD
+    contract_size = 1
 
     interval = '1m'
 
     plt.figure(figsize=(14, 7))
 
     # Download data
-    forex_data = download_forex_data(ticker, '2024-06-10', '2024-06-14', interval)
+    # forex_data = download_forex_data(ticker, '2024-06-10', '2024-06-14', interval)
     # use local json file
-    # storage = MetatraderSymbolPriceManager(TradingSymbol.XAUUSD)
-    # forex_data = storage.generate_ohlcv(1)
+    storage = MetatraderSymbolPriceManager(TradingSymbol.BTCUSD)
+    forex_data = storage.generate_ohlcv(10)
     windows = (20, 50)
 
     # Apply SMA strategy
-    c1 = BacktestCallback()
-    c1.contract_size = contract_size
-    tm1 = TradingManager(c1)
-    s1 = strategy_simple_crossover(forex_data, windows)
-    await backtest_strategy(tm1, s1, symbol)
-    print(f'===> {c1.capital}')
+    # c1 = BacktestCallback()
+    # c1.contract_size = contract_size
+    # tm1 = TradingManager(c1)
+    # s1 = strategy_simple_crossover(forex_data, windows)
+    # await backtest_strategy(tm1, s1, symbol)
+    # print(f'===> {c1.capital}')
 
     # Apply EMA strategy
     c2 = BacktestCallback()
@@ -124,7 +142,7 @@ async def main():
     tm2 = TradingManager(c2)
     s2 = strategy_exponential_crossover(forex_data, windows)
     await backtest_strategy(tm2, s2, symbol)
-    print(f'===> {c2.capital}')
+    print(f'===> {c2.capital} - [{c2.gains}/{c2.losses}]')
 
     # Apply MACD
     ema_window = 30
@@ -134,12 +152,13 @@ async def main():
     s3 = calculate_ema(forex_data, ema_window)
     s3 = strategy_macd(s3, ema_window)
     await backtest_strategy(tm3, s3, symbol)
-    print(f'===> {c3.capital}')
+    print(f'===> {c3.capital} - [{c3.gains}/{c3.losses}]')
 
     # plts
-    plot_sma(plt, s1, windows)
+    # plot_sma(plt, s1, windows)
     plot_ema(plt, s2, windows)
     plot_macd(plt, s3, ema_window)
+    # plot_candlesticks(plt, s3)
 
     # Formatting
     plt.xlabel('Date')

@@ -1,4 +1,6 @@
+import json
 import logging
+import traceback
 from typing import List
 
 import pandas as pd
@@ -10,25 +12,46 @@ from ficus.mt5.models import TradeDirection, FicusTrade, TradingSymbol
 
 class TradingManager:
     _current_trades: dict[str, FicusTrade]
-    __closed_trades: List[FicusTrade] = []
+    _closed_trades: List[FicusTrade] = []
 
     def __init__(self, callback: ITradingCallback):
         self._current_trades = {}
         self.callback: ITradingCallback = callback
+        self.load_open_trades_file()
 
-    async def _close_trade(self, trade, trading_symbol):
-        logging.info(f"Closing trade {trade}")
-        self.__closed_trades.append(trade)
+    def load_open_trades_file(self):
+        try:
+            with open('open_trades.json', 'r') as file:
+                self._current_trades = json.load(file)
+        except FileNotFoundError:
+            pass  # If the file is not found, just pass
+
+    async def save_open_trades_to_file(self):
+        try:
+            with open('open_trades.json', 'w') as file:
+                json.dump(self._current_trades, file, indent=4)
+        except Exception:
+            logging.error(f"Failed to save open trades {traceback.format_exc()}")
+
+    async def _close_trade(self, trade, trading_symbol, close_reason):
+        logging.info(f"Closing trade because {close_reason}. Trade: {trade}")
+        trade['close_reason'] = close_reason
+        self._closed_trades.append(trade)
         del self._current_trades[trading_symbol]
         await self.callback.close_trade(trade, trading_symbol)
 
+        with open('closed_trades.json', 'w') as file:
+            json.dump(self._closed_trades, file, indent=4)
+
     async def _partially_close_trade(self, trade, trading_symbol):
         await self.callback.partially_close_trade(trade, trading_symbol)
+        await self.save_open_trades_to_file()
 
     async def _modify_trade(self, trade):
         await self.callback.modify_trade(trade)
+        await self.save_open_trades_to_file()
 
-    async def _open_trade(self, direction: TradeDirection, trading_symbol: str, entry_price: float):
+    async def _open_trade(self, direction: int, trading_symbol: str, entry_price: float):
         sl, tp1, tp2, tp3, volume = TradingSymbol.calculate_levels(trading_symbol, entry_price, direction)
 
         result = await self.callback.open_trade(symbol=trading_symbol, volume=volume, direction=direction, stop_loss=sl)
@@ -36,13 +59,16 @@ class TradingManager:
             entry_price=entry_price,
             stop_loss_price=sl,
             take_profits=(tp1, tp2, tp3),
-            position=direction,
+            trade_direction=direction,
             position_id=result['positionId'],
             take_profits_hit=[False, False, False],
             start_volume=volume,
             volume=volume,
             symbol=trading_symbol)
         self._current_trades[trading_symbol] = trade
+
+        await self.save_open_trades_to_file()
+
         logging.info(f"Open a new trade ${trade}")
 
     async def validate_price(self, price: float, trading_symbol):
@@ -50,7 +76,7 @@ class TradingManager:
             return
 
         trade = self._current_trades[trading_symbol]
-        direction = trade['position']
+        direction = trade['trade_direction']
         entry_price = trade['entry_price']
         volume = trade['start_volume']
 
@@ -58,12 +84,12 @@ class TradingManager:
             # SL
             if price <= trade['stop_loss_price']:
                 logging.info(f"Stop loss hit for {trade['symbol']} on buy at price {price}")
-                await self._close_trade(trade, trading_symbol)
+                await self._close_trade(trade, trading_symbol, "stop loss hit on buy")
             # TP3
             elif price >= trade['take_profits'][2] and not trade['take_profits_hit'][2]:
                 logging.info(f"Take profit 3 hit for {trade['symbol']} on buy at price {price}")
                 trade['take_profits_hit'][2] = True
-                await self._close_trade(trade, trading_symbol)
+                await self._close_trade(trade, trading_symbol, "all TP hit on buy")
             # TP2
             elif price >= trade['take_profits'][1] and not trade['take_profits_hit'][1]:
                 logging.info(f"Take profit 2 hit for {trade['symbol']} on buy at price {price}")
@@ -89,12 +115,12 @@ class TradingManager:
             # SL
             if price >= trade['stop_loss_price']:
                 logging.info(f"Stop loss hit for {trade['symbol']} on sell at price {price}")
-                await self._close_trade(trade, trading_symbol)
+                await self._close_trade(trade, trading_symbol, "stop loss hit on sell")
             # TP 3
             elif price <= trade['take_profits'][2] and not trade['take_profits_hit'][2]:
                 logging.info(f"Take profit 3 hit for {trade['symbol']} on sell at price {price}")
                 trade['take_profits_hit'][2] = True
-                await self._close_trade(trade, trading_symbol)
+                await self._close_trade(trade, trading_symbol, "all TP hit on sell")
             # TP 2
             elif price <= trade['take_profits'][1] and not trade['take_profits_hit'][1]:
                 logging.info(f"Take profit 2 hit for {trade['symbol']} on sell at price {price}")
@@ -124,10 +150,10 @@ class TradingManager:
         # if we have a running trade, but received a different direction, close it.
         if symbol in self._current_trades:
             trade = self._current_trades[symbol]
-            if signal != 0 and TradeDirection.from_value(signal) != trade['position']:
+            if signal != 0 and signal != trade['trade_direction']:
                 logging.info(f"New signal received ({signal}). Closing {trade} at price {series['Close']}")
-                await self._close_trade(trade, symbol)
-                await self._open_trade(TradeDirection.from_value(signal), symbol, series['Close'])
+                await self._close_trade(trade, symbol, f"received new signal ({signal})")
+                await self._open_trade(signal, symbol, series['Close'])
         else:
             if signal != 0:
-                await self._open_trade(TradeDirection.from_value(signal), symbol, series['Close'])
+                await self._open_trade(signal, symbol, series['Close'])

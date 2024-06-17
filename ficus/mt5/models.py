@@ -1,4 +1,3 @@
-from enum import Enum
 from typing import TypedDict
 
 
@@ -57,38 +56,32 @@ class TradingSymbol:
         volume = round(max_risk / sl_difference / contract_size, 2)
 
         # Calculate stop loss and take profit levels
-        if direction is TradeDirection.BUY:
+        if direction == TradeDirection.BUY:
             stop_loss = round(entry_price - sl_difference, price_precision)
             take_profit1 = round(entry_price + tp1_difference, price_precision)
             take_profit2 = round(entry_price + tp2_difference, price_precision)
             take_profit3 = round(entry_price + tp3_difference, price_precision)
-        elif direction is TradeDirection.SELL:
+        elif direction == TradeDirection.SELL:
             stop_loss = round(entry_price + sl_difference, price_precision)
             take_profit1 = round(entry_price - tp1_difference, price_precision)
             take_profit2 = round(entry_price - tp2_difference, price_precision)
             take_profit3 = round(entry_price - tp3_difference, price_precision)
         else:
-            raise ValueError("Unsupported direction. Please use 'buy' or 'sell'.")
+            raise ValueError(f"Unsupported direction {direction}. Please use 'buy' or 'sell'.")
 
         return stop_loss, take_profit1, take_profit2, take_profit3, volume
 
 
-class TradeDirection(Enum):
+class TradeDirection:
     BUY = 1
     SELL = -1
     HOLD = 0
-
-    @staticmethod
-    def from_value(value):
-        for member in TradeDirection:
-            if member.value == value:
-                return member
 
 
 class FicusTrade(TypedDict):
     stop_loss_price: float
     entry_price: float
-    position: TradeDirection
+    trade_direction: int
     take_profits: tuple[float, float, float]
     take_profits_hit: list[bool]
     start_volume: float

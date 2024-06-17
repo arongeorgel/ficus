@@ -11,7 +11,7 @@ class ITradingCallback(ABC):
         pass
 
     @abstractmethod
-    async def open_trade(self, symbol: str, direction: TradeDirection,
+    async def open_trade(self, symbol: str, direction: int,
                          volume: float, stop_loss: float) -> MetatraderTradeResponse:
         pass
 

@@ -50,7 +50,7 @@ class VantageSim(ITradingCallback):
             self.__sync_listener = MetaSynchronizationListener(self.__price_managers, self.__trade_manager)
 
         except Exception as ex:
-            logging.error(f"{ex.__traceback__}")
+            logging.error(f"{traceback.format_exc()}")
 
     async def disconnect(self, symbols_to_unsubscribe: List[str]):
         pass
@@ -59,7 +59,7 @@ class VantageSim(ITradingCallback):
         price_manager = self.__price_managers[symbol]
         return price_manager.generate_ohlcv(1)
 
-    async def open_trade(self, symbol: str, direction: TradeDirection, volume: float,
+    async def open_trade(self, symbol: str, direction: int, volume: float,
                          stop_loss: float):
         return {'positionId': '12345'}
 

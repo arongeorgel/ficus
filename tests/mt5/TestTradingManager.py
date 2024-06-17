@@ -1,6 +1,6 @@
 import unittest
 from abc import ABC
-from unittest.mock import AsyncMock
+from unittest.mock import AsyncMock, patch, mock_open
 
 from ficus.mt5.TradingManager import TradingManager
 from ficus.mt5.listeners.ITradingCallback import ITradingCallback
@@ -17,7 +17,7 @@ class ITradingCallbackMock(ITradingCallback, ABC):
     async def modify_trade(self, trade: FicusTrade):
         pass
 
-    async def open_trade(self, symbol: str, direction: TradeDirection, volume: float, stop_loss):
+    async def open_trade(self, symbol: str, direction: int, volume: float, stop_loss):
         return {'positionId': '12345'}
 
 
@@ -66,19 +66,20 @@ class TestTradingManager(unittest.IsolatedAsyncioTestCase):
 
         self.assertIn(self.test_symbol, self.trading_manager._current_trades)
         trade = self.trading_manager._current_trades[self.test_symbol]
-        self.assertEqual(trade['position'], TradeDirection.BUY)
+        self.assertEqual(trade['trade_direction'], TradeDirection.BUY)
         self.assertEqual(trade['volume'], self.test_expected_volume)
         self.assertEqual(trade['start_volume'], self.test_expected_volume)
         self.assertEqual(trade['stop_loss_price'], self.test_expected_buy_sl)
         self.assertEqual(trade['take_profits'], self.test_expected_buy_tp)
         self.assertEqual(trade['take_profits_hit'], self.test_expected_tp_hits)
 
-    async def test_open_trade_sell(self):
+    @patch("ficus.mt5.TradingManager.open", new_callable=mock_open)
+    async def test_open_trade_sell(self, mock_file):
         await self.trading_manager._open_trade(TradeDirection.SELL, self.test_symbol, self.test_entry_price)
 
         self.assertIn(self.test_symbol, self.trading_manager._current_trades)
         trade = self.trading_manager._current_trades[self.test_symbol]
-        self.assertEqual(trade['position'], TradeDirection.SELL)
+        self.assertEqual(trade['trade_direction'], TradeDirection.SELL)
         self.assertEqual(trade['volume'], self.test_expected_volume)
         self.assertEqual(trade['start_volume'], self.test_expected_volume)
 
@@ -86,12 +87,19 @@ class TestTradingManager(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(trade['take_profits'], self.test_expected_sell_tp)
         self.assertEqual(trade['take_profits_hit'], self.test_expected_tp_hits)
 
-    async def test_close_trade(self):
+        mock_file.assert_called_with('open_trades.json', 'w')
+        mock_file().write.assert_called()
+
+    @patch("ficus.mt5.TradingManager.open", new_callable=mock_open)
+    async def test_close_trade(self, mock_file):
         await self.trading_manager._open_trade(TradeDirection.BUY, self.test_symbol, self.test_entry_price)
         await self.listener.simulate_price_change(self.test_symbol, 1296)  # Trigger SL
 
         self.assertNotIn(self.test_symbol, self.trading_manager._current_trades)
         self.callback_mock.close_trade.assert_called()
+
+        mock_file.assert_called_with('closed_trades.json', 'w')
+        mock_file().write.assert_called()
 
     async def test_take_profit_levels(self):
         await self.trading_manager._open_trade(TradeDirection.BUY, self.test_symbol, self.test_entry_price)
@@ -107,7 +115,7 @@ class TestTradingManager(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(trade['stop_loss_price'], self.test_expected_buy_sl_tp1_hit)
         self.callback_mock.modify_trade.assert_called()
 
-        self.assertEqual(trade['position'], TradeDirection.BUY)
+        self.assertEqual(trade['trade_direction'], TradeDirection.BUY)
         self.assertEqual(trade['start_volume'], self.test_expected_volume)
         self.assertEqual(trade['take_profits'], self.test_expected_buy_tp)
 
@@ -120,7 +128,7 @@ class TestTradingManager(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(trade['stop_loss_price'], self.test_entry_price)
         self.callback_mock.modify_trade.assert_called()
 
-        self.assertEqual(trade['position'], TradeDirection.BUY)
+        self.assertEqual(trade['trade_direction'], TradeDirection.BUY)
         self.assertEqual(trade['start_volume'], self.test_expected_volume)
         self.assertEqual(trade['take_profits'], self.test_expected_buy_tp)
 
@@ -146,7 +154,7 @@ class TestTradingManager(unittest.IsolatedAsyncioTestCase):
         self.callback_mock.modify_trade.assert_called()
         self.assertEqual(trade['stop_loss_price'], self.test_expected_buy_sl_tp1_hit)
 
-        self.assertEqual(trade['position'], TradeDirection.BUY)
+        self.assertEqual(trade['trade_direction'], TradeDirection.BUY)
         self.assertEqual(trade['start_volume'], self.test_expected_volume)
         self.assertEqual(trade['take_profits'], self.test_expected_buy_tp)
 
@@ -155,7 +163,7 @@ class TestTradingManager(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(trade['volume'], self.test_expected_tp1_volume)
         self.assertEqual(trade['take_profits_hit'], [True, False, False])
         self.assertEqual(trade['stop_loss_price'], self.test_expected_buy_sl_tp1_hit)
-        self.assertEqual(trade['position'], TradeDirection.BUY)
+        self.assertEqual(trade['trade_direction'], TradeDirection.BUY)
         self.assertEqual(trade['start_volume'], self.test_expected_volume)
         self.assertEqual(trade['take_profits'], self.test_expected_buy_tp)
 
@@ -168,7 +176,7 @@ class TestTradingManager(unittest.IsolatedAsyncioTestCase):
         self.callback_mock.modify_trade.assert_called()
         self.assertEqual(trade['stop_loss_price'], self.test_entry_price)
 
-        self.assertEqual(trade['position'], TradeDirection.BUY)
+        self.assertEqual(trade['trade_direction'], TradeDirection.BUY)
         self.assertEqual(trade['start_volume'], self.test_expected_volume)
         self.assertEqual(trade['take_profits'], self.test_expected_buy_tp)
 
@@ -185,7 +193,7 @@ class TestTradingManager(unittest.IsolatedAsyncioTestCase):
         self.callback_mock.modify_trade.assert_called()
         self.assertEqual(trade['stop_loss_price'], self.test_expected_buy_sl_tp1_hit)
 
-        self.assertEqual(trade['position'], TradeDirection.BUY)
+        self.assertEqual(trade['trade_direction'], TradeDirection.BUY)
         self.assertEqual(trade['start_volume'], self.test_expected_volume)
         self.assertEqual(trade['take_profits'], self.test_expected_buy_tp)
 
