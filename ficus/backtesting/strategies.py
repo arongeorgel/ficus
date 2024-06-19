@@ -62,7 +62,7 @@ def calculate_ema(df, window):
     return df
 
 
-def strategy_macd(df, ema_window, short_window=12, long_window=26, signal_window=9):
+def strategy_macd(df, ema_window, short_window=10, long_window=26, signal_window=9):
     ema_short = df['Close'].ewm(span=short_window, adjust=False).mean()
     ema_long = df['Close'].ewm(span=long_window, adjust=False).mean()
     macd = ema_short - ema_long

@@ -30,7 +30,7 @@ class TradingSymbol:
             tp1_difference = 3
             tp2_difference = 5
             tp3_difference = 10
-            tp4_difference = 25
+            tp4_difference = 20
             contract_size = 100
             price_precision = 2
         elif symbol is TradingSymbol.BTCUSD:
@@ -38,7 +38,7 @@ class TradingSymbol:
             tp1_difference = 300
             tp2_difference = 500
             tp3_difference = 1000
-            tp4_difference = 2500
+            tp4_difference = 2000
             contract_size = 1
             price_precision = 2
         elif symbol is TradingSymbol.EURUSD:

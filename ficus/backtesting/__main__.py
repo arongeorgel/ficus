@@ -109,32 +109,32 @@ async def main():
     # symbol = TradingSymbol.EURUSD
     # contract_size = 100000
 
-    # ticker = 'GC=F'
-    # symbol = TradingSymbol.XAUUSD
-    # contract_size = 100
+    ticker = 'GC=F'
+    symbol = TradingSymbol.XAUUSD
+    contract_size = 100
 
-    ticker = 'BTC=F'
-    symbol = TradingSymbol.BTCUSD
-    contract_size = 1
+    # ticker = 'BTC=F'
+    # symbol = TradingSymbol.BTCUSD
+    # contract_size = 1
 
-    interval = '1m'
+    interval = 5
 
     plt.figure(figsize=(14, 7))
 
     # Download data
-    # forex_data = download_forex_data(ticker, '2024-06-10', '2024-06-14', interval)
+    # forex_data = download_forex_data(ticker, '2024-06-10', '2024-06-14', f'{interval}m')
     # use local json file
-    storage = MetatraderSymbolPriceManager(TradingSymbol.BTCUSD)
-    forex_data = storage.generate_ohlcv(10)
+    storage = MetatraderSymbolPriceManager(symbol)
+    forex_data = storage.generate_ohlcv(interval).dropna()
     windows = (20, 50)
 
     # Apply SMA strategy
-    # c1 = BacktestCallback()
-    # c1.contract_size = contract_size
-    # tm1 = TradingManager(c1)
-    # s1 = strategy_simple_crossover(forex_data, windows)
-    # await backtest_strategy(tm1, s1, symbol)
-    # print(f'===> {c1.capital}')
+    c1 = BacktestCallback()
+    c1.contract_size = contract_size
+    tm1 = TradingManager(c1)
+    s1 = strategy_simple_crossover(forex_data, windows)
+    await backtest_strategy(tm1, s1, symbol)
+    print(f'===> {c1.capital} - [{c1.gains}/{c1.losses}]')
 
     # Apply EMA strategy
     c2 = BacktestCallback()
@@ -155,7 +155,7 @@ async def main():
     print(f'===> {c3.capital} - [{c3.gains}/{c3.losses}]')
 
     # plts
-    # plot_sma(plt, s1, windows)
+    plot_sma(plt, s1, windows)
     plot_ema(plt, s2, windows)
     plot_macd(plt, s3, ema_window)
     # plot_candlesticks(plt, s3)

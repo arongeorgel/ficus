@@ -66,6 +66,7 @@ class TradingManager:
             volume=volume,
             symbol=trading_symbol)
         self._current_trades[trading_symbol] = trade
+        print(trade)
 
         await self.save_open_trades_to_file()
 
@@ -80,7 +81,7 @@ class TradingManager:
         entry_price = trade['entry_price']
         volume = trade['start_volume']
 
-        if direction is TradeDirection.BUY:
+        if direction == TradeDirection.BUY:
             # SL
             if price <= trade['stop_loss_price']:
                 logging.info(f"Stop loss hit for {trade['symbol']} on buy at price {price}")
@@ -111,7 +112,7 @@ class TradingManager:
                 trade['stop_loss_price'] = entry_price - ((entry_price - trade['stop_loss_price']) / 2)
                 await self._modify_trade(trade)
 
-        elif direction is TradeDirection.SELL:
+        elif direction == TradeDirection.SELL:
             # SL
             if price >= trade['stop_loss_price']:
                 logging.info(f"Stop loss hit for {trade['symbol']} on sell at price {price}")
@@ -143,7 +144,7 @@ class TradingManager:
                 await self._modify_trade(trade)
 
     async def on_ohclv(self, series: Series, symbol: str):
-        signal = series['Position']
+        signal = int(series['Position'])
         if pd.isna(signal):
             return
 

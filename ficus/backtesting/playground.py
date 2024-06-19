@@ -6,88 +6,79 @@ from ficus.mt5.MetatraderStorage import MetatraderSymbolPriceManager
 from ficus.mt5.models import TradingSymbol
 
 
-def macd_signal(data, short_window=12, long_window=26, signal_window=9):
-    # Calculate the short and long EMAs
-    data['EMA12'] = data['Close'].ewm(span=short_window, adjust=False).mean()
-    data['EMA26'] = data['Close'].ewm(span=long_window, adjust=False).mean()
+def generate_macd_signals(df, short_window=12, long_window=26, signal_window=9, rsi_window=14, rsi_overbought=70, rsi_oversold=30):
+    """
+    Generate buy/sell signals based on MACD with trend confirmation using RSI.
 
-    # Calculate the MACD line
-    data['MACD'] = data['EMA12'] - data['EMA26']
+    Parameters:
+    df (pd.DataFrame): DataFrame with columns ['Open', 'High', 'Low', 'Close', 'Volume']
+    short_window (int): Short window period for MACD calculation.
+    long_window (int): Long window period for MACD calculation.
+    signal_window (int): Signal window period for MACD calculation.
+    rsi_window (int): Window period for RSI calculation.
+    rsi_overbought (int): Overbought threshold for RSI.
+    rsi_oversold (int): Oversold threshold for RSI.
 
-    # Calculate the Signal line
-    data['Signal'] = data['MACD'].ewm(span=signal_window, adjust=False).mean()
+    Returns:
+    pd.DataFrame: DataFrame with additional 'Signal' column where 1 = buy signal, -1 = sell signal, 0 = hold.
+    """
+    # Compute the MACD and Signal Line
+    df['EMA_short'] = df['Close'].ewm(span=short_window, adjust=False).mean()
+    df['EMA_long'] = df['Close'].ewm(span=long_window, adjust=False).mean()
+    df['MACD'] = df['EMA_short'] - df['EMA_long']
+    df['Signal_Line'] = df['MACD'].ewm(span=signal_window, adjust=False).mean()
 
-    # ==
-    # ema_short = df['Close'].ewm(span=short_window, adjust=False).mean()
-    # ema_long = df['Close'].ewm(span=long_window, adjust=False).mean()
-    # macd = ema_short - ema_long
-    # signal_line = macd.ewm(span=signal_window, adjust=False).mean()
-    # ==
+    # Compute RSI
+    delta = df['Close'].diff()
+    gain = (delta.where(delta > 0, 0)).rolling(window=rsi_window).mean()
+    loss = (-delta.where(delta < 0, 0)).rolling(window=rsi_window).mean()
+    rs = gain / loss
+    df['RSI'] = 100 - (100 / (1 + rs))
 
-    # Generate MACD buy/sell signals
-    data['MACD_Signal'] = np.where(data['MACD'] > data['Signal'], 1, 0)
-    data['MACD_Signal'] = np.where(data['MACD'] < data['Signal'], -1, data['MACD_Signal'])
+    # Generate preliminary MACD signals
+    df['MACD_Signal'] = 0
+    df.loc[(df['MACD'] > df['Signal_Line']) & (df['MACD'].shift(1) <= df['Signal_Line'].shift(1)), 'MACD_Signal'] = 1
+    df.loc[(df['MACD'] < df['Signal_Line']) & (df['MACD'].shift(1) >= df['Signal_Line'].shift(1)), 'MACD_Signal'] = -1
 
-    return data
+    # Confirm signals with RSI
+    df['Signal'] = 0
+    df.loc[(df['MACD_Signal'] == 1) & (df['RSI'] < rsi_oversold), 'Signal'] = 1
+    df.loc[(df['MACD_Signal'] == -1) & (df['RSI'] > rsi_overbought), 'Signal'] = -1
 
-def rsi(data, window=14):
-    delta = data['Close'].diff(1)
-    gain = (delta.where(delta > 0, 0)).rolling(window=window).mean()
-    loss = (-delta.where(delta < 0, 0)).rolling(window=window).mean()
-    RS = gain / loss
-    data['RSI'] = 100 - (100 / (1 + RS))
+    # Drop intermediate columns
+    df.drop(['EMA_short', 'EMA_long', 'MACD_Signal', 'RSI'], axis=1, inplace=True)
 
-    return data
+    return df
 
-def adx(data, window=14):
-    df = data.copy()
-    df['TR'] = np.maximum(df['High'], df['Close'].shift(1)) - np.minimum(df['Low'], df['Close'].shift(1))
-    df['+DM'] = np.where((df['High'] - df['High'].shift(1)) > (df['Low'].shift(1) - df['Low']), df['High'] - df['High'].shift(1), 0)
-    df['-DM'] = np.where((df['Low'].shift(1) - df['Low']) > (df['High'] - df['High'].shift(1)), df['Low'].shift(1) - df['Low'], 0)
+def plot_signals(df):
+    """
+    Plot the buy/sell signals on the price chart with MACD and Signal Line.
 
-    df['+DI'] = 100 * (df['+DM'].ewm(span=window, adjust=False).mean() / df['TR'].ewm(span=window, adjust=False).mean())
-    df['-DI'] = 100 * (df['-DM'].ewm(span=window, adjust=False).mean() / df['TR'].ewm(span=window, adjust=False).mean())
-    df['DX'] = (np.abs(df['+DI'] - df['-DI']) / np.abs(df['+DI'] + df['-DI'])) * 100
-    df['ADX'] = df['DX'].ewm(span=window, adjust=False).mean()
+    Parameters:
+    df (pd.DataFrame): DataFrame with OHLCV data and 'Signal' column
+    """
+    fig, (ax1, ax2) = plt.subplots(2, figsize=(12, 8), sharex=True)
 
-    data['ADX'] = df['ADX']
+    # Plotting the close price
+    ax1.plot(df['Close'], label='Close Price')
+    ax1.plot(df[df['Signal'] == 1].index, df[df['Signal'] == 1]['Close'], '^', markersize=10, color='g', lw=0, label='Buy Signal')
+    ax1.plot(df[df['Signal'] == -1].index, df[df['Signal'] == -1]['Close'], 'v', markersize=10, color='r', lw=0, label='Sell Signal')
+    ax1.set_title('Close Price with Buy/Sell Signals')
+    ax1.legend()
 
-    return data
+    # Plotting the MACD and Signal Line
+    ax2.plot(df['MACD'], label='MACD', color='b')
+    ax2.plot(df['Signal_Line'], label='Signal Line', color='orange')
+    ax2.set_title('MACD and Signal Line')
+    ax2.legend()
 
-def generate_signals(data):
-    # Apply MACD
-    data = macd_signal(data)
-
-    # Apply RSI
-    data = rsi(data)
-
-    # Apply ADX
-    data = adx(data)
-
-    # Generate buy/sell signals
-    buy_signal = (data['MACD_Signal'] == 1) & (data['RSI'] < 30) & (data['ADX'] > 25)
-    sell_signal = (data['MACD_Signal'] == -1) & (data['RSI'] > 70) & (data['ADX'] > 25)
-
-    data['Buy_Signal'] = np.where(buy_signal, 1, 0)
-    data['Sell_Signal'] = np.where(sell_signal, 1, 0)
-
-    return data
+    plt.show()
 
 # Example usage
-if __name__ == "__main__":
-    # Sample data (you can replace this with actual OHLCV data)
-    storage = MetatraderSymbolPriceManager(TradingSymbol.XAUUSD)
-    data = storage.generate_ohlcv(1)
+# Assuming `data` is a DataFrame with OHLCV data
+storage = MetatraderSymbolPriceManager(TradingSymbol.XAUUSD)
+data = storage.generate_ohlcv(1).dropna()
 
-    # Generate signals
-    data = generate_signals(data)
-
-    # Plot the data with signals
-    plt.figure(figsize=(14, 7))
-    plt.plot(data['Close'], label='Close Price', color='b')
-    plt.plot(data['MACD'], label='MACD')
-    plt.plot(data['Signal'], label='Signal Line')
-    plt.scatter(data.index, data['Buy_Signal'] * data['Close'], label='Buy Signal', marker='^', color='g')
-    plt.scatter(data.index, data['Sell_Signal'] * data['Close'], label='Sell Signal', marker='v', color='r')
-    plt.legend()
-    plt.show()
+# data = pd.read_csv('path_to_your_ohlcv_data.csv')
+signals = generate_macd_signals(data)
+plot_signals(signals)

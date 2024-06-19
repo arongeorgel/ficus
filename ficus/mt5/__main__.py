@@ -31,13 +31,14 @@ async def async_start_vantage():
 async def async_start_trading_gold():
     while True:
         try:
-            trade_on_minutes = 10
+            trade_on_minutes = 5
             await asyncio.sleep(60 * trade_on_minutes)
             gold = TradingSymbol.XAUUSD
             gold_ohlcv = vantage.get_ohlcv_for_symbol(gold, trade_on_minutes)
             # apply strategy
-            gold_ema = calculate_ema(gold_ohlcv, 50)
-            gold_macd = strategy_macd(gold_ema, 50)
+            ema_window = 30
+            gold_ema = calculate_ema(gold_ohlcv, ema_window)
+            gold_macd = strategy_macd(gold_ema, ema_window)
             last_gold = gold_macd.iloc[-1]
             await vantage.on_ohlcv(last_gold, gold)
         except Exception as e:
@@ -63,13 +64,14 @@ async def async_start_trading_eur():
 async def async_start_trading_bitcoin():
     while True:
         try:
-            trade_on_minutes = 5
+            trade_on_minutes = 10
+            ema_window = 50
             await asyncio.sleep(60 * trade_on_minutes)
             bitcoin = TradingSymbol.BTCUSD
             btc_ohlcv = vantage.get_ohlcv_for_symbol(bitcoin, trade_on_minutes)
             # apply strategy
-            btc_ema = calculate_ema(btc_ohlcv, 50)
-            btc_macd = strategy_macd(btc_ema, 50)
+            btc_ema = calculate_ema(btc_ohlcv, ema_window)
+            btc_macd = strategy_macd(btc_ema, ema_window)
             last_btc = btc_macd.iloc[-1]
             await vantage.on_ohlcv(last_btc, bitcoin)
         except Exception as e:

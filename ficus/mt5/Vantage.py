@@ -76,10 +76,10 @@ class Vantage(ITradingCallback):
 
     async def open_trade(self, symbol: str, direction: int,
                          volume: float, stop_loss: float) -> MetatraderTradeResponse:
-        if direction is TradeDirection.BUY:
+        if direction == TradeDirection.BUY:
             return await (self.__api_connection
                           .create_market_buy_order(symbol=symbol, volume=volume, stop_loss=stop_loss))
-        elif direction is TradeDirection.SELL:
+        elif direction == TradeDirection.SELL:
             return await (self.__api_connection
                           .create_market_sell_order(symbol=symbol, volume=volume, stop_loss=stop_loss))
 
