@@ -11,6 +11,8 @@ from metaapi_cloud_sdk.metaapi.models import MarketDataSubscription, MarketDataU
 from ficus.mt5.MetatraderStorage import MetatraderSymbolPriceManager
 from ficus.mt5.TradingManager import TradingManager
 
+logger = logging.getLogger('ficus_logger')
+
 
 class MetaSynchronizationListener(SynchronizationListener):
     def __init__(self, price_managers: dict[str, MetatraderSymbolPriceManager],
@@ -19,14 +21,14 @@ class MetaSynchronizationListener(SynchronizationListener):
         self.trading_manager = trading_manager
 
     async def on_connected(self, instance_index: str, replicas: int):
-        logging.info("meta > Connected")
+        logger.info("meta > Connected")
         return await super().on_connected(instance_index, replicas)
 
     async def on_health_status(self, instance_index: str, status: HealthStatus):
         return await super().on_health_status(instance_index, status)
 
     async def on_disconnected(self, instance_index: str):
-        logging.info("meta > Disconnected")
+        logger.info("meta > Disconnected")
         return await super().on_disconnected(instance_index)
 
     async def on_broker_connection_status_changed(self, instance_index: str, connected: bool):
@@ -35,20 +37,20 @@ class MetaSynchronizationListener(SynchronizationListener):
     async def on_synchronization_started(self, instance_index: str, specifications_hash: str = None,
                                          positions_hash: str = None, orders_hash: str = None,
                                          synchronization_id: str = None):
-        logging.info("meta > Sync started")
+        logger.info("meta > Sync started")
         return await super().on_synchronization_started(instance_index, specifications_hash, positions_hash,
                                                         orders_hash, synchronization_id)
 
     async def on_account_information_updated(self, instance_index: str,
                                              account_information: MetatraderAccountInformation):
-        logging.info("meta > Account info updated")
+        logger.info(f"meta > Account info updated {account_information}")
         return await super().on_account_information_updated(instance_index, account_information)
 
     async def on_positions_replaced(self, instance_index: str, positions: List[MetatraderPosition]):
         return await super().on_positions_replaced(instance_index, positions)
 
     async def on_positions_synchronized(self, instance_index: str, synchronization_id: str):
-        logging.info("meta > positions synced")
+        logger.info("meta > positions synced")
         return await super().on_positions_synchronized(instance_index, synchronization_id)
 
     async def on_positions_updated(self, instance_index: str, positions: MetatraderPosition,
@@ -56,9 +58,12 @@ class MetaSynchronizationListener(SynchronizationListener):
         return await super().on_positions_updated(instance_index, positions, removed_positions_ids)
 
     async def on_position_updated(self, instance_index: str, position: MetatraderPosition):
+        logger.info(f"Position updated: {position}")
         return await super().on_position_updated(instance_index, position)
 
     async def on_position_removed(self, instance_index: str, position_id: str):
+        logger.info(f"Position removed by broker: {position_id}")
+        await self.trading_manager.on_closed_by_broker(position_id)
         return await super().on_position_removed(instance_index, position_id)
 
     async def on_pending_orders_replaced(self, instance_index: str, orders: List[MetatraderOrder]):
@@ -118,7 +123,7 @@ class MetaSynchronizationListener(SynchronizationListener):
         return await super().on_subscription_downgraded(instance_index, symbol, updates, unsubscriptions)
 
     async def on_stream_closed(self, instance_index: str):
-        logging.info("meta > Stream closed.")
+        logger.info("meta > Stream closed.")
         return await super().on_stream_closed(instance_index)
 
     async def on_unsubscribe_region(self, region: str):

@@ -1,5 +1,5 @@
 import asyncio
-import logging
+import logging.config
 import os
 import traceback
 
@@ -7,18 +7,27 @@ from ficus.backtesting.strategies import calculate_ema, strategy_macd
 from ficus.mt5.Vantage import Vantage
 from ficus.mt5.models import TradingSymbol
 
-
-# logging.basicConfig(
-#     level=logging.INFO,  # Set the logging level
-#     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',  # Define the log message format
-#     filename='app.log',  # Set the log file name
-#     filemode='w'  # Set the file mode (w for overwrite, a for append)
-# )
-
+logging.basicConfig(
+    level=logging.INFO,  # Set the logging level
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',  # Define the log message format
+    filename='app.log',  # Set the log file name
+    filemode='w'  # Set the file mode (w for overwrite, a for append)
+)
+logger = logging.getLogger('ficus_logger')
+logging.getLogger('engineio.client').setLevel(logging.ERROR)
+logging.getLogger('socketio.client').setLevel(logging.ERROR)
 
 # Start Ficus
 vantage = Vantage()
-trading_symbols = [TradingSymbol.XAUUSD, TradingSymbol.BTCUSD]
+trading_symbols = [TradingSymbol.XAUUSD,
+                   TradingSymbol.BTCUSD,
+                   TradingSymbol.EURUSD,
+                   TradingSymbol.USDJPY,
+                   TradingSymbol.USDCHF,
+                   TradingSymbol.GBPUSD,
+                   TradingSymbol.USDCAD,
+                   TradingSymbol.NZDUSD,
+                   TradingSymbol.AUDUSD]
 
 
 async def async_start_vantage():
@@ -31,7 +40,7 @@ async def async_start_vantage():
 async def async_start_trading_gold():
     while True:
         try:
-            trade_on_minutes = 5
+            trade_on_minutes = 1
             await asyncio.sleep(60 * trade_on_minutes)
             gold = TradingSymbol.XAUUSD
             gold_ohlcv = vantage.get_ohlcv_for_symbol(gold, trade_on_minutes)
@@ -42,7 +51,7 @@ async def async_start_trading_gold():
             last_gold = gold_macd.iloc[-1]
             await vantage.on_ohlcv(last_gold, gold)
         except Exception as e:
-            logging.error(f"Failed for gold. Traceback: {traceback.format_exc()}")
+            logger.error(f"Failed for gold. Traceback: {traceback.format_exc()}")
 
 
 async def async_start_trading_eur():
@@ -58,13 +67,13 @@ async def async_start_trading_eur():
             last_gold = gold_macd.iloc[-1]
             await vantage.on_ohlcv(last_gold, eurusd)
         except Exception as e:
-            logging.error(f"Failed for gold. Traceback: {traceback.format_exc()}")
+            logger.error(f"Failed for gold. Traceback: {traceback.format_exc()}")
 
 
 async def async_start_trading_bitcoin():
     while True:
         try:
-            trade_on_minutes = 10
+            trade_on_minutes = 5
             ema_window = 50
             await asyncio.sleep(60 * trade_on_minutes)
             bitcoin = TradingSymbol.BTCUSD
@@ -75,7 +84,7 @@ async def async_start_trading_bitcoin():
             last_btc = btc_macd.iloc[-1]
             await vantage.on_ohlcv(last_btc, bitcoin)
         except Exception as e:
-            logging.error(f"Failed for bitcoin. Traceback: {traceback.format_exc()}")
+            logger.error(f"Failed for bitcoin. Traceback: {traceback.format_exc()}")
 
 
 def start_vantage():
@@ -92,16 +101,16 @@ async def main():
 
         # Wait for both tasks to complete
         # await asyncio.gather(vantage_task, gold_task, btc_task, eurusd_task)
-        await asyncio.gather(vantage_task, gold_task, btc_task)
+        await asyncio.gather(vantage_task, gold_task)
 
         # Keep the main coroutine running
         while True:
             await asyncio.sleep(1)
     except Exception as e:
-        logging.error(f"Exception in main(). Traceback: {traceback.format_exc()}")
+        logger.error(f"Exception in main(). Traceback: {traceback.format_exc()}")
     finally:
-        logging.info("Program completed. Starting again now")
-        logging.info("=====================================")
+        logger.info("Program completed. Starting again now")
+        logger.info("=====================================")
         os.system("run_ficus")
 
 

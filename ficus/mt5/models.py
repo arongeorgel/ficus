@@ -3,8 +3,14 @@ from typing import TypedDict
 
 class TradingSymbol:
     XAUUSD = 'XAUUSD'
-    BTCUSD = 'BTCUSD'  # best at 5 minutes
-    EURUSD = 'EURUSD'  # best at 5 minutes
+    BTCUSD = 'BTCUSD'
+    EURUSD = 'EURUSD'
+    USDJPY = 'USDJPY'
+    USDCHF = 'USDCHF'
+    GBPUSD = 'GBPUSD'
+    USDCAD = 'USDCAD'
+    NZDUSD = 'NZDUSD'
+    AUDUSD = 'AUDUSD'
 
     # 1 pip of gold = $0.01. $5 difference is 500 pips. on 500:1 account that is $500 minus broker fee
     #                        $1 difference is 100 pips
@@ -17,6 +23,7 @@ class TradingSymbol:
         """
 
         :param entry_price: price at which the trade was opened
+        :param symbol: forex symbol
         :param direction: buy or sell
         :return: stop_loss, take_profit1, take_profit2, take_profit3, volume
         """
@@ -30,7 +37,7 @@ class TradingSymbol:
             tp1_difference = 3
             tp2_difference = 5
             tp3_difference = 10
-            tp4_difference = 20
+            tp4_difference = 15
             contract_size = 100
             price_precision = 2
         elif symbol is TradingSymbol.BTCUSD:

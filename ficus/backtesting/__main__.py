@@ -24,6 +24,7 @@ logging.basicConfig(
     filename='app.log',  # Set the log file name
     filemode='w'  # Set the file mode (w for overwrite, a for append)
 )
+logger = logging.getLogger('ficus_logger')
 
 
 class BacktestCallback(ITradingCallback):
@@ -53,7 +54,7 @@ class BacktestCallback(ITradingCallback):
             self.gains = self.gains + 1
         else:
             self.losses = self.losses + 1
-        logging.info(f"Updated capital = {self.capital}, current price = {self.current_running_price}")
+        logger.info(f"Updated capital = {self.capital}, current price = {self.current_running_price}")
 
     async def close_trade(self, trade: FicusTrade, trading_symbol: str):
         self.update_capital(trade)

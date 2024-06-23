@@ -11,7 +11,8 @@ from ficus.mt5.MetatraderStorage import MetatraderSymbolPriceManager
 from ficus.mt5.TradingManager import TradingManager, FicusTrade
 from ficus.mt5.listeners.MetaSynchronizationListener import MetaSynchronizationListener
 from ficus.mt5.listeners.ITradingCallback import ITradingCallback
-from ficus.mt5.models import TradeDirection
+
+logger = logging.getLogger('ficus_logger')
 
 
 class VantageSim(ITradingCallback):
@@ -50,7 +51,7 @@ class VantageSim(ITradingCallback):
             self.__sync_listener = MetaSynchronizationListener(self.__price_managers, self.__trade_manager)
 
         except Exception as ex:
-            logging.error(f"{traceback.format_exc()}")
+            logger.error(f"{traceback.format_exc()}")
 
     async def disconnect(self, symbols_to_unsubscribe: List[str]):
         pass
