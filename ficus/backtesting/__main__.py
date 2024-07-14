@@ -8,15 +8,14 @@ from colorama import init
 from matplotlib import pyplot as plt
 
 from ficus.backtesting.strategies import *
-from ficus.mt5.MetatraderStorage import MetatraderSymbolPriceManager
-from ficus.mt5.TradingManager import TradingManager
-from ficus.mt5.listeners.ITradingCallback import ITradingCallback
-from ficus.mt5.models import FicusTrade, TradingSymbol, TradeDirection
-from ficus.ui.ploters import plot_sma, plot_ema, plot_macd, plot_candlesticks
+from ficus.metaapi.MetatraderStorage import MetatraderSymbolPriceManager
+from ficus.metaapi.TradingManager import TradingManager
+from ficus.metaapi.listeners.ITradingCallback import ITradingCallback
+from ficus.models.models import FicusTrade, TradingSymbol, TradeDirection
+from ficus.ui.ploters import plot_macd, calculate_optimal_grid_size
 
 # Initialize colorama
 init()
-
 
 logging.basicConfig(
     level=logging.INFO,  # Set the logging level
@@ -105,68 +104,64 @@ async def backtest_strategy(trade_manager, data, symbol):
                 await trade_manager.validate_price(row['Low'], symbol)
 
 
+async def backtest(chart, ema_window, contract_size, forex_data, symbol, plt_index):
+    # Apply MACD
+    c3 = BacktestCallback()
+    c3.contract_size = contract_size
+    tm3 = TradingManager(c3)
+    short_window = 10
+    long_window = 26
+    # s3 = strategy_macd2(forex_data, short_window, long_window)
+    # s3 = strategy_macd(forex_data, ema_window, 12)
+    s3 = strategy_macd4(forex_data, short_window, long_window)
+    await backtest_strategy(tm3, s3, symbol)
+
+    # plt
+    s3[f'ema_{short_window}'] = s3['Close'].ewm(span=short_window, adjust=False).mean()
+    s3[f'ema_{long_window}'] = s3['Close'].ewm(span=long_window, adjust=False).mean()
+    s3['MACD'] = s3[f'ema_{short_window}'] - s3[f'ema_{long_window}']
+    s3['Signal_Line'] = s3['MACD'].ewm(span=19, adjust=False).mean()
+
+    plot_macd(symbol, chart, s3, short_window, long_window)
+    # plot_candlesticks(chart, s3, plt_index)
+    print(f'===> On {symbol} after backtesting now have {c3.capital}. Ration W/L: [{c3.gains}/{c3.losses}]')
+
+
 async def main():
-    # ticker = 'EURUSD=X'
-    # symbol = TradingSymbol.EURUSD
-    # contract_size = 100000
-
-    ticker = 'GC=F'
-    symbol = TradingSymbol.XAUUSD
-    contract_size = 100
-
-    # ticker = 'BTC=F'
-    # symbol = TradingSymbol.BTCUSD
-    # contract_size = 1
-
-    interval = 5
+    symbols_to_backtest = [
+        # {'s': TradingSymbol.AUDUSD, 'w': 50, 'c': 100000, 'i': 5},
+        # {'s': TradingSymbol.BTCUSD, 'w': 50, 'c': 1, 'i': 5},
+        # {'s': TradingSymbol.EURUSD, 'w': 50, 'c': 100000, 'i': 5},
+        # {'s': TradingSymbol.GBPUSD, 'w': 50, 'c': 100000, 'i': 5},
+        # {'s': TradingSymbol.NZDUSD, 'w': 50, 'c': 100000, 'i': 5},
+        # {'s': TradingSymbol.USDCAD, 'w': 50, 'c': 100000, 'i': 5},
+        # {'s': TradingSymbol.USDCHF, 'w': 50, 'c': 100000, 'i': 5},
+        # {'s': TradingSymbol.USDJPY, 'w': 50, 'c': 1000, 'i': 5},
+        {'s': TradingSymbol.XAUUSD, 'w': 30, 'c': 100, 'i': 1}
+    ]
 
     plt.figure(figsize=(14, 7))
+    calculate_optimal_grid_size(len(symbols_to_backtest))
+
+    for index, symbol in enumerate(symbols_to_backtest):
+        storage = MetatraderSymbolPriceManager(symbol['s'])
+        forex_data = storage.generate_ohlcv(interval=symbol['i']).dropna()
+        forex_data.to_json('ohlcv_data.json', orient='records', date_format='iso')
+        await backtest(plt,
+                       symbol['w'],
+                       symbol['c'],
+                       forex_data,
+                       symbol['s'],
+                       index + 1)
 
     # Download data
     # forex_data = download_forex_data(ticker, '2024-06-10', '2024-06-14', f'{interval}m')
     # use local json file
-    storage = MetatraderSymbolPriceManager(symbol)
-    forex_data = storage.generate_ohlcv(interval).dropna()
-    windows = (20, 50)
-
-    # Apply SMA strategy
-    c1 = BacktestCallback()
-    c1.contract_size = contract_size
-    tm1 = TradingManager(c1)
-    s1 = strategy_simple_crossover(forex_data, windows)
-    await backtest_strategy(tm1, s1, symbol)
-    print(f'===> {c1.capital} - [{c1.gains}/{c1.losses}]')
-
-    # Apply EMA strategy
-    c2 = BacktestCallback()
-    c2.contract_size = contract_size
-    tm2 = TradingManager(c2)
-    s2 = strategy_exponential_crossover(forex_data, windows)
-    await backtest_strategy(tm2, s2, symbol)
-    print(f'===> {c2.capital} - [{c2.gains}/{c2.losses}]')
-
-    # Apply MACD
-    ema_window = 30
-    c3 = BacktestCallback()
-    c3.contract_size = contract_size
-    tm3 = TradingManager(c3)
-    s3 = calculate_ema(forex_data, ema_window)
-    s3 = strategy_macd(s3, ema_window)
-    await backtest_strategy(tm3, s3, symbol)
-    print(f'===> {c3.capital} - [{c3.gains}/{c3.losses}]')
-
-    # plts
-    plot_sma(plt, s1, windows)
-    plot_ema(plt, s2, windows)
-    plot_macd(plt, s3, ema_window)
-    # plot_candlesticks(plt, s3)
 
     # Formatting
     plt.xlabel('Date')
     plt.ylabel('Price')
-    plt.legend()
-    plt.grid(True)
-    plt.tight_layout()
+    plt.grid()
     plt.show()
 
 

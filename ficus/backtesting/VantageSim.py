@@ -7,10 +7,10 @@ from typing import List, Dict
 from metaapi_cloud_sdk import SynchronizationListener
 from metaapi_cloud_sdk.metaapi.models import MetatraderTradeResponse
 
-from ficus.mt5.MetatraderStorage import MetatraderSymbolPriceManager
-from ficus.mt5.TradingManager import TradingManager, FicusTrade
-from ficus.mt5.listeners.MetaSynchronizationListener import MetaSynchronizationListener
-from ficus.mt5.listeners.ITradingCallback import ITradingCallback
+from ficus.metaapi.MetatraderStorage import MetatraderSymbolPriceManager
+from ficus.metaapi.TradingManager import TradingManager, FicusTrade
+from ficus.metaapi.listeners.MetaSynchronizationListener import MetaSynchronizationListener
+from ficus.metaapi.listeners.ITradingCallback import ITradingCallback
 
 logger = logging.getLogger('ficus_logger')
 

@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 
 from metaapi_cloud_sdk.metaapi.models import MetatraderTradeResponse
 
-from ficus.mt5.models import TradeDirection, FicusTrade
+from ficus.models.models import FicusTrade
 
 
 class ITradingCallback(ABC):

@@ -1,6 +1,33 @@
+import math
+
 from colorama import init
 
 init()
+
+nr_columns = 3
+nr_rows = 3
+
+
+def calculate_optimal_grid_size(elements_length):
+    best_diff = elements_length
+    best_rows = 1
+    best_cols = elements_length
+
+    global nr_columns
+    global nr_rows
+
+    # Iterate over possible number of rows
+    for rows in range(1, int(math.sqrt(elements_length)) + 1):
+        if elements_length % rows == 0:
+            cols = elements_length // rows
+            diff = abs(rows - cols)
+            if diff < best_diff:
+                best_diff = diff
+                best_rows = rows
+                best_cols = cols
+
+    nr_columns = best_cols
+    nr_rows = best_rows
 
 
 def plot_sma(plotter, data, windows):
@@ -36,8 +63,18 @@ def plot_ema(plotter, data, windows):
     plotter.legend(loc='upper left')
 
 
-def plot_macd(plt, data, ema_window):
-    plt.subplot(2, 2, 3)
+def plot_macd(symbol, plt, data, short_window=12, long_window=26, plt_index=0):
+    """
+    The window has a 3 by 3 configuration, use plt_index to display in a given area
+
+    :param symbol
+    :param plt:
+    :param data:
+    :param ema_window:
+    :param plt_index:
+    :return:
+    """
+    plt.subplot(2, 1, 1)
 
     # Unpack data for easier use
     dates = data['Datetime']
@@ -49,22 +86,27 @@ def plot_macd(plt, data, ema_window):
     colors = ['green' if close > open else 'red' for close, open in zip(closes, opens)]
 
     num_bars = len(dates)
-    bar_width = (dates.max() - dates.min()) / (num_bars * 5)  # Adjust multiplier for desired width
-    # plt.bar(dates, closes - opens, bottom=opens, color=colors, width=bar_width)
+    bar_width = (dates.max() - dates.min()) / (num_bars * 3)  # Adjust multiplier for desired width
+    plt.bar(dates, closes - opens, bottom=opens, color=colors, width=bar_width)
 
-    # plt.vlines(dates, lows, highs, color=colors, linewidth=1)
-    # plt.xticks(rotation=45)  # Rotate x-axis labels for readability
+    plt.vlines(dates, lows, highs, color=colors, linewidth=1)
 
-    plt.plot(data['Datetime'], data['Close'], label='Close Price', alpha=0.5)
-    plt.plot(data['Datetime'], data[f'ema_{ema_window}'], label=f'EMA {ema_window}', alpha=0.5)
-    plt.scatter(data[data['Position'] == 1]['Datetime'], data[data['Position'] == 1]['Close'], marker='^', color='green', label='Buy Signal', alpha=1)
-    plt.scatter(data[data['Position'] == -1]['Datetime'], data[data['Position'] == -1]['Close'], marker='v', color='red', label='Sell Signal', alpha=1)
+    # plt.plot(data['Datetime'], data[f'ema_{short_window}'], label=f'EMA {short_window}', alpha=0.5)
+    # plt.plot(data['Datetime'], data['Close'], label=f'EMA {long_window}', alpha=0.5)
+    plt.scatter(data[data['Position'] == 1]['Datetime'], data[data['Position'] == 1]['Close'], marker='^', color='purple', label='Buy Signal', alpha=1)
+    plt.scatter(data[data['Position'] == -1]['Datetime'], data[data['Position'] == -1]['Close'], marker='v', color='orange', label='Sell Signal', alpha=1)
+    plt.grid()
 
-    plt.title('MACD Strategy')
+    # Plot MACD and signal line
+    plt.subplot(2, 1, 2)
+    plt.plot(data['Datetime'], data['MACD'], label='MACD', color='blue')
+    plt.plot(data['Datetime'], data['Signal_Line'], label='Signal Line', color='red')
+
+    plt.title(f'MACD Strategy on {symbol}')
     plt.legend()
 
 
-def plot_candlesticks(plt, data):
+def plot_candlesticks(plt, data, plt_index):
     """
     Plots candlesticks from OHLC data in a pandas DataFrame.
 
@@ -83,9 +125,9 @@ def plot_candlesticks(plt, data):
     colors = ['green' if close > open else 'red' for close, open in zip(closes, opens)]
 
     # Create the candlestick plot
-    plt.subplot(2, 2, 1)
+    plt.subplot(nr_rows, nr_columns, plt_index)
     num_bars = len(dates)
-    bar_width = (dates.max() - dates.min()) / (num_bars * 5)  # Adjust multiplier for desired width
+    bar_width = (dates.max() - dates.min()) / (num_bars * 2)  # Adjust multiplier for desired width
     plt.bar(dates, closes - opens, bottom=opens, color=colors, width=bar_width)
 
     plt.vlines(dates, lows, highs, color=colors, linewidth=1)

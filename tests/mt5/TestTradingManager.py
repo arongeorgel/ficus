@@ -2,9 +2,9 @@ import unittest
 from abc import ABC
 from unittest.mock import AsyncMock, patch, mock_open
 
-from ficus.mt5.TradingManager import TradingManager
-from ficus.mt5.listeners.ITradingCallback import ITradingCallback
-from ficus.mt5.models import TradeDirection, FicusTrade, TradingSymbol
+from ficus.metaapi.TradingManager import TradingManager
+from ficus.metaapi.listeners.ITradingCallback import ITradingCallback
+from ficus.models.models import TradeDirection, FicusTrade, TradingSymbol
 
 
 class ITradingCallbackMock(ITradingCallback, ABC):
@@ -73,7 +73,7 @@ class TestTradingManager(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(trade['take_profits'], self.test_expected_buy_tp)
         self.assertEqual(trade['take_profits_hit'], self.test_expected_tp_hits)
 
-    @patch("ficus.mt5.TradingManager.open", new_callable=mock_open)
+    @patch("ficus.metaapi.TradingManager.open", new_callable=mock_open)
     async def test_open_trade_sell(self, mock_file):
         await self.trading_manager._open_trade(TradeDirection.SELL, self.test_symbol, self.test_entry_price)
 
@@ -90,7 +90,7 @@ class TestTradingManager(unittest.IsolatedAsyncioTestCase):
         mock_file.assert_called_with('open_trades.json', 'w')
         mock_file().write.assert_called()
 
-    @patch("ficus.mt5.TradingManager.open", new_callable=mock_open)
+    @patch("ficus.metaapi.TradingManager.open", new_callable=mock_open)
     async def test_close_trade(self, mock_file):
         await self.trading_manager._open_trade(TradeDirection.BUY, self.test_symbol, self.test_entry_price)
         await self.listener.simulate_price_change(self.test_symbol, 1296)  # Trigger SL

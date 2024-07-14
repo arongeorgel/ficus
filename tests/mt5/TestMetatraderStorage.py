@@ -5,8 +5,8 @@ import json
 from freezegun import freeze_time
 from metaapi_cloud_sdk.metaapi.models import MetatraderSymbolPrice
 
-from ficus.mt5.MetatraderStorage import MetatraderSymbolPriceManager
-from ficus.mt5.models import TradingSymbol
+from ficus.metaapi.MetatraderStorage import MetatraderSymbolPriceManager
+from ficus.models.models import TradingSymbol
 
 
 class TestMetatraderSymbolPriceManager(unittest.TestCase):

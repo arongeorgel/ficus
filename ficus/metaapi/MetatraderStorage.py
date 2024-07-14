@@ -43,10 +43,15 @@ class MetatraderSymbolPriceManager:
         with open(file_path, 'w') as file:
             json.dump(json_data, file, indent=4)
 
+        # delete old data.
+        time_threshold = datetime.now() - timedelta(hours=48)
+        self.data = [symbolPrice for symbolPrice in self.data if datetime.strptime(symbolPrice['brokerTime'], "%Y-%m-%d %H:%M:%S.%f") > time_threshold]
+
     def add_symbol_price(self, symbol_price: MetatraderSymbolPrice):
         self.data.append(symbol_price)
         current_time = datetime.now()
         if (current_time - self.__last_write) > timedelta(minutes=self.__MINUTES_FILE_SAVE):
+            # save to file
             self.save_data()
             self.__last_write = current_time
 
@@ -90,10 +95,12 @@ class MetatraderSymbolPriceManager:
         df.set_index('brokerTime', inplace=True)
 
         # Calculate the average of ask and bid prices
-        df['average_price'] = (df['ask'] + df['bid']) / 2
+        #df['average_price'] = (df['ask'] + df['bid']) / 2
 
         # Resample based on the average price
-        resampled = df['average_price'].resample(f'{interval}min').ohlc()
+        #resampled = df['average_price'].resample(f'{interval}min').ohlc()
+
+        resampled = df['bid'].resample(f'{interval}min').ohlc()
 
         # Rename columns to capitalize them
         resampled.columns = ['Open', 'High', 'Low', 'Close']

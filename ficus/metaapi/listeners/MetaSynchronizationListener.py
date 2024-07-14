@@ -8,8 +8,8 @@ from metaapi_cloud_sdk.metaapi.models import MarketDataSubscription, MarketDataU
     MetatraderTick, MetatraderSymbolPrice, MetatraderSymbolSpecification, MetatraderDeal, \
     MetatraderOrder, MetatraderPosition, MetatraderAccountInformation
 
-from ficus.mt5.MetatraderStorage import MetatraderSymbolPriceManager
-from ficus.mt5.TradingManager import TradingManager
+from ficus.metaapi.MetatraderStorage import MetatraderSymbolPriceManager
+from ficus.metaapi.TradingManager import TradingManager
 
 logger = logging.getLogger('ficus_logger')
 

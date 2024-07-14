@@ -6,8 +6,8 @@ from typing import List
 import pandas as pd
 from pandas import Series
 
-from ficus.mt5.listeners.ITradingCallback import ITradingCallback
-from ficus.mt5.models import TradeDirection, FicusTrade, TradingSymbol
+from ficus.metaapi.listeners.ITradingCallback import ITradingCallback
+from ficus.models.models import TradeDirection, FicusTrade, TradingSymbol
 
 logger = logging.getLogger('ficus_logger')
 
@@ -67,16 +67,16 @@ class TradingManager:
         await self.save_open_trades_to_file()
 
     async def _open_trade(self, direction: int, trading_symbol: str, entry_price: float):
-        sl, tp1, tp2, tp3, volume = TradingSymbol.calculate_levels(trading_symbol, entry_price, direction)
+        sl, tp1, tp2, tp3, tp4, volume = TradingSymbol.calculate_levels(trading_symbol, entry_price, direction)
 
         result = await self.callback.open_trade(symbol=trading_symbol, volume=volume, direction=direction, stop_loss=sl)
         trade = FicusTrade(
             entry_price=entry_price,
             stop_loss_price=sl,
-            take_profits=(tp1, tp2, tp3),
+            take_profits=(tp1, tp2, tp3, tp4),
             trade_direction=direction,
             position_id=result['positionId'],
-            take_profits_hit=[False, False, False],
+            take_profits_hit=[False, False, False, False],
             start_volume=volume,
             volume=volume,
             symbol=trading_symbol)
@@ -158,10 +158,10 @@ class TradingManager:
                 await self._modify_trade(trade)
 
     async def on_ohclv(self, series: Series, symbol: str):
-        signal = int(series['Position'])
-        if pd.isna(signal):
+        if pd.isna(series['Position']):
             return
 
+        signal = int(series['Position'])
         # if we have a running trade, but received a different direction, close it.
         if symbol in self._current_trades:
             trade = self._current_trades[symbol]

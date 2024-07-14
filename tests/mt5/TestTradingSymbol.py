@@ -1,6 +1,6 @@
 import unittest
 
-from ficus.mt5.models import TradingSymbol, TradeDirection
+from ficus.models.models import TradingSymbol, TradeDirection
 
 
 class TestCalculateLevels(unittest.TestCase):

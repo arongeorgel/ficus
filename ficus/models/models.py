@@ -1,4 +1,8 @@
-from typing import TypedDict
+from typing import TypedDict, Optional
+
+
+BOT_NUMBER_FRED_MAIN = 2341004
+BOT_NUMBER_FRED_RISK = 2341005
 
 
 class TradingSymbol:
@@ -33,12 +37,12 @@ class TradingSymbol:
 
         # Define differences for each symbol
         if symbol is TradingSymbol.XAUUSD:
-            sl_difference = 3
-            tp1_difference = 3
-            tp2_difference = 5
-            tp3_difference = 10
-            tp4_difference = 15
-            contract_size = 100
+            sl_difference = 3.0
+            tp1_difference = 3.0
+            tp2_difference = 5.0
+            tp3_difference = 10.0
+            tp4_difference = 15.0
+            contract_size = 100.0
             price_precision = 2
         elif symbol is TradingSymbol.BTCUSD:
             sl_difference = 300
@@ -49,13 +53,61 @@ class TradingSymbol:
             contract_size = 1
             price_precision = 2
         elif symbol is TradingSymbol.EURUSD:
-            sl_difference = 0.004
-            tp1_difference = 0.004
-            tp2_difference = 0.007
-            tp3_difference = 0.012
-            tp4_difference = 0.02
+            sl_difference = 0.003
+            tp1_difference = 0.003
+            tp2_difference = 0.005
+            tp3_difference = 0.01
+            tp4_difference = 0.012
             contract_size = 100000
             price_precision = 5
+        elif symbol is TradingSymbol.AUDUSD:
+            sl_difference = 0.003
+            tp1_difference = 0.003
+            tp2_difference = 0.005
+            tp3_difference = 0.01
+            tp4_difference = 0.012
+            contract_size = 100000
+            price_precision = 5
+        elif symbol is TradingSymbol.GBPUSD:
+            sl_difference = 0.003
+            tp1_difference = 0.003
+            tp2_difference = 0.005
+            tp3_difference = 0.01
+            tp4_difference = 0.012
+            contract_size = 100000
+            price_precision = 5
+        elif symbol is TradingSymbol.NZDUSD:
+            sl_difference = 0.003
+            tp1_difference = 0.003
+            tp2_difference = 0.005
+            tp3_difference = 0.01
+            tp4_difference = 0.012
+            contract_size = 100000
+            price_precision = 5
+        elif symbol is TradingSymbol.USDCAD:
+            sl_difference = 0.003
+            tp1_difference = 0.003
+            tp2_difference = 0.005
+            tp3_difference = 0.01
+            tp4_difference = 0.012
+            contract_size = 100000
+            price_precision = 5
+        elif symbol is TradingSymbol.USDCHF:
+            sl_difference = 0.003
+            tp1_difference = 0.003
+            tp2_difference = 0.005
+            tp3_difference = 0.01
+            tp4_difference = 0.012
+            contract_size = 100000
+            price_precision = 5
+        elif symbol is TradingSymbol.USDJPY:
+            sl_difference = 0.5
+            tp1_difference = 0.5
+            tp2_difference = 1.5
+            tp3_difference = 2
+            tp4_difference = 4
+            contract_size = 1000
+            price_precision = 3
         else:
             raise ValueError("Unsupported symbol. Please use one of the values of TradingSymbol")
 
@@ -68,15 +120,17 @@ class TradingSymbol:
             take_profit1 = round(entry_price + tp1_difference, price_precision)
             take_profit2 = round(entry_price + tp2_difference, price_precision)
             take_profit3 = round(entry_price + tp3_difference, price_precision)
+            take_profit4 = round(entry_price + tp4_difference, price_precision)
         elif direction == TradeDirection.SELL:
             stop_loss = round(entry_price + sl_difference, price_precision)
             take_profit1 = round(entry_price - tp1_difference, price_precision)
             take_profit2 = round(entry_price - tp2_difference, price_precision)
             take_profit3 = round(entry_price - tp3_difference, price_precision)
+            take_profit4 = round(entry_price - tp4_difference, price_precision)
         else:
             raise ValueError(f"Unsupported direction {direction}. Please use 'buy' or 'sell'.")
 
-        return stop_loss, take_profit1, take_profit2, take_profit3, volume
+        return stop_loss, take_profit1, take_profit2, take_profit3, take_profit4, volume
 
 
 class TradeDirection:
@@ -88,12 +142,13 @@ class TradeDirection:
 class FicusTrade(TypedDict):
     stop_loss_price: float
     entry_price: float
-    trade_direction: int
-    take_profits: tuple[float, float, float]
+    trade_direction: str  # buy or sell
+    take_profits: list[float]
     take_profits_hit: list[bool]
     start_volume: float
     volume: float
-    position_id: str  # from meta_api
+    position_id: Optional[str]  # from meta_api
+    message_id: str
     symbol: str
 
     # {
