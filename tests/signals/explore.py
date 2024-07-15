@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import patch, MagicMock
 
-from ficus.telegram.telegram_messages import parse_trade_message, execute_trade, handle_message
+from ficus.signals.telegram_messages import parse_trade_message, execute_trade, handle_message
 
 CHAT_ID="123"
 

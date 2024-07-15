@@ -1,5 +1,7 @@
 import yfinance as yf
 
+from ficus.metatrader.metatrader_terminal import MetatraderTerminal
+
 
 class PositionSizeCalculator:
     def __init__(self):
@@ -32,6 +34,7 @@ class PositionSizeCalculator:
             "EURGBP": {'contract_size': 100000},
 
             "NAS100": {'contract_size': 1},
+            "BTCUSD": {'contract_size': 1},
 
             "AUDJPY": {'contract_size': 100000},
             "CADJPY": {'contract_size': 100000},
@@ -43,13 +46,14 @@ class PositionSizeCalculator:
         }
 
     @staticmethod
-    def get_usd_conversion_rate(symbol):
+    def get_usd_conversion_rate(symbol, is_backtesting: bool = True):
         pair = 'USD' + symbol[3:] + '=X'  # Convert to Yahoo Finance ticker format
-        print(f"download for {pair}")
-        data = yf.download(pair, period='1d')
-        return data['Close'].iloc[-1]
+        if is_backtesting:
+            return yf.download(pair, period='1d')['Close'].iloc[-1]
+        else:
+            return MetatraderTerminal.get_current_price(pair, "buy")
 
-    def forex_calculator(self, symbol, entry, sl, account_balance, risk_percentage):
+    def forex_calculator(self, symbol, entry, sl, account_balance, risk_percentage, is_backtesting: bool = True):
         trading_pair = self.trading_pairs[symbol]
         if trading_pair is None:
             print(f'Trading pair {symbol} not supported yet')
@@ -63,11 +67,11 @@ class PositionSizeCalculator:
         elif symbol.endswith('JPY'):
             # JPY pair
             pip_value_jpy = (sl - entry) * trading_pair['contract_size']
-            pip_value_usd = pip_value_jpy / self.get_usd_conversion_rate(symbol)
+            pip_value_usd = pip_value_jpy / self.get_usd_conversion_rate(symbol, is_backtesting)
         else:
             # Cross-currency pair
             pip_value_cross = (sl - entry) * trading_pair['contract_size']
-            pip_value_usd = pip_value_cross / self.get_usd_conversion_rate(symbol)
+            pip_value_usd = pip_value_cross / self.get_usd_conversion_rate(symbol, is_backtesting)
 
         pip_value_usd = abs(pip_value_usd)
 

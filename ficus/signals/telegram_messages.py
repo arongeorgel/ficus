@@ -7,12 +7,12 @@ from typing import Optional
 from telegram import Update, Bot
 from telegram.ext import CommandHandler, MessageHandler, filters, CallbackContext, Application
 
-from ficus.metatrader.MetatraderTerminal import MetatraderTerminal
-from ficus.metatrader.__main__ import open_trades
+from ficus.metatrader.metatrader_terminal import MetatraderTerminal
+from ficus.metatrader.trades_storage import open_trades
 from ficus.models.models import FicusTrade, BOT_NUMBER_FRED_MAIN
 from ficus.models.utils import find_trade_by_tmsg
-from ficus.telegram.PositionSizeCalculator import PositionSizeCalculator
-from ficus.telegram.TelegramLogHandler import TelegramHandler
+from ficus.signals.PositionSizeCalculator import PositionSizeCalculator
+from ficus.signals.TelegramLogHandler import TelegramHandler
 
 # Define your Telegram bot token
 TELEGRAM_TOKEN = '7495868354:AAG8j_HS-wGmXz7Dr9Y-5As6hOkBGEXEYSs'
@@ -97,7 +97,8 @@ def parse_trade_message(message, message_id) -> Optional[FicusTrade]:
         trade['entry'],
         trade['sl'],
         2000,
-        2)
+        2,
+        False)
 
     return FicusTrade(
         symbol=trade['symbol'],
@@ -113,9 +114,9 @@ def parse_trade_message(message, message_id) -> Optional[FicusTrade]:
     )
 
 
-def extract_trade_symbol(reply_message_text):
+def extract_trade_symbol(reply_message_text, message_id):
     original_message = reply_message_text
-    original_trade = parse_trade_message(original_message)
+    original_trade = parse_trade_message(original_message, message_id)
     return original_trade['symbol'] if original_trade is not None else None
 
 
@@ -126,7 +127,9 @@ async def handle_message(update: Update, context: CallbackContext):
 
     text = update.message.text
     symbol = extract_trade_symbol(
-        update.message.reply_to_message.text) if update.message.reply_to_message is not None else None
+        update.message.reply_to_message.text,
+        update.message.reply_to_message.message_id) \
+        if update.message.reply_to_message is not None else None
 
     if symbol is not None:
         message_id = update.message.reply_to_message.message_id
@@ -137,7 +140,12 @@ async def handle_message(update: Update, context: CallbackContext):
         else:
             if should_close_trade_fully(text):
                 print(f"Closing trade fully for {symbol}")
-                MetatraderTerminal.close_trade(symbol, trade['position_id'], True)
+                MetatraderTerminal.close_trade(
+                    symbol,
+                    trade['position_id'],
+                    BOT_NUMBER_FRED_MAIN,
+                    True)
+                del open_trades[trade['position_id']]
 
         if is_sl_update(text):
             print(f"Update stop loss to entry for {symbol}")
@@ -145,8 +153,13 @@ async def handle_message(update: Update, context: CallbackContext):
     else:
         trade = parse_trade_message(text, update.message.message_id)
         if trade is not None:
-            print(f'Executing trade: {trade}')
-            MetatraderTerminal.execute_pending_trade(trade, BOT_NUMBER_FRED_MAIN)
+            position_id = MetatraderTerminal.execute_pending_trade(
+                trade,
+                BOT_NUMBER_FRED_MAIN)
+            if position_id is not None:
+                trade['position_id'] = position_id
+                open_trades[position_id] = trade
+                print(f'Executing trade: {trade}')
 
 
 async def start_telegram_bot():
@@ -175,8 +188,4 @@ async def start_telegram_bot():
             logging.info("Stopping trading bot operations for the weekend.")
             break
 
-        await asyncio.sleep(60)  # Check every minute
-
-
-if __name__ == '__main__':
-    asyncio.run(start_telegram_bot())
+        await asyncio.sleep(60 * 60)  # Check every hour

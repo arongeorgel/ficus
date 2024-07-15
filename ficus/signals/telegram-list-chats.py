@@ -5,7 +5,7 @@ from telethon import TelegramClient
 from telethon.tl.functions.messages import GetHistoryRequest
 from telethon.tl.types import PeerChannel
 
-from ficus.telegram.telegram_messages import FRED_MAIN, parse_trade_message
+from ficus.signals.telegram_messages import FRED_MAIN, parse_trade_message
 
 # Replace these with your own values from https://my.telegram.org
 api_id = 21257186

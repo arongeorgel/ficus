@@ -1,7 +1,7 @@
 from telethon import TelegramClient, events
 import telegram
 
-# Remember to use your own values from my.telegram.org!
+# Remember to use your own values from my.signals.org!
 api_id = 21257186
 api_hash = '71bf8d6d969e25ddba66fdc1fd0c50c6'
 client = TelegramClient('anon', api_id, api_hash)

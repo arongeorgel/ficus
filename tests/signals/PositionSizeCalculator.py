@@ -1,6 +1,6 @@
 import unittest
 
-from ficus.telegram.PositionSizeCalculator import PositionSizeCalculator
+from ficus.signals.PositionSizeCalculator import PositionSizeCalculator
 
 
 class TestPositionSizeCalculator(unittest.TestCase):
