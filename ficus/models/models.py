@@ -1,6 +1,5 @@
 from typing import TypedDict, Optional
 
-
 BOT_NUMBER_FRED_MAIN = 2341004
 BOT_NUMBER_FRED_RISK = 2341005
 
@@ -23,16 +22,22 @@ class TradingSymbol:
     #                             $0.001 difference is 100 pips.
     #                             On volume 1, 100 pips difference is $100
     @staticmethod
-    def calculate_levels(symbol: str, entry_price, direction):
+    def calculate_levels(symbol: str, entry_price, direction, risk_level: int):
         """
 
         :param entry_price: price at which the trade was opened
         :param symbol: forex symbol
         :param direction: buy or sell
+        :param risk_level: 0 - very high, 1- high, else - normal
         :return: stop_loss, take_profit1, take_profit2, take_profit3, volume
         """
-        # Constants
-        risk_percent = 2 / 100
+
+        if risk_level == 0:
+            risk_percent = 2 / 100
+        elif risk_level == 1:
+            risk_percent = 3 / 100
+        else:
+            risk_percent = 5 / 100
         max_risk = 4000 * risk_percent  # $80
 
         # Define differences for each symbol
@@ -133,6 +138,13 @@ class TradingSymbol:
         return stop_loss, take_profit1, take_profit2, take_profit3, take_profit4, volume
 
 
+def get_vantage_trading_symbol(symbol: str):
+    if symbol == 'BTCUSD':
+        return symbol
+    else:
+        return symbol + '+'
+
+
 class TradeDirection:
     BUY = 1
     SELL = -1
@@ -142,7 +154,7 @@ class TradeDirection:
 class FicusTrade(TypedDict):
     stop_loss_price: float
     entry_price: float
-    trade_direction: str  # buy or sell
+    trade_direction: str  # 'buy' or 'sell'
     take_profits: list[float]
     take_profits_hit: list[bool]
     start_volume: float

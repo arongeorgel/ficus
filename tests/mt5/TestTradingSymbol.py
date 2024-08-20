@@ -16,7 +16,7 @@ class TestCalculateLevels(unittest.TestCase):
         expected_tp3 = 1310.00
         expected_volume = 0.27  # Based on max_risk / sl_difference / contract_size
 
-        sl, tp1, tp2, tp3, volume = TradingSymbol.calculate_levels(symbol, entry_price, direction)
+        sl, tp1, tp2, tp3, volume = TradingSymbol.calculate_levels(symbol, entry_price, direction, 0)
 
         self.assertAlmostEqual(sl, expected_sl, places=2,
                                msg="Stop Loss calculation for XAUUSD buy is incorrect")
@@ -39,7 +39,7 @@ class TestCalculateLevels(unittest.TestCase):
         expected_tp3 = 1290.00
         expected_volume = 0.27  # Based on max_risk / sl_difference / contract_size
 
-        sl, tp1, tp2, tp3, volume = TradingSymbol.calculate_levels(symbol, entry_price, direction)
+        sl, tp1, tp2, tp3, volume = TradingSymbol.calculate_levels(symbol, entry_price, direction, 0)
 
         self.assertAlmostEqual(sl, expected_sl, places=2,
                                msg="Stop Loss calculation for XAUUSD sell is incorrect")
@@ -62,7 +62,7 @@ class TestCalculateLevels(unittest.TestCase):
         expected_tp3 = 31000.00
         expected_volume = 0.27  # Based on max_risk / sl_difference / contract_size
 
-        sl, tp1, tp2, tp3, volume = TradingSymbol.calculate_levels(symbol, entry_price, direction)
+        sl, tp1, tp2, tp3, volume = TradingSymbol.calculate_levels(symbol, entry_price, direction, 0)
 
         self.assertAlmostEqual(sl, expected_sl, places=2,
                                msg="Stop Loss calculation for BTC buy is incorrect")
@@ -85,7 +85,7 @@ class TestCalculateLevels(unittest.TestCase):
         expected_tp3 = 29000.00
         expected_volume = 0.27  # Based on max_risk / sl_difference / contract_size
 
-        sl, tp1, tp2, tp3, volume = TradingSymbol.calculate_levels(symbol, entry_price, direction)
+        sl, tp1, tp2, tp3, volume = TradingSymbol.calculate_levels(symbol, entry_price, direction, 0)
 
         self.assertAlmostEqual(sl, expected_sl, places=2,
                                msg="Stop Loss calculation for BTC sell is incorrect")
@@ -108,7 +108,7 @@ class TestCalculateLevels(unittest.TestCase):
         expected_tp3 = 1.092
         expected_volume = 0.2  # Based on max_risk / sl_difference / contract_size
 
-        sl, tp1, tp2, tp3, volume = TradingSymbol.calculate_levels(symbol, entry_price, direction)
+        sl, tp1, tp2, tp3, volume = TradingSymbol.calculate_levels(symbol, entry_price, direction, 0)
 
         self.assertAlmostEqual(sl, expected_sl, places=4,
                                msg="Stop Loss calculation for EURUSD buy is incorrect")
@@ -131,7 +131,7 @@ class TestCalculateLevels(unittest.TestCase):
         expected_tp3 = 1.0717
         expected_volume = 0.2  # Based on max_risk / sl_difference / contract_size
 
-        sl, tp1, tp2, tp3, volume = TradingSymbol.calculate_levels(symbol, entry_price, direction)
+        sl, tp1, tp2, tp3, volume = TradingSymbol.calculate_levels(symbol, entry_price, direction, 0)
 
         self.assertAlmostEqual(sl, expected_sl, places=4,
                                msg="Stop Loss calculation for EURUSD sell is incorrect")

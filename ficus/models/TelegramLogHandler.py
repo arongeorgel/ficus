@@ -2,7 +2,7 @@ import asyncio
 import logging
 
 
-class TelegramHandler(logging.Handler):
+class TelegramLogHandler(logging.Handler):
     def __init__(self, bot, chat_id):
         super().__init__()
         self.bot = bot
@@ -13,4 +13,7 @@ class TelegramHandler(logging.Handler):
         asyncio.create_task(self.send_log_message(log_entry))
 
     async def send_log_message(self, log_entry):
-        await self.bot.send_message(chat_id=self.chat_id, text=log_entry)
+        try:
+            await self.bot.send_message(chat_id=self.chat_id, text=log_entry)
+        except Exception:
+            print(log_entry)

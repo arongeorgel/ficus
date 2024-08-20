@@ -1,6 +1,6 @@
 import yfinance as yf
 
-from ficus.metatrader.metatrader_terminal import MetatraderTerminal
+from ficus.metatrader.MetatraderTerminal import MetatraderTerminal
 
 
 class PositionSizeCalculator:
@@ -23,6 +23,7 @@ class PositionSizeCalculator:
             "CADCHF": {'contract_size': 100000},
             "NZDCHF": {'contract_size': 100000},
             "USDCHF": {'contract_size': 100000},
+            "GBPCHF": {'contract_size': 100000},
 
             "AUDNZD": {'contract_size': 100000},
             "EURNZD": {'contract_size': 100000},
@@ -51,7 +52,7 @@ class PositionSizeCalculator:
         if is_backtesting:
             return yf.download(pair, period='1d')['Close'].iloc[-1]
         else:
-            return MetatraderTerminal.get_current_price(pair, "buy")
+            return MetatraderTerminal.get_current_price(pair, symbol, "buy")
 
     def forex_calculator(self, symbol, entry, sl, account_balance, risk_percentage, is_backtesting: bool = True):
         trading_pair = self.trading_pairs[symbol]

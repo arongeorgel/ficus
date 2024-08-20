@@ -1,56 +1,66 @@
 import asyncio
-import logging
 
-from ficus.metatrader.metatrader_terminal import MetatraderTerminal
-from ficus.metatrader.trades_storage import open_trades
+from ficus.metatrader.MetatraderTerminal import MetatraderTerminal
+from ficus.metatrader.MemoryStorage import open_trades
+from ficus.models.logger import ficus_logger
 from ficus.models.models import FicusTrade, BOT_NUMBER_FRED_MAIN
-from ficus.signals.telegram_messages import start_telegram_bot
-
-logger = logging.getLogger('ficus_logger')
+from ficus.models.utils import find_trade_by_id
+from ficus.signals.listen_for_new_messages import start_listening_telegra_messages, telethon_client
 
 
 async def start_monitoring_trades():
     while True:
         # get all positions open
-        open_positions = MetatraderTerminal.get_open_positions()
+        try:
+            open_positions = MetatraderTerminal.get_open_positions()
 
-        if open_positions is None:
-            return
+            if open_positions is not None or len(open_trades) > 0:
+                # sync against what is in memory
+                open_trades_copy = open_trades.copy()
+                if open_positions is not None and open_trades is not None and len(open_positions) != len(open_trades_copy):
+                    for position in open_positions:
+                        if position.ticket not in open_trades_copy:
+                            print(f'Removing {position.ticket} as it could not be found in memory')
+                            logger.info(f'Removing {position.ticket} as it could not be found in memory')
+                            del open_trades[position.ticket]
 
-        # quick check against what is in memory
-        # if open_positions is not None and open_trades is not None and len(open_positions) != len(open_trades.copy()):
-        #   logger.error("There is a discrepancy between memory and terminal in trades.")
+                # check for prices
+                for position in open_positions:
+                    memory_trade = find_trade_by_id(open_trades, position.ticket)
+                    price = MetatraderTerminal.get_current_price(memory_trade['symbol'],
+                                                                 memory_trade['trade_direction'])
 
-        # check for prices
-        for position in open_positions:
-            memory_trade = next(trade for trade in open_trades.values() if position.ticket == trade['position_id'])
-            price = MetatraderTerminal.get_current_price(position['symbol'], memory_trade['trade_direction'])
-
-            await validate_price(price, memory_trade)
+                    await validate_price(price, memory_trade)
+        except Exception:
+            pass
 
         # check again after 5 seconds
         await asyncio.sleep(5)
+
+
+def _modify_trade_sl(trade: FicusTrade):
+    if trade['position_id'] is not None:
+        open_trades[trade['position_id']] = trade
 
 
 async def validate_price(price: float, trade: FicusTrade):
     direction = trade['trade_direction']
     volume = trade['start_volume']
     trading_symbol = trade['symbol']
+    tolerance = 0.000001
+    memory_trade = find_trade_by_id(open_trades, trade['position_id'])
 
     if direction == "buy":
-        # SL
-        # if price <= trade['stop_loss_price']:
-        #     logger.info(f"Stop loss hit for {trade['symbol']} on buy at price {price}")
-        #     MetatraderTerminal.close_trade()
-        #     await self._close_trade(trade, trading_symbol, "stop loss hit on buy")
         # TP3
-        if price >= trade['take_profits'][2] and not trade['take_profits_hit'][2]:
-            logger.info(f"Take profit 3 hit for {trade['symbol']} on buy at price {price}")
+        if price >= trade['take_profits'][2] + tolerance and not trade['take_profits_hit'][2]:
+            ficus_logger.info(f"Take profit 3 hit for {trade['symbol']} on buy at price {price}")
+            print(f"Take profit 3 hit for {trade['symbol']} on buy at price {price}")
             trade['take_profits_hit'][2] = True
             # await self._close_trade(trade, trading_symbol, "all TP hit on buy")
         # TP2
-        elif price >= trade['take_profits'][1] and not trade['take_profits_hit'][1]:
-            logger.info(f"Take profit 2 hit for {trade['symbol']} on buy at price {price}")
+        elif price >= trade['take_profits'][1] + tolerance and not trade['take_profits_hit'][1]:
+            ficus_logger.info(f"Take profit 2 hit for {trade['symbol']} on buy at price {price}")
+            print(f"Take profit 2 hit for {trade['symbol']} on buy at price {price}")
             trade['volume'] = round(volume / 2, 2)
             trade['take_profits_hit'][1] = True
             MetatraderTerminal.close_trade(
@@ -62,11 +72,13 @@ async def validate_price(price: float, trade: FicusTrade):
             update_open_trades(trade)
 
             # modify the position
-            # trade['stop_loss_price'] = entry_price
-            # await self._modify_trade(trade)
+            if memory_trade is not None:
+                trade['stop_loss_price'] = memory_trade['entry_price']
+                _modify_trade_sl(trade)
         # TP 1
-        elif price >= trade['take_profits'][0] and not trade['take_profits_hit'][0]:
-            logger.info(f"Take profit 1 hit for {trade['symbol']} on buy at price {price}")
+        elif price >= trade['take_profits'][0] + tolerance and not trade['take_profits_hit'][0]:
+            ficus_logger.info(f"Take profit 1 hit for {trade['symbol']} on buy at price {price}")
+            print(f"Take profit 1 hit for {trade['symbol']} on buy at price {price}")
             trade['take_profits_hit'][0] = True
             trade['volume'] = round(volume / 2, 2)
             MetatraderTerminal.close_trade(
@@ -76,25 +88,18 @@ async def validate_price(price: float, trade: FicusTrade):
                 full_close=False
             )
             update_open_trades(trade)
-            # await self._partially_close_trade(trade, trading_symbol)
-
-            # modify the position, update stop loss
-            # trade['stop_loss_price'] = entry_price - ((entry_price - trade['stop_loss_price']) / 2)
-            # await self._modify_trade(trade)
 
     elif direction == 'sell':
-        # SL
-        # if price >= trade['stop_loss_price']:
-        #     logger.info(f"Stop loss hit for {trade['symbol']} on sell at price {price}")
-        #     await self._close_trade(trade, trading_symbol, "stop loss hit on sell")
         # TP 3
-        if price <= trade['take_profits'][2] and not trade['take_profits_hit'][2]:
-            logger.info(f"Take profit 3 hit for {trade['symbol']} on sell at price {price}")
+        if price <= trade['take_profits'][2] - tolerance and not trade['take_profits_hit'][2]:
+            ficus_logger.info(f"Take profit 3 hit for {trade['symbol']} on sell at price {price}")
+            print(f"Take profit 3 hit for {trade['symbol']} on sell at price {price}")
             trade['take_profits_hit'][2] = True
             # await self._close_trade(trade, trading_symbol, "all TP hit on sell")
         # TP 2
-        elif price <= trade['take_profits'][1] and not trade['take_profits_hit'][1]:
-            logger.info(f"Take profit 2 hit for {trade['symbol']} on sell at price {price}")
+        elif price <= trade['take_profits'][1] - tolerance and not trade['take_profits_hit'][1]:
+            ficus_logger.info(f"Take profit 2 hit for {trade['symbol']} on sell at price {price}")
+            print(f"Take profit 2 hit for {trade['symbol']} on sell at price {price}")
             trade['volume'] = round(volume / 2, 2)
             trade['take_profits_hit'][1] = True
             MetatraderTerminal.close_trade(
@@ -106,11 +111,13 @@ async def validate_price(price: float, trade: FicusTrade):
             update_open_trades(trade)
 
             # modify the position
-            # trade['stop_loss_price'] = entry_price
-            # await self._modify_trade(trade)
+            if memory_trade is not None:
+                trade['stop_loss_price'] = memory_trade['entry_price']
+                _modify_trade_sl(trade)
         # TP 1
-        elif price <= trade['take_profits'][0] and not trade['take_profits_hit'][0]:
-            logger.info(f"Take profit 1 hit for {trade['symbol']} on buy at price {price}")
+        elif price <= trade['take_profits'][0] - tolerance and not trade['take_profits_hit'][0]:
+            ficus_logger.info(f"Take profit 1 hit for {trade['symbol']} on buy at price {price}")
+            print(f"Take profit 1 hit for {trade['symbol']} on buy at price {price}")
             trade['take_profits_hit'][0] = True
             trade['volume'] = round(volume / 2, 2)
             MetatraderTerminal.close_trade(
@@ -120,10 +127,6 @@ async def validate_price(price: float, trade: FicusTrade):
                 full_close=False
             )
             update_open_trades(trade)
-
-            # modify the position, update stop loss
-            # trade['stop_loss_price'] = entry_price + ((entry_price - trade['stop_loss_price']) / 2)
-            # await self._modify_trade(trade)
 
 
 def update_open_trades(trade):
@@ -132,19 +135,24 @@ def update_open_trades(trade):
         open_trades[position_id] = trade
 
 
-async def main():
-    # create task for signals
-    telegram_task = asyncio.create_task(start_telegram_bot())
-    # create task for terminal monitoring
-    terminal_task = asyncio.create_task(start_monitoring_trades())
-
-    await asyncio.gather(telegram_task, terminal_task)
-
-    # Keep the main coroutine running
+async def start_monitoring():
     while True:
-        await asyncio.sleep(1)
+        print("Monitoring...")
+        try:
+            open_positions = MetatraderTerminal.get_open_positions()
+        except Exception as e:
+            pass
+
+        await asyncio.sleep(5)
 
 
-if __name__ == '__main__':
+async def main():
+    task1 = asyncio.create_task(start_listening_telegra_messages())
+    task2 = asyncio.create_task(start_monitoring_trades())
+    await asyncio.gather(task1, task2)
+
+
+if __name__ == "__main__":
     MetatraderTerminal.init_metatrader_terminal()
-    asyncio.run(main())
+    with telethon_client:
+        telethon_client.loop.run_until_complete(main())
