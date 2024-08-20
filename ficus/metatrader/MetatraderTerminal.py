@@ -2,7 +2,7 @@ import MetaTrader5 as mt5
 
 from ficus.metatrader.Terminal import Terminal
 from ficus.models.logger import ficus_logger
-from ficus.models.models import FicusTrade, get_vantage_trading_symbol
+from ficus.models.models import FicusTrade
 
 
 # noinspection PyUnresolvedReferences
@@ -167,7 +167,6 @@ class MetatraderTerminal(Terminal):
 
         trade_to_close = positions[0]
         volume = trade_to_close.volume if full_close else round(trade_to_close.volume / 2, 2)
-        symbol = get_vantage_trading_symbol(symbol)
 
         request = {
             'action': mt5.TRADE_ACTION_DEAL,

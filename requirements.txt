@@ -1,6 +1,5 @@
 setuptools>=68.2.0
 pandas>=2.2.2
-matplotlib>=3.9.0
 numpy>=1.26.4
 yfinance>=0.2.40
 mplfinance>=0.12.10b0
