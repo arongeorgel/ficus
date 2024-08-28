@@ -29,7 +29,7 @@ def should_close_trade_fully(text) -> bool:
     return True if match else False
 
 
-def parse_trade_message(message_text: str, message_id: str, is_reply) -> Optional[FicusTrade]:
+def parse_trade_message(message_text: str, message_id: str, usd_rate_func) -> Optional[FicusTrade]:
     position_calculator = PositionSizeCalculator()
     lines = message_text.strip().split('\n')
     action: Optional[str] = None
@@ -64,16 +64,32 @@ def parse_trade_message(message_text: str, message_id: str, is_reply) -> Optiona
             if match:
                 tps.append(float(match.group()))
 
-    if action == 'buy':
-        tps.sort()
-    elif action == 'sell':
-        tps.sort(reverse=True)
-
-    if action is None or stop_loss is None or entry is None or symbol is None:
-        print(f"Failed to parse message {message_text} to trade.")
-        ficus_logger.info(f"Failed to parse message {message_text} to trade.")
-        ficus_logger.info("===============================================\n")
+    if action is None or entry is None or symbol is None:
+        error_message = f"Could not find any action, entry or symbol while parsing."
+        print(error_message)
+        ficus_logger.info(error_message)
         return None
+
+    if stop_loss is None:
+        if symbol == 'XAUUSD':
+            # Set a default stop loss for XAUUSD if not provided
+            stop_loss = entry - 9 if action == 'buy' else entry + 9
+        else:
+            error_message = f"No stop loss set for {symbol}"
+            print(error_message)
+            ficus_logger.info(error_message)
+            return None
+
+    if not tps:
+        tp_base = entry + (3 if action == 'buy' else -3)
+        tps = [tp_base, tp_base + (3 if action == 'buy' else -3),
+               tp_base + (15 if action == 'buy' else -15),
+               tp_base + (39 if action == 'buy' else -39)]
+
+    if not symbol.endswith('USD'):
+        usd_conversion_rate = usd_rate_func(symbol, action, False)
+    else:
+        usd_conversion_rate = 0
 
     volume = position_calculator.forex_calculator(
         symbol,
@@ -81,7 +97,11 @@ def parse_trade_message(message_text: str, message_id: str, is_reply) -> Optiona
         stop_loss,
         2000,
         5,
-        False)
+        usd_conversion_rate
+    )
+
+    # Sort TPs based on action
+    tps.sort(reverse=(action == 'sell'))
 
     trade = FicusTrade(
         symbol=get_vantage_trading_symbol(symbol),
@@ -96,12 +116,9 @@ def parse_trade_message(message_text: str, message_id: str, is_reply) -> Optiona
         volume=volume
     )
 
-    if not is_reply:
-        print(f"Parsed successfully the message to trade {trade}")
-        ficus_logger.info(f"Parsed successfully the message to trade {trade}")
     return trade
 
 
-def extract_trade_symbol(message_text, message_id, is_reply):
-    original_trade = parse_trade_message(message_text, message_id, is_reply)
+def extract_trade_symbol(message_text, message_id):
+    original_trade = parse_trade_message(message_text, message_id, None)
     return original_trade['symbol'] if original_trade is not None else None

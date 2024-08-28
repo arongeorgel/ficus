@@ -2,7 +2,7 @@ import MetaTrader5 as mt5
 
 from ficus.metatrader.Terminal import Terminal
 from ficus.models.logger import ficus_logger
-from ficus.models.models import FicusTrade
+from ficus.models.models import FicusTrade, get_vantage_trading_symbol
 
 
 # noinspection PyUnresolvedReferences
@@ -151,12 +151,16 @@ class MetatraderTerminal(Terminal):
         return mt5.positions_get()
 
     def get_current_price(self, symbol, direction):
+        if not symbol.endswith("+"):
+            symbol = get_vantage_trading_symbol(symbol)
+
         if mt5.symbol_select(symbol):
             tick = mt5.symbol_info_tick(symbol)._asdict()
             return tick['bid'] if direction == 'buy' else tick['ask']
         else:
             print(f"Failed to select {symbol} for fetching the price.")
             ficus_logger.error(f"Failed to select {symbol} for fetching the price.")
+            return None
 
     def close_trade(self, symbol, trade_id, volume, bot_number, full_close):
         positions = mt5.positions_get(ticket=trade_id)

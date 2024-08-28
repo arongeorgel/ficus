@@ -46,15 +46,7 @@ class PositionSizeCalculator:
             "USDJPY": {'contract_size': 100000},
         }
 
-    @staticmethod
-    def get_usd_conversion_rate(symbol, is_backtesting: bool = True):
-        pair = 'USD' + symbol[3:] + '=X'  # Convert to Yahoo Finance ticker format
-        if is_backtesting:
-            return yf.download(pair, period='1d')['Close'].iloc[-1]
-        else:
-            return MetatraderTerminal.get_current_price(pair, symbol, "buy")
-
-    def forex_calculator(self, symbol, entry, sl, account_balance, risk_percentage, is_backtesting: bool = True):
+    def forex_calculator(self, symbol, entry, sl, account_balance, risk_percentage, usd_conversion_rate: float = 0):
         trading_pair = self.trading_pairs[symbol]
         if trading_pair is None:
             print(f'Trading pair {symbol} not supported yet')
@@ -68,11 +60,11 @@ class PositionSizeCalculator:
         elif symbol.endswith('JPY'):
             # JPY pair
             pip_value_jpy = (sl - entry) * trading_pair['contract_size']
-            pip_value_usd = pip_value_jpy / self.get_usd_conversion_rate(symbol, is_backtesting)
+            pip_value_usd = pip_value_jpy / usd_conversion_rate
         else:
             # Cross-currency pair
             pip_value_cross = (sl - entry) * trading_pair['contract_size']
-            pip_value_usd = pip_value_cross / self.get_usd_conversion_rate(symbol, is_backtesting)
+            pip_value_usd = pip_value_cross / usd_conversion_rate
 
         pip_value_usd = abs(pip_value_usd)
 

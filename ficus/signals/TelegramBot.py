@@ -1,6 +1,7 @@
 import datetime
 import traceback
 
+import yfinance as yf
 from telethon import TelegramClient, events
 
 from ficus.metatrader.MemoryStorage import MemoryStorage
@@ -49,22 +50,43 @@ class TelegramBot:
             print(traceback.format_exc())
             print('---------------------')
 
-        print("==========         [END]         ==========")
+        print("==========             [END]             ==========\n")
 
     def handle_message(self, message_text, message_id):
-        trade = parse_trade_message(message_text, message_id, False)
+        trade = parse_trade_message(message_text, message_id, self.get_usd_conversion_rate)
         if trade is not None:
             ficus_logger.info(f"Parsed trade {trade}")
             print(f"Parsed trade {trade}")
 
             position_id = self.terminal.open_trade(trade, self.bot_number)
+            # error handling happens further in open_trade, not need to add an else here.
             if position_id is not None:
                 trade['position_id'] = position_id
                 self.storage.add_trade(trade)
         else:
-            txt = message_text.replace('\n', '. ')
-            ficus_logger.warning(f"Failed to parse trade for message {txt}")
-            print(f"Failed to parse trade for message {txt}")
+            ficus_logger.warning(f"Failed to parse trade.")
+            print(f"Failed to parse trade.")
+
+    def get_usd_conversion_rate(self, symbol, trade_direction, is_backtesting: bool = True):
+        # sometimes the pair is <symbol[3:]>+USD
+        pair = 'USD' + symbol[3:]
+        reversed_pair = symbol[3:] + 'USD'
+        if is_backtesting:
+            return yf.download(pair + "=X", period='1d')['Close'].iloc[-1]
+        else:
+            usd_rate = self.terminal.get_current_price(pair, trade_direction)
+            # if usd_rate is none, reverse the pair
+            if usd_rate is None:
+                usd_rate = self.terminal.get_current_price(reversed_pair, trade_direction)
+                print(f'USD rate for {reversed_pair} is {1/usd_rate}')
+                ficus_logger.info(f'USD rate for {reversed_pair} is {1/usd_rate}')
+
+                # invert the rate
+                return 1 / usd_rate
+            else:
+                print(f'USD rate for {pair} is {usd_rate}')
+                ficus_logger.info(f'USD rate for {pair} is {usd_rate}')
+                return usd_rate
 
     def handle_reply_message(self, text, original_message_text, original_message_id):
         """
@@ -76,7 +98,7 @@ class TelegramBot:
         :return:
         """
         # search for the symbol in the original message:
-        symbol = extract_trade_symbol(original_message_text, original_message_id, True)
+        symbol = extract_trade_symbol(original_message_text, original_message_id)
 
         if symbol is not None:
             trade = self.storage.get_trade_by_message_id(original_message_id)

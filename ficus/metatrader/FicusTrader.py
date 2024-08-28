@@ -47,7 +47,7 @@ class FicusTrader:
                 ficus_logger.error(message)
                 print(message)
                 pass
-            await asyncio.sleep(0.5)
+            await asyncio.sleep(5)
 
     def _validate_price_on_buy(self, price, trade: FicusTrade):
         # Stop loss

@@ -15,8 +15,11 @@ class MemoryStorage:
     def remove_trade(self, trade_id: str) -> None:
         del self.__open_trades[trade_id]
 
-    def get_trade(self, trade_id: str) -> FicusTrade:
-        return self.__open_trades[trade_id]
+    def get_trade(self, trade_id: str) -> Optional[FicusTrade]:
+        if trade_id in self.__open_trades:
+            return self.__open_trades[trade_id]
+        else:
+            return None
 
     def get_trade_by_message_id(self, message_id: str) -> Optional[FicusTrade]:
         for trade in self.__open_trades.values():
